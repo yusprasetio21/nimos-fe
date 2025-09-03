@@ -1,0 +1,140 @@
+<ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+<p-toast></p-toast>
+
+<div class="card card-flush" *ngIf="state$ | async">
+    <p-toolbar>
+        <!--begin::Card title-->
+        <ng-template pTemplate="left" class="card-title">&nbsp;</ng-template>
+        <!--end::Card title-->
+    </p-toolbar>
+    <p-table
+        #dt
+        [columns]="cols"
+        [value]="datas"
+        [lazy]="true"
+        (onLazyLoad)="loadDatas($event)"
+        [paginator]="true"
+        [totalRecords]="totalRecords"
+        [showCurrentPageReport]="true"
+        [rows]="10"
+        [rowsPerPageOptions]="[10, 20, 50]"
+        sortField="-id"
+        dataKey="id"
+        [filterDelay]="1000"
+        responsiveLayout="scroll"
+        [(selection)]="selectedDatas"
+        [selectionPageOnly]="true"
+        csvSeparator=","
+        exportFilename="organizations_export"
+        [rowHover]="true"
+        styleClass="card-body pt-0"
+        tableStyleClass="table align-middle table-row-dashed fs-6 gy-5 mb-0">
+        <ng-template pTemplate="header" let-columns>
+            <tr class="text-start text-gray-400 fw-bold text-uppercase fs-7 gs-0">
+                <th class="min-w-125px">Type</th>
+                <th class="min-w-125px">
+                    Name
+                    <p-columnFilter
+                        type="text"
+                        field="auditable.name"
+                        display="menu"
+                        matchMode="contains"
+                        [showMatchModes]="true"
+                        [matchModeOptions]="matchModeOptions"
+                        [showOperator]="false"
+                        [showAddButton]="false"
+                        class="p-ml-auto"></p-columnFilter>
+                </th>
+                <th class="min-w-125px">
+                    User
+                    <p-columnFilter
+                        type="text"
+                        field="user.email"
+                        display="menu"
+                        matchMode="contains"
+                        [showMatchModes]="true"
+                        [matchModeOptions]="matchModeOptions"
+                        [showOperator]="false"
+                        [showAddButton]="false"
+                        class="p-ml-auto"></p-columnFilter>
+                </th>
+                <th class="min-w-125px">Created At</th>
+                <th class="text-end min-w-100px">Action</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-data>
+            <tr>
+                <td>
+                    {{ data.auditable_type }}
+                </td>
+                <td>
+                    {{ data.auditable.name }}
+                </td>
+                <td>
+                    {{ data.user.email }}
+                </td>
+                <td>
+                    {{ data.created_at | date: 'dd-MM-yyyy hh:mm:ss' }}
+                </td>
+                <td class="text-end">
+                    <button
+                        class="btn btn-icon btn-active-light-primary w-30px h-30px me-3"
+                        pTooltip="Edit"
+                        tooltipPosition="left"
+                        (click)="showData(data)">
+                        <span
+                            [inlineSVG]="'./assets/media/icons/duotune/art/art005.svg'"
+                            class="svg-icon svg-icon-3"></span>
+                    </button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-dialog
+    [(visible)]="dialogForm"
+    [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+    [style]="{ width: '50vw' }"
+    [modal]="true">
+    <ng-template pTemplate="header"> Auditrail Details </ng-template>
+    <input pInputText formControlName="id" hidden />
+    <div class="card-body p-3">
+        <div class="row mb-6">
+            <label class="col-lg-4 col-form-label fw-bold fs-6">Type</label>
+            <div class="col-lg-8 fv-row">
+                {{ data?.auditable_type }}
+            </div>
+        </div>
+        <div class="row mb-6">
+            <label class="col-lg-4 col-form-label fw-bold fs-6">Name</label>
+            <div class="col-lg-8 fv-row">
+                {{ data?.auditable.name }}
+            </div>
+        </div>
+        <div class="row mb-6">
+            <label class="col-lg-4 col-form-label fw-bold fs-6">User</label>
+            <div class="col-lg-8 fv-row">
+                {{ data?.user.email }}
+            </div>
+        </div>
+        <div class="row mb-6">
+            <label class="col-lg-4 col-form-label fw-bold fs-6">Created Dt</label>
+            <div class="col-lg-8 fv-row">
+                {{ data?.created_at | date: 'dd-MM-yyyy hh:mm:ss' }}
+            </div>
+        </div>
+        <div class="row mb-6">
+            <label class="col-lg-4 col-form-label fw-bold fs-6">Value OLD</label>
+            <div class="col-lg-8 fv-row">
+                <textarea rows="10" cols="50" readonly>{{ data?.old_values }}</textarea>
+            </div>
+        </div>
+        <div class="row mb-6">
+            <label class="col-lg-4 col-form-label fw-bold fs-6">Value NEW</label>
+            <div class="col-lg-8 fv-row">
+                <textarea rows="10" cols="50" readonly>{{ data?.new_values }}</textarea>
+            </div>
+        </div>
+    </div>
+</p-dialog>

@@ -1,0 +1,50 @@
+<!-- <h2 mat-dialog-title>{{tittle}}</h2> -->
+<div mat-dialog-content>
+  <div class="full-height">
+    <div class="example-container">
+      <div class="row mb-2">
+        <label class="col-lg-4 col-form-label required fs-6">
+          {{label?.status?.STATUS || 'Status'}}:
+          <!-- <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"
+          pTooltip="{{tooltip?.status?.STATUS || 'The status of an instrument with respect to its operation (operational, testing, or not in used) [see WMDS 5-04, Instrument operating status]'}}"></i> -->
+        </label>
+        <div class="col-lg-8 fv-row">
+          <p-dropdown  
+             appendTo="body"
+             [filter]="true"
+             [(ngModel)]="config.data.instrument_operating_status"
+             [options]="config.data.statusOption"
+             optionLabel="label"
+             [style]="{'width':'100%'}"></p-dropdown>
+        </div>
+      </div>
+      <div class="row mb-2">
+        <label class="col-lg-4 col-form-label required fs-6">
+          {{label?.status?.FROM || 'From'}}:
+          <!-- <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"
+          pTooltip="{{tooltip?.status?.PARTY || 'Set this field to the date at which the change occurred'}}"></i> -->
+        </label>
+        <div class="col-lg-8 fv-row">
+          <p-calendar dataType="string" [(ngModel)]="config.data.from" [showIcon]="true" inputId="icon" appendTo="body" dateFormat="dd-mm-yy"
+            [style]="{'width':'30%'}"></p-calendar>
+        </div>
+      </div>
+      <div class="row mb-2">
+        <label class="col-lg-4 col-form-label fs-6">
+          {{label?.status?.TO || 'To'}}:
+          <!-- <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"
+          pTooltip="{{tooltip?.status?.PARTY || 'Set this field to the date at which the change stopped occurring'}}"></i> -->
+        </label>
+        <div class="col-lg-8 fv-row">
+          <p-calendar dataType="string" [(ngModel)]="config.data.to" [showIcon]="true" inputId="icon" appendTo="body" dateFormat="dd-mm-yy"
+            [style]="{'width':'30%'}"></p-calendar>
+        </div>
+      </div>
+    </div>
+    <div class="footer-container">
+      <div class="div-right">
+        <p-button label="Save Status" (click)="onSave()" icon="pi pi-save" styleClass="p-button-sm"></p-button>
+      </div>
+    </div>
+  </div>
+</div>

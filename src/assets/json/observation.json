@@ -1,0 +1,739 @@
+[
+    {
+      "id": 7,
+      "observed_variable_id": 39,
+      "programs": [
+        {
+          "id": 5
+        },
+        {
+          "id": 7
+        }
+      ],
+      "geometry_id": 5,
+      "observing_method_id": 217,
+      "observed_since": "2022-12-14",
+      "last_update": "20-12-2022 by-Admin Tani",
+      "deployments": [
+        {
+          "id": 8,
+          "from": "2022-12-10T17:00:00.000000Z",
+          "to": "2022-12-25T17:00:00.000000Z",
+          "source_of_observation_id": 2,
+          "distance_from_reference_surface": 16,
+          "reference_surface_type_id": 3,
+          "application_areas": [
+            {
+              "id": 4,
+              "application_area_id": 4,
+              "desc": "Applications related to evaluating and analysing changes (temporally and spatially) in atmospheric composition regionally and globally to support treaty monitoring, climatologies and re-analyses, assessing trends in composition and emissions/ fluxes, and to better understand processes, using data of controlled quality (and with less stringent time requirements (not needed in NRT)), and used in products such as Ozone and Greenhouse Gas Bulletins, and State/Health of the Atmosphere reports [source: http://www.wmo.int/pages/prog/arep/gaw/documents/FINAL_GAW_221.pdf]"
+            }
+          ],
+          "exposure_id": 4,
+          "configuration": "test",
+          "representativeness_id": 3,
+          "measurement_leader": 3,
+          "organization_id": 3,
+          "is_near_real_time": 1,
+          "near_real_time_url": "https://us02web.zoom.us",
+          "data_urls": [
+            {
+              "id": 46,
+              "url": "https://us02web.zoom.us"
+            },
+            {
+              "id": 48,
+              "url": "https://us02web.zoom.us"
+            },
+            {
+              "id": 51,
+              "url": "https://us02web.zoom.us"
+            },
+            {
+              "id": 52,
+              "url": "https://us02web.zoom.us"
+            },
+            {
+              "id": 57,
+              "url": "https://us02web.zoom.us"
+            },
+            {
+              "id": 58,
+              "url": "https://us02web.zoom.us"
+            },
+            {
+              "id": 59,
+              "url": "https://us02web.zoom.us"
+            },
+            {
+              "id": 60,
+              "url": "https://us02web.zoom.us"
+            }
+          ],
+          "data_centre_id": 3,
+          "data_communication_method_id": 4,
+          "qaqc_schedule": "test",
+          "maintenance_schedule": "test",
+          "is_certified_observation": 1,
+          "comments": "test",
+          "photo": [],
+          "instrument": {
+            "id": 8,
+            "manufacturer_id": 5,
+            "instrument_model_id": 4,
+            "serial_number": "15",
+            "observing_method_id": 217,
+            "method_details": "test",
+            "method_comments": "test",
+            "coordinates": [
+              {
+                "id": 229,
+                "latitude": 11.5,
+                "longitude": 17.9,
+                "station_elevation": "18",
+                "geopositioning_method_id": 4,
+                "from": "2022-12-02T17:00:00.000000Z"
+              }
+            ],
+            "operating_statuses": [
+              {
+                "id": 7,
+                "instrument_operating_status_id": 3,
+                "from": "2022-12-07T00:00:00.000Z",
+                "to": "2022-12-21T00:00:00.000Z"
+              }
+            ],
+            "firmware_version": "test",
+            "instrument_specifications": {
+              "observable_range": "test",
+              "relative_uncertainty": "test",
+              "absolute_uncertainty": "test",
+              "drift_per_unit_time": "33",
+              "specification_url": "https://us02web.zoom.us",
+              "uncertainty_evaluation_procedure": 2
+            },
+            "observation_frequency_and_polarization": [
+              {
+                "id": 20,
+                "use_of_frequency": 3,
+                "frequency": "15",
+                "frequency_unit_id": 1,
+                "bandwidth": "26",
+                "bandwidth_unit_id": 1,
+                "transmission_mode_id": 2,
+                "polarization_id": 4
+              }
+            ],
+            "telecommunication_frequencies": [
+              {
+                "id": 20,
+                "use_of_frequency": 3,
+                "frequency": "1",
+                "frequency_unit_id": 1,
+                "bandwidth": "2",
+                "bandwidth_unit_id": 1
+              }
+            ],
+            "comments": "test",
+            "maintenance_logbooks": [
+              {
+                "id": 20,
+                "maintenance_date": "2022-11-27T17:00:00.000000Z",
+                "maintenance_party": 2,
+                "individual": "test",
+                "description": "test",
+                "author": "test",
+                "documentation_url": "https://us02web.zoom.us"
+              }
+            ],
+            "quality_assurance_logbooks": [
+              {
+                "id": 19,
+                "location_id": 4,
+                "activity_date": "2022-12-10T17:00:00.000000Z",
+                "standard_type_id": 4,
+                "standard_name": "test",
+                "standard_serial_number": "test",
+                "activity_result_id": 3,
+                "documentation_url": "https://us02web.zoom.us",
+                "author": "test"
+              }
+            ],
+            "manufacturer_desc": "AQUATECH SCIENTIFIC INSTRUMENT",
+            "instrument_model_desc": "AANDERAA INSTRUMENTS NORWAY_CUP WINDSENSOR",
+            "observing_method_desc": "Aerodyne mass spectrometer (AMS)"
+          },
+          "data_generation": [
+            {
+              "id": 7,
+              "from": "2022-12-03T17:00:00.000000Z",
+              "to": "2022-12-14T17:00:00.000000Z",
+              "sampling": {
+                "id": 7,
+                "sampling_strategy_id": 3,
+                "interval": 22,
+                "interval_unit_id": 1,
+                "period": null,
+                "period_unit": null,
+                "spatial_sampling_resolution": "13",
+                "sampling_procedure_id": 3,
+                "sampling_procedure_description": "test",
+                "sample_treatment_id": 5,
+                "created_by": 12,
+                "updated_by": 12,
+                "created_at": "2022-12-20T07:42:55.000000Z",
+                "updated_at": "2022-12-20T07:42:55.000000Z",
+                "sample_treatment_desc": "Heating"
+              },
+              "processing": {
+                "id": 7,
+                "aggregation_period": null,
+                "interval_unit_id": 1,
+                "data_processing_method": "test",
+                "software_version": "test",
+                "software_repository_url": "https://us02web.zoom.us",
+                "processing_centre": 4,
+                "created_by": 12,
+                "updated_by": 12,
+                "created_at": "2022-12-20T07:42:55.000000Z",
+                "updated_at": "2022-12-20T07:42:55.000000Z",
+                "interval_unit_desc": "s(second)"
+              },
+              "reporting": {
+                "id": 7,
+                "schedule": {
+                  "is_used_for_international_reporting": true,
+                  "reporting_interval": 180,
+                  "period_of_reporting": {
+                    "time": {
+                      "from": "00",
+                      "to": "23"
+                    },
+                    "day": {
+                      "from": "Monday",
+                      "to": "Friday"
+                    },
+                    "month": {
+                      "from": "January",
+                      "to": "December"
+                    }
+                  },
+                  "diurnal_base_time": "22:15"
+                },
+                "observation_count": "62",
+                "measurement_unit_id": 5,
+                "data_policy_id": 5,
+                "spatial_reporting_interval": 1,
+                "timeliness": "22",
+                "timeliness_unit": 1,
+                "numerical_resolution": "16",
+                "level_of_data_id": 1,
+                "data_format_id": 1,
+                "data_format_version": "test",
+                "reference_datum": "test",
+                "reference_time_id": 1,
+                "is_traceable": true,
+                "quality_flag_system_id": 1,
+                "is_primary": false,
+                "timestamp_meaning_id": 1,
+                "attribution": {
+                  "title_of_work": "test",
+                  "attribution_url": "https://us02web.zoom.us",
+                  "originator_of_work": "test",
+                  "source_work_url": "https://us02web.zoom.us"
+                },
+                "created_by": 12,
+                "updated_by": 12,
+                "created_at": "2022-12-20T07:42:55.000000Z",
+                "updated_at": "2022-12-20T14:23:35.000000Z",
+                "data_policy_desc": "unknown",
+                "timeliness_desc": "s(second)",
+                "level_of_data_desc": "inapplicable",
+                "data_format_desc": "ASCII",
+                "reference_time_desc": "Global navigation satellite system (GNSS)",
+                "quality_flag_system_desc": "Global navigation satellite system (GNSS)"
+              },
+              "tittle": "FROM 04-12-2022 TO 15-12-2022"
+            }
+          ],
+          "representativeness_of_obs_desc": "mesoscale (3 km .. < 100 km)"
+        },
+        {
+          "id": 7,
+          "from": "2022-11-18T17:00:00.000000Z",
+          "to": "1969-12-30T17:00:00.000000Z",
+          "source_of_observation_id": 3,
+          "distance_from_reference_surface": 22,
+          "reference_surface_type_id": 2,
+          "application_areas": [
+            {
+              "id": 3,
+              "application_area_id": 3,
+              "desc": "Applications from global to regional scales (with horizontal resolutions similar to global NWP (~10 km and coarser) with stringent timeliness requirements (NRT) to support operations such as sand and dust storm and chemical weather forecasts [source: http://www.wmo.int/pages/prog/arep/gaw/documents/FINAL_GAW_221.pdf]"
+            }
+          ],
+          "exposure_id": 4,
+          "configuration": "22",
+          "representativeness_id": 4,
+          "measurement_leader": 3,
+          "organization_id": 13,
+          "is_near_real_time": 1,
+          "near_real_time_url": "https://us02web.zoom.us",
+          "data_urls": [
+            {
+              "id": 45,
+              "url": "https://us02web.zoom.us"
+            },
+            {
+              "id": 47,
+              "url": "https://us02web.zoom.us"
+            },
+            {
+              "id": 49,
+              "url": "https://us02web.zoom.us"
+            },
+            {
+              "id": 50,
+              "url": "https://us02web.zoom.us"
+            },
+            {
+              "id": 53,
+              "url": "https://us02web.zoom.us"
+            },
+            {
+              "id": 54,
+              "url": "https://us02web.zoom.us"
+            },
+            {
+              "id": 55,
+              "url": "https://us02web.zoom.us"
+            },
+            {
+              "id": 56,
+              "url": "https://us02web.zoom.us"
+            },
+            {
+              "id": 61,
+              "url": "https://us02web.zoom.us"
+            },
+            {
+              "id": 62,
+              "url": "https://us02web.zoom.us"
+            },
+            {
+              "id": 63,
+              "url": "https://us02web.zoom.us"
+            },
+            {
+              "id": 64,
+              "url": "https://us02web.zoom.us"
+            },
+            {
+              "id": 65,
+              "url": "https://us02web.zoom.us"
+            },
+            {
+              "id": 66,
+              "url": "https://us02web.zoom.us"
+            },
+            {
+              "id": 67,
+              "url": "https://us02web.zoom.us"
+            },
+            {
+              "id": 68,
+              "url": "https://us02web.zoom.us"
+            }
+          ],
+          "data_centre_id": 3,
+          "data_communication_method_id": 2,
+          "qaqc_schedule": "test",
+          "maintenance_schedule": "test",
+          "is_certified_observation": 1,
+          "comments": "test",
+          "photo": [],
+          "instrument": {
+            "id": 7,
+            "manufacturer_id": 4,
+            "instrument_model_id": 6,
+            "serial_number": "22",
+            "observing_method_id": 217,
+            "method_details": "test",
+            "method_comments": "test",
+            "coordinates": [
+              {
+                "id": 230,
+                "latitude": 11.2,
+                "longitude": 22.1,
+                "station_elevation": "22",
+                "geopositioning_method_id": 3,
+                "from": "2022-12-04T17:00:00.000000Z"
+              }
+            ],
+            "operating_statuses": [
+              {
+                "id": 6,
+                "instrument_operating_status_id": 3,
+                "from": "2022-12-13T00:00:00.000Z",
+                "to": "2022-12-21T00:00:00.000Z"
+              }
+            ],
+            "firmware_version": "test",
+            "instrument_specifications": {
+              "observable_range": "test",
+              "relative_uncertainty": "test",
+              "absolute_uncertainty": "test",
+              "drift_per_unit_time": "22",
+              "specification_url": "https://us02web.zoom.us",
+              "uncertainty_evaluation_procedure": 1
+            },
+            "observation_frequency_and_polarization": [
+              {
+                "id": 21,
+                "use_of_frequency": 2,
+                "frequency": "22",
+                "frequency_unit_id": 1,
+                "bandwidth": "24",
+                "bandwidth_unit_id": 1,
+                "transmission_mode_id": 2,
+                "polarization_id": 4
+              }
+            ],
+            "telecommunication_frequencies": [
+              {
+                "id": 21,
+                "use_of_frequency": 2,
+                "frequency": "12",
+                "frequency_unit_id": 1,
+                "bandwidth": "14",
+                "bandwidth_unit_id": 1
+              }
+            ],
+            "comments": "test",
+            "maintenance_logbooks": [
+              {
+                "id": 21,
+                "maintenance_date": "2022-11-29T17:00:00.000000Z",
+                "maintenance_party": 13,
+                "individual": "test",
+                "description": "test",
+                "author": "test",
+                "documentation_url": "https://us02web.zoom.us"
+              }
+            ],
+            "quality_assurance_logbooks": [
+              {
+                "id": 20,
+                "location_id": 1,
+                "activity_date": "2022-12-04T17:00:00.000000Z",
+                "standard_type_id": 1,
+                "standard_name": "test",
+                "standard_serial_number": "test",
+                "activity_result_id": 1,
+                "documentation_url": "https://us02web.zoom.us",
+                "author": "test"
+              }
+            ],
+            "manufacturer_desc": "AMA",
+            "instrument_model_desc": "AANDERAA_OPTODE",
+            "observing_method_desc": "Aerodyne mass spectrometer (AMS)"
+          },
+          "data_generation": [
+            {
+              "id": 8,
+              "from": "2022-11-27T17:00:00.000000Z",
+              "to": "2022-12-09T17:00:00.000000Z",
+              "sampling": {
+                "id": 8,
+                "sampling_strategy_id": 3,
+                "interval": 22,
+                "interval_unit_id": 1,
+                "period": null,
+                "period_unit": null,
+                "spatial_sampling_resolution": "2",
+                "sampling_procedure_id": 1,
+                "sampling_procedure_description": "12",
+                "sample_treatment_id": 1,
+                "created_by": 12,
+                "updated_by": 12,
+                "created_at": "2022-12-20T07:45:04.000000Z",
+                "updated_at": "2022-12-20T07:45:04.000000Z",
+                "sample_treatment_desc": "inapplicable"
+              },
+              "processing": {
+                "id": 8,
+                "aggregation_period": null,
+                "interval_unit_id": 1,
+                "data_processing_method": "14",
+                "software_version": "2",
+                "software_repository_url": "https://us02web.zoom.us",
+                "processing_centre": 1,
+                "created_by": 12,
+                "updated_by": 12,
+                "created_at": "2022-12-20T07:45:04.000000Z",
+                "updated_at": "2022-12-20T07:45:04.000000Z",
+                "interval_unit_desc": "s(second)"
+              },
+              "reporting": {
+                "id": 8,
+                "schedule": {
+                  "is_used_for_international_reporting": true,
+                  "reporting_interval": 180,
+                  "period_of_reporting": {
+                    "time": {
+                      "from": "00",
+                      "to": "23"
+                    },
+                    "day": {
+                      "from": "Monday",
+                      "to": "Friday"
+                    },
+                    "month": {
+                      "from": "January",
+                      "to": "December"
+                    }
+                  },
+                  "diurnal_base_time": "14:22"
+                },
+                "observation_count": "3",
+                "measurement_unit_id": 1,
+                "data_policy_id": 4,
+                "spatial_reporting_interval": 32,
+                "timeliness": "1",
+                "timeliness_unit": 1,
+                "numerical_resolution": "53",
+                "level_of_data_id": 1,
+                "data_format_id": 1,
+                "data_format_version": "testte",
+                "reference_datum": "test",
+                "reference_time_id": 1,
+                "is_traceable": true,
+                "quality_flag_system_id": 1,
+                "is_primary": false,
+                "timestamp_meaning_id": 1,
+                "attribution": {
+                  "title_of_work": "test",
+                  "attribution_url": "https://us02web.zoom.us",
+                  "originator_of_work": "test",
+                  "source_work_url": "https://us02web.zoom.us"
+                },
+                "created_by": 12,
+                "updated_by": 12,
+                "created_at": "2022-12-20T07:45:04.000000Z",
+                "updated_at": "2022-12-20T14:23:37.000000Z",
+                "data_policy_desc": "WMOOther",
+                "timeliness_desc": "s(second)",
+                "level_of_data_desc": "inapplicable",
+                "data_format_desc": "ASCII",
+                "reference_time_desc": "Global navigation satellite system (GNSS)",
+                "quality_flag_system_desc": "Global navigation satellite system (GNSS)"
+              },
+              "tittle": "FROM 28-11-2022 TO 10-12-2022"
+            },
+            {
+              "id": 6,
+              "from": "2022-11-25T17:00:00.000000Z",
+              "to": "2022-12-08T17:00:00.000000Z",
+              "sampling": {
+                "id": 6,
+                "sampling_strategy_id": 1,
+                "interval": 22,
+                "interval_unit_id": 1,
+                "period": null,
+                "period_unit": null,
+                "spatial_sampling_resolution": "7",
+                "sampling_procedure_id": 4,
+                "sampling_procedure_description": "test",
+                "sample_treatment_id": 1,
+                "created_by": 12,
+                "updated_by": 12,
+                "created_at": "2022-12-20T07:29:09.000000Z",
+                "updated_at": "2022-12-20T07:29:09.000000Z",
+                "sample_treatment_desc": "inapplicable"
+              },
+              "processing": {
+                "id": 6,
+                "aggregation_period": null,
+                "interval_unit_id": 1,
+                "data_processing_method": "test",
+                "software_version": "test",
+                "software_repository_url": "https://us02web.zoom.us",
+                "processing_centre": 1,
+                "created_by": 12,
+                "updated_by": 12,
+                "created_at": "2022-12-20T07:29:09.000000Z",
+                "updated_at": "2022-12-20T07:29:09.000000Z",
+                "interval_unit_desc": "s(second)"
+              },
+              "reporting": {
+                "id": 6,
+                "schedule": {
+                  "is_used_for_international_reporting": true,
+                  "reporting_interval": 180,
+                  "period_of_reporting": {
+                    "time": {
+                      "from": "00",
+                      "to": "23"
+                    },
+                    "day": {
+                      "from": "Monday",
+                      "to": "Friday"
+                    },
+                    "month": {
+                      "from": "January",
+                      "to": "December"
+                    }
+                  },
+                  "diurnal_base_time": "12:14"
+                },
+                "observation_count": "5",
+                "measurement_unit_id": 1,
+                "data_policy_id": 4,
+                "spatial_reporting_interval": 7,
+                "timeliness": "23",
+                "timeliness_unit": 1,
+                "numerical_resolution": "6",
+                "level_of_data_id": 1,
+                "data_format_id": 1,
+                "data_format_version": "test",
+                "reference_datum": "test",
+                "reference_time_id": 1,
+                "is_traceable": true,
+                "quality_flag_system_id": 1,
+                "is_primary": true,
+                "timestamp_meaning_id": 1,
+                "attribution": {
+                  "title_of_work": "test",
+                  "attribution_url": "https://us02web.zoom.us",
+                  "originator_of_work": "test",
+                  "source_work_url": "https://us02web.zoom.us"
+                },
+                "created_by": 12,
+                "updated_by": 12,
+                "created_at": "2022-12-20T07:29:09.000000Z",
+                "updated_at": "2022-12-20T14:23:37.000000Z",
+                "data_policy_desc": "WMOOther",
+                "timeliness_desc": "s(second)",
+                "level_of_data_desc": "inapplicable",
+                "data_format_desc": "ASCII",
+                "reference_time_desc": "Global navigation satellite system (GNSS)",
+                "quality_flag_system_desc": "Global navigation satellite system (GNSS)"
+              },
+              "tittle": "FROM 26-11-2022 TO 09-12-2022"
+            }
+          ],
+          "representativeness_of_obs_desc": "microscale (< 100 m)"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "observed_variable_id": 37,
+      "programs": [
+        {
+          "id": 3
+        }
+      ],
+      "geometry_id": 4,
+      "observing_method_id": null,
+      "observed_since": null,
+      "last_update": "20-12-2022 by-Admin Tani",
+      "deployments": [
+        {
+          "from": "2022-12-01T17:00:00.000Z",
+          "to": null,
+          "observation_id": 8,
+          "source_of_observation_id": 4,
+          "distance_from_reference_surface": 22,
+          "reference_surface_type_id": 5,
+          "application_areas": [],
+          "exposure_id": 3,
+          "representativeness_id": null,
+          "measurement_leader": null,
+          "organization_id": null,
+          "data_urls": [],
+          "data_centre_id": null,
+          "data_communication_method_id": null,
+          "instrument": {
+            "deployment_id": null,
+            "instrument_assigned_type_id": 2,
+            "manufacturer_id": null,
+            "instrument_model_id": null,
+            "observing_method_id": 61,
+            "instrument_specifications": {
+              "uncertainty_evaluation_procedure": null
+            },
+            "coordinates": [
+              {
+                "instrument_id": null,
+                "latitude": 2,
+                "longitude": 1,
+                "station_elevation": 3,
+                "geopositioning_method_id": 2,
+                "from": "2022-12-07T00:00:00.000Z"
+              }
+            ],
+            "operating_statuses": [],
+            "observation_frequency_and_polarization": [],
+            "telecommunication_frequencies": [],
+            "maintenance_logbooks": [],
+            "quality_assurance_logbooks": [],
+            "manufacturer_desc": "- Manufacturer -",
+            "instrument_model_desc": "- Instrument -",
+            "observing_method_desc": "(inapplicable)"
+          },
+          "data_generation": [
+            {
+              "from": "2022-12-08T17:00:00.000Z",
+              "reporting": {
+                "data_generation_id": 1,
+                "schedule": {
+                  "is_used_for_international_reporting": 0,
+                  "reporting_interval": 720,
+                  "period_of_reporting": {
+                    "time": {
+                      "from": "00",
+                      "to": "23"
+                    },
+                    "day": {
+                      "from": "Saturday",
+                      "to": "Sunday"
+                    },
+                    "month": {
+                      "from": "January",
+                      "to": "December"
+                    }
+                  },
+                  "diurnal_base_time": "22:15"
+                },
+                "measurement_unit_id": 4,
+                "data_policy_id": 2,
+                "spatial_reporting_interval": 22,
+                "timeliness_unit": null,
+                "level_of_data_id": null,
+                "data_format_id": null,
+                "reference_datum": "dfa",
+                "reference_time_id": null,
+                "is_traceable": null,
+                "quality_flag_system_id": null,
+                "is_primary": null,
+                "timestamp_meaning_id": 3,
+                "timeliness_desc": null,
+                "attribution": {},
+                "measurement_unit_desc": "Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan",
+                "data_policy_desc": "WMOAdditional",
+                "level_of_data_desc": null,
+                "data_format_desc": null,
+                "reference_time_desc": null,
+                "quality_flag_system_desc": null,
+                "timestamp_meaning_desc": "inapplicable"
+              },
+              "tittle": "FROM 09-12-2022"
+            }
+          ],
+          "source_obs_desc": "unknown",
+          "representativeness_of_obs_desc": "- Representativeness of observation -"
+        }
+      ]
+    }
+  ]

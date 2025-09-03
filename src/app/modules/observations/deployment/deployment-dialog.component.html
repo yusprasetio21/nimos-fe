@@ -1,0 +1,1271 @@
+<h1 mat-dialog-title>{{tittle}}</h1>
+<div mat-dialog-content>
+  <div class="full-height">
+    <div class="row mb-2">
+      <div class="field-radiobutton ui-g-12 ms-6">
+          <p-radioButton name="isBasic" [value]="true" [(ngModel)]="isBasic" inputId="isBasic1"></p-radioButton
+          >&nbsp; <label for="isBasic1">Basic</label>&nbsp;
+          <p-radioButton name="isBasic" [value]="false" [(ngModel)]="isBasic" inputId="isBasic2"></p-radioButton
+          >&nbsp;
+          <label for="isBasic2">Advance</label>
+      </div>
+    </div>
+    <!-- General Info -->
+    <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+           <b> General Information</b>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="card-body border-top p-5" >
+          <!-- Deployment made -->
+          <div class="row mb-6">
+            <label class="col-lg-4">
+              {{label?.generalInfo?.FROM_GENERAL_INFO || 'Deployment made (Period auto-generated based on maximum extent of existing data generations)'}}:
+            </label>
+            <div class="col-lg-4 fv-row">
+              &nbsp;
+              <label class="required"></label>
+              <p-calendar dataType="string" [(ngModel)]="config.data.from" [showIcon]="true" inputId="icon" placeholder="FROM" appendTo="body" dateFormat="dd-mm-yy"
+                [style]="{'width':'75%'}">
+              </p-calendar>
+            </div>
+            <div class="col-lg-4 fv-row">
+              &nbsp;
+              <p-calendar dataType="string" [(ngModel)]="config.data.to" [showIcon]="true" inputId="icon" placeholder="TO" appendTo="body" dateFormat="dd-mm-yy"
+                          [style]="{'width':'75%'}"></p-calendar>
+            </div>
+          </div>
+          <!-- Source of observation -->
+          <div class="row mb-2">
+            <label class="col-lg-4 col-form-label required fs-6">
+              {{label?.generalInfo?.SOURCE_OBSERVATION || 'Source of observation'}}:
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+              pTooltip="{{tooltip?.generalInfo?.PROGRAM_OBSERVATION || 'The source of the dataset described by the metadata [wmds 5-01, Source of observation]'}}"></i>
+            </label>
+            <div class="col-lg-8 fv-row">
+              <p-dropdown  
+                 id="strategy"
+                 appendTo="body"
+                 [filter]="true"
+                 [(ngModel)]="config.data.source_of_observation"
+                 [options]="config.data.sourceObsOptions"
+                 optionLabel="label"
+                 [style]="{'width':'100%'}"></p-dropdown>
+            </div>
+          </div>
+          <!-- Distance from reference surface -->
+          <div class="row mb-2">
+            <label class="col-lg-4 col-form-label required fs-6">
+              {{label?.generalInfo?.DISTANCE_SUREFACE || 'Distance from reference surface (m)'}}:
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+              pTooltip="{{tooltip?.generalInfo?.DISTANCE_SUREFACE || 'The vertical distance of the sensor from a reference surface (e.g local ground,or deck of a marine platform) [see WMDS 5-05, vertical distance of sensor]'}}"></i>
+            </label>
+            <div class="col-lg-8 fv-row">
+              <span class="p-input-icon-right">
+                  <i class="pi">M</i>
+                  <input
+                    pInputText
+                    type="number" 
+                    [(ngModel)]="config.data.distance_from_reference_surface"
+                    class="p-inputtext-sm"/>
+              </span>
+            </div>
+          </div>
+          <!-- Type of reference surface -->
+          <div class="row mb-2">
+            <label class="col-lg-4 col-form-label required fs-6">
+              {{label?.generalInfo?.TYPE_REFERENCE_SURFACE || 'Type of reference surface'}}:
+            </label>
+            <div class="col-lg-8 fv-row">
+              <p-dropdown  
+                 id="strategy"
+                 appendTo="body"
+                 [filter]="true"
+                 [(ngModel)]="config.data.reference_surface_type"
+                 [options]="config.data.referenceSurfaceOptions"
+                 optionLabel="label"
+                 [style]="{'width':'100%'}"></p-dropdown>
+            </div>
+          </div>
+          <!-- Application area -->
+          <div class="row mb-2">
+            <label class="col-lg-4">
+              {{label?.generalInfo?.APLICATION_AREAS || 'Application area(s)'}}:
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+              pTooltip="{{tooltip?.generalInfo?.APLICATION_AREAS || 'List all intended WMO Aplication Areas'}}"></i>
+            </label>
+  
+            <div class="col-lg fv-row">
+              <p-button label="{{lang == 'id'?'Tambah Area Aplikasi':'Add Aplication Area'}}" (click)="aplicationAreaDialog()" icon="pi pi-plus" styleClass="p-button-sm"></p-button>
+              <div class="row mb-2" *ngIf="state$ | async">
+                <mat-list role="list">
+                  <mat-list-item *ngFor="let item of aplicationAreas">
+                    <h3 mat-line >{{item.desc}}</h3>
+                    <a (click)="deleteArea(item.id)"
+                      class="btn btn-icon btn-active-light-primary w-30px h-30px">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                      </svg>
+                    </a>
+                  </mat-list-item>
+                </mat-list>
+              </div>
+            </div>
+          </div>
+          <!-- Exposure of instrument -->
+          <div class="row mb-2">
+            <label class="col-lg-4 col-form-label required fs-6">
+              {{label?.generalInfo?.EXPOSURE_INSTRUMENT || 'Exposure of instrument'}}:
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+              pTooltip="{{tooltip?.generalInfo?.EXPOSURE_INSTRUMENT || 'The CIMO classification of exposure of instrument WMO-No.8, Annex 1.B SITING CLASSIFICATION FOR SURFACE OBSERVING STATIONS ON LAND
+              [see WMDS 5-15, Exposure of Instrumnet]'}}"></i>
+            </label>
+            <div class="col-lg-8 fv-row">
+              <p-dropdown  
+                 id="strategy"
+                 appendTo="body"
+                 [filter]="true"
+                 [(ngModel)]="config.data.exposure"
+                 [options]="config.data.exporsureTypeOptions"
+                 optionLabel="label"
+                 [style]="{'width':'100%'}"></p-dropdown>
+            </div>
+          </div>
+          <!-- Configuration of instrument -->
+          <div class="row mb-2" 
+          *ngIf="_showField(param?.generalInfo?.CONFIGURATOIN_INSTRUMENT.is_visible, param?.generalInfo?.CONFIGURATOIN_INSTRUMENT.is_basic, isBasic)"
+          >
+            <label class="col-lg-4 col-form-label fs-6">
+              {{label?.generalInfo?.CONFIGURATOIN_INSTRUMENT || 'Configuration of instrument'}}:
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+              pTooltip="{{tooltip?.generalInfo?.CONFIGURATOIN_INSTRUMENT || 'Desription of any customization of instrument, coupling with other instruments etc, that goes beyond the standart configuration'}}"></i>
+            </label>
+            <div class="col-lg fv-row">
+              <input
+                pInputText
+                type="text" 
+                [(ngModel)]="config.data.configuration"
+                class="p-inputtext-sm"/>
+            </div>
+          </div>
+          <!-- Representativeness of observation -->
+          <div class="row mb-2" 
+          *ngIf="_showField(param?.generalInfo?.REPRESENTATIVENESS_OBSERVATION.is_visible, param?.generalInfo?.REPRESENTATIVENESS_OBSERVATION.is_basic, isBasic)">
+            <label class="col-lg-4 col-form-label fs-6">
+              {{label?.generalInfo?.REPRESENTATIVENESS_OBSERVATION || 'Representativeness of observation'}}:
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+              pTooltip="{{tooltip?.generalInfo?.REPRESENTATIVENESS_OBSERVATION || 'Spatial extend of the region around the observation for which it is representative, [see WDMS 1-05, Representativeness]'}}"></i>
+            </label>
+            <div class="col-lg-8 fv-row">
+              <p-dropdown  
+                 id="strategy"
+                 appendTo="body"
+                 [filter]="true"
+                 [(ngModel)]="config.data.representativeness"
+                 [options]="config.data.reprObsTypeOptions"
+                 optionLabel="label"
+                 [style]="{'width':'100%'}"></p-dropdown>
+            </div>
+          </div>
+          <!-- Measurement leader / principal investigator -->
+          <div class="row mb-2"
+          *ngIf="_showField(param?.generalInfo?.MEASUREMENT_LEADER.is_visible, param?.generalInfo?.MEASUREMENT_LEADER.is_basic, isBasic)">
+            <label class="col-lg-4 col-form-label fs-6">
+              {{label?.generalInfo?.MEASUREMENT_LEADER || 'Measurement leader / principal investigator'}}:
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+              pTooltip="{{tooltip?.generalInfo?.PROGRAM_OBSERVATION || 'Responsible person for a specific observation at the station.'}}"></i>
+            </label>
+            <div class="col-lg-8 fv-row">
+              <p-dropdown  
+                 id="strategy"
+                 appendTo="body"
+                 [filter]="true"
+                 [(ngModel)]="config.data.measurementLeader"
+                 [options]="config.data.measurementLeadOptions"
+                 optionLabel="label"
+                 [style]="{'width':'100%'}"></p-dropdown>
+            </div>
+          </div>
+          <!-- Organization -->
+          <div class="row mb-2"
+          *ngIf="_showField(param?.generalInfo?.ORGANIZATION_GENRAL_INFORMATION.is_visible, param?.generalInfo?.ORGANIZATION_GENRAL_INFORMATION.is_basic, isBasic)">
+            <label class="col-lg-4 col-form-label fs-6">
+              {{label?.generalInfo?.ORGANIZATION_GENRAL_INFORMATION || 'Organization'}}:
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+              pTooltip="{{tooltip?.generalInfo?.ORGANIZATION_GENRAL_INFORMATION || 'Name of organization who owns the observation. [see WMDS 9-01, Supervising organization]'}}"></i>
+            </label>
+            <div class="col-lg-8 fv-row">
+              <p-dropdown  
+                 id="strategy"
+                 appendTo="body"
+                 [filter]="true"
+                 [(ngModel)]="config.data.organization"
+                 [options]="config.data.organizationOptions"
+                 optionLabel="label"
+                 [style]="{'width':'100%'}"></p-dropdown>
+            </div>
+          </div>
+          <!-- Near Real Time -->
+          <div class="row mb-2"
+          *ngIf="_showField(param?.generalInfo?.NEAR_REAL_TIME.is_visible, param?.generalInfo?.NEAR_REAL_TIME.is_basic, isBasic)">
+            <label class="col-lg-4 col-form-label fs-6">
+              {{label?.generalInfo?.NEAR_REAL_TIME || 'Near Real Time'}}:
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+              pTooltip="{{tooltip?.generalInfo?.NEAR_REAL_TIME || 'Specify if the data are available for use in near-real time, e.g., via the GTS/ WIS, or other means.'}}"></i>
+            </label>
+            <div class="col-lg-4">
+              <div class="field-radiobutton ui-g-12">
+                  <p-radioButton [value]="true" [(ngModel)]="config.data.is_near_real_time" inputId="isNear1"></p-radioButton
+                  >&nbsp; <label for="isNear1">Yes</label>&nbsp;
+                  <p-radioButton [value]="false" [(ngModel)]="config.data.is_near_real_time" inputId="isNear2"></p-radioButton
+                  >&nbsp;
+                  <label for="isNear2">No</label>
+              </div>
+            </div>
+          </div>
+          <!-- Near Real Time URL -->
+          <div class="row mb-2"
+          *ngIf="config.data.is_near_real_time==true && _showField(param?.generalInfo?.NEAR_REAL_TIME_URL.is_visible, param?.generalInfo?.NEAR_REAL_TIME_URL.is_basic, isBasic)">
+            <label class="col-lg-4 col-form-label fs-6">
+              {{label?.generalInfo?.NEAR_REAL_TIME_URL || 'Near Real Time URL'}}: 
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+              pTooltip="{{tooltip?.generalInfo?.NEAR_REAL_TIME_URL || 'Insert a URL from which near-real-time observational data may be retrieved'}}"></i>
+            </label>
+            <div class="col-lg fv-row">
+              <input
+                pInputText
+                type="text" 
+                [(ngModel)]="config.data.near_real_time_url"
+                class="p-inputtext-sm"/>
+            </div>
+          </div>
+          <!-- Data Centre -->
+          <div class="row mb-2"
+          *ngIf="_showField(param?.generalInfo?.DATA_CENTRE.is_visible, param?.generalInfo?.DATA_CENTRE.is_basic, isBasic)">
+            <label class="col-lg-4 col-form-label fs-6">
+              {{label?.generalInfo?.DATA_CENTRE || 'Data centre'}}: 
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+              pTooltip="{{tooltip?.generalInfo?.DATA_CENTRE || 'Name of the data centre from which observational data can be retrieved'}}"></i>
+            </label>
+            <div class="col-lg-8 fv-row">
+              <p-dropdown  
+                 id="strategy"
+                 appendTo="body"
+                 [filter]="true"
+                 [(ngModel)]="config.data.data_centre"
+                 [options]="config.data.dataCentersOption"
+                 optionLabel="label"
+                 [style]="{'width':'100%'}"></p-dropdown>
+            </div>
+          </div>
+          <!-- Data Url -->
+          <div class="row mb-2"
+          *ngIf="_showField(param?.generalInfo?.DATA_URL.is_visible, param?.generalInfo?.DATA_URL.is_basic, isBasic)">
+            <label class="col-lg-4 col-form-label fs-6">
+              {{label?.generalInfo?.DATA_URL || 'Data URL'}}: 
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+              pTooltip="{{tooltip?.generalInfo?.DATA_URL || 'Specify the URLs at which the data are made available.'}}"></i>
+            </label>
+            <div class="col-lg fv-row">
+              <div class="col-lg fv-row">
+                <p-button label="{{lang == 'id'?'Tambah Data URL' : 'Add Data URL'}}" (click)="urlDialog()" icon="pi pi-plus" styleClass="p-button-sm"></p-button>
+                <div class="row mb-3" *ngIf="state$ | async">
+                  <mat-list role="list">
+                    <mat-list-item *ngFor="let item of dataURL">
+                      <h3 mat-line >{{item.url}}</h3>
+                      <a (click)="deleteUrl(item.id)"
+                        class="btn btn-icon btn-active-light-primary w-30px h-30px">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                          <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                          <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                        </svg>
+                      </a>
+                    </mat-list-item>
+                  </mat-list>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Data communication method -->
+          <div class="row mb-2"
+          *ngIf="_showField(param?.generalInfo?.DATA_COMUNICATION_METHOD.is_visible, param?.generalInfo?.DATA_COMUNICATION_METHOD.is_basic, isBasic)">
+            <label class="col-lg-4 col-form-label fs-6">
+              {{label?.generalInfo?.DATA_COMUNICATION_METHOD || 'Data communication method'}}: 
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+              pTooltip="{{tooltip?.generalInfo?.DATA_COMUNICATION_METHOD || 'Data communication method between the station/platform and some central facility for the observed variable. [see WMDS 3-08, Data communication method]'}}"></i>
+            </label>
+            <div class="col-lg-8 fv-row">
+              <p-dropdown  
+                 id="communication"
+                 appendTo="body"
+                 [filter]="true"
+                 [(ngModel)]="config.data.data_communication_method"
+                 [options]="config.data.dataComunicationMethodsOption"
+                 optionLabel="label"
+                 [style]="{'width':'100%'}"></p-dropdown>
+            </div>
+          </div>
+          <!-- Instrument QA/QC schedule -->
+          <div class="row mb-2"
+          *ngIf="_showField(param?.generalInfo?.INSTRUMENT_QAQC.is_visible, param?.generalInfo?.INSTRUMENT_QAQC.is_basic, isBasic)">
+            <label class="col-lg-4">
+              {{label?.generalInfo?.INSTRUMENT_QAQC || 'Instrument QA/QC schedule'}}:
+            </label>
+            <div class="col-lg fv-row">
+              <input
+                pInputText
+                type="text" 
+                [(ngModel)]="config.data.qaqc_schedule"
+                class="p-inputtext-sm"/>
+            </div>
+          </div>
+          <!-- Maintenance -->
+          <div class="row mb-2"
+          *ngIf="_showField(param?.generalInfo?.MAINTENANCE_SHCEDULE.is_visible, param?.generalInfo?.MAINTENANCE_SHCEDULE.is_basic, isBasic)">
+            <label class="col-lg-4">
+              {{label?.generalInfo?.MAINTENANCE_SHCEDULE || 'Maintenance schedule'}}:
+            </label>
+            <div class="col-lg fv-row">
+              <input
+              pInputText
+              type="text" 
+              [(ngModel)]="config.data.maintenance_schedule"
+              class="p-inputtext-sm"/>
+            </div>
+          </div>
+          <!-- Certified observation -->
+          <div class="row mb-6"
+          *ngIf="_showField(param?.generalInfo?.CERTIFIED_OBSERVATION.is_visible, param?.generalInfo?.CERTIFIED_OBSERVATION.is_basic, isBasic)">
+            <label class="col-lg-4 col-form-label fs-6">
+              {{label?.generalInfo?.CERTIFIED_OBSERVATION || 'Certified observation'}}: 
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+              pTooltip="{{tooltip?.generalInfo?.CERTIFIED_OBSERVATION || 'Indicate whether or not the observation is certified by an independent body'}}"></i>
+            </label>
+            <div class="col-lg fv-row">
+              <div class="row">
+                <mat-radio-group [(ngModel)]="config.data.is_certified_observation" aria-label="Select an option">
+                  <mat-radio-button value="1">Yes</mat-radio-button>
+                  &nbsp;
+                  <mat-radio-button value="0">No</mat-radio-button>
+                </mat-radio-group>
+              </div>
+            </div>
+          </div>
+          <!-- Comments -->
+          <div class="row mb-2"
+          *ngIf="_showField(param?.generalInfo?.COMMENT_GENERAL_INFO.is_visible, param?.generalInfo?.COMMENT_GENERAL_INFO.is_basic, isBasic)">
+            <label class="col-lg-4">
+              {{label?.generalInfo?.COMMENT_GENERAL_INFO || 'Comments'}}:
+            </label>
+            <div class="col-lg fv-row">
+              <input
+              pInputText
+              type="text" 
+              [(ngModel)]="config.data.comments"
+              class="p-inputtext-sm"/>
+            </div>
+          </div>
+          <!-- Photo -->
+          <div class="row mb-6" hidden
+          *ngIf="_showField(param?.generalInfo?.PHOTO_GENERAL_INFO.is_visible, param?.generalInfo?.PHOTO_GENERAL_INFO.is_basic, isBasic)">
+            <label class="col-lg-4">
+              {{label?.generalInfo?.PHOTO_GENERAL_INFO || 'Photo'}}:
+            </label>
+            <div class="col-lg fv-row">
+              <div class="col-lg fv-row">
+                <button pButton matSuffix mat-icon-button class="p-button-sm" type="button">
+                  &nbsp;
+                  <span class="svg-icon svg-icon-3">
+                      <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg">
+                          <rect opacity="0.3" x="2" y="2" width="20" height="20" rx="5" fill="currentColor" />
+                          <rect
+                              x="10.8891"
+                              y="17.8033"
+                              width="12"
+                              height="2"
+                              rx="1"
+                              transform="rotate(-90 10.8891 17.8033)"
+                              fill="currentColor" />
+                          <rect x="6.01041" y="10.9247" width="12" height="2" rx="1" fill="currentColor" />
+                      </svg>
+                  </span>
+                  Add Photo
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  
+    <!-- Instrument characteristic -->
+    <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <b>Instrument Caracteristic</b>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="row mb-6">
+          <!-- Instrument -->
+          <!-- Ketika update maka instrument Assigment di hilangkan -->
+          <div class="row mb-6" *ngIf="this.config.data.dataUpdate==undefined"> 
+          <!-- <div class="row mb-6"> -->
+            <label class="col-lg-4">
+              {{label?.instrument?.INSTRUMENT || 'Instrument'}}:
+            </label>
+            <div class="col-lg fv-row">
+              <div class="row">
+                <!-- <div class="field-radiobutton ui-g-12 ms-6">
+                  <p-radioButton name="isBasic" [value]="1" [(ngModel)]="instrument_assigned_type_id" inputId="instrument1"></p-radioButton
+                  >&nbsp; <label for="instrument1">Assign instrument in use at station</label>&nbsp;
+                  <p-radioButton name="isBasic" [value]="2" [(ngModel)]="instrument_assigned_type_id" inputId="instrument2"></p-radioButton
+                  >&nbsp;
+                  <label for="instrument2">New instrument at station</label>
+                </div> -->
+              </div>
+            </div>
+          </div>
+          <div>
+            <!-- manufacturer -->
+            <div class="row mb-2">
+              <label class="col-lg-4">
+                {{label?.instrument?.MANUFACTURER || 'Manufacturer'}}:
+              </label>
+              <div class="col-lg-8 fv-row">
+                <p-dropdown  
+                   appendTo="body"
+                   [filter]="true"
+                   [(ngModel)]="config.data.manufacturer"
+                   [options]="config.data.manufacturerOptions"
+                   optionLabel="label"
+                   [style]="{'width':'100%'}"></p-dropdown>
+              </div>
+            </div>
+            <!-- model -->
+            <div class="row mb-2">
+              <label class="col-lg-4">
+                {{label?.instrument?.MODEL || 'Model'}}:
+              </label>
+              <div class="col-lg-8 fv-row">
+                <p-dropdown  
+                   appendTo="body"
+                   [filter]="true"
+                   [(ngModel)]="config.data.instrument_model"
+                   [options]="config.data.modelOptions"
+                   optionLabel="label"
+                   [style]="{'width':'100%'}"></p-dropdown>
+              </div>
+            </div>
+            <!-- serial number -->
+            <div class="row mb-2">
+              <label class="col-lg-4">
+                {{label?.instrument?.SERIAL_NUMBER || 'Serial Number'}}:
+              </label>
+              <div class="col-lg fv-row">
+                <input
+                  pInputText
+                  type="number" 
+                  [(ngModel)]="config.data.serial_number"
+                  class="p-inputtext-sm"/>
+              </div>
+            </div>
+            <!-- observing method -->
+            <div class="row mb-2">
+              <label class="col-lg-4 col-form-label required fs-6"> 
+                {{label?.instrument?.OBSERVING_METHOD || 'Observing method'}}:
+                <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+                pTooltip="{{tooltip?.instrument?.OBSERVING_METHOD || 'The method of measurement/ observation used [see WMDS 5-02, Measurement/observing method]'}}"></i>
+              </label>
+              <div class="col-lg fv-row">
+                <div class="row">
+                  <mat-form-field class="example-full-width" appearance="outline">
+                      <input matInput type="search" [(ngModel)]="config.data.method_text" disabled="true">
+                      <button matSuffix mat-stroked-button aria-label="clear" (click)="methodDialog()">
+                        <mat-icon>add</mat-icon>
+                      </button>
+                      <button matSuffix mat-stroked-button aria-label="clear" (click)="deleteMethod()">
+                        <mat-icon>clear</mat-icon>
+                      </button>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+            <!-- method detail -->
+            <div class="row mb-2"
+            *ngIf="instrument_assigned_type_id==2 && _showField(param?.instrument?.METHOD_DETAIL.is_visible, param?.instrument?.METHOD_DETAIL.is_basic, isBasic)">
+              <label class="col-lg-4 col-form-label fs-6"> 
+                {{label?.instrument?.METHOD_DETAIL || 'Method details'}}:
+                <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+                pTooltip="{{tooltip?.instrument?.METHOD_DETAIL || 'Additional information concerning the observing method.'}}"></i>
+              </label>
+              <div class="col-lg fv-row">
+                <input
+                  pInputText
+                  type="text" 
+                  [(ngModel)]="config.data.method_details"
+                  class="p-inputtext-sm"/>
+              </div>
+            </div>
+            <!-- method comments -->
+            <div class="row mb-2">
+              <label class="col-lg-4">
+                {{label?.instrument?.METHOD_COMMENT || 'Method comments'}}:
+              </label>
+              <div class="col-lg fv-row">
+                <div class="field">
+                  <input
+                    pInputText
+                    type="text" 
+                    [(ngModel)]="config.data.method_comments"
+                    class="p-inputtext-sm"/>
+                  <small>Method details will be overwritten during the automatic import of data. However the method comments will remain.
+                  </small>
+                </div>
+              </div>
+            </div>
+            <!-- coordinates --> 
+            <div class="row mb-2"
+            *ngIf="instrument_assigned_type_id==2 && _showField(param?.coordinate?.COORDINATES.is_visible, param?.coordinate?.COORDINATES.is_basic, isBasic)">
+              <label class="col-lg-4 col-form-label required  required fs-6">
+                {{label?.coordinate?.COORDINATES || 'Coordinates'}}:
+                <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+                pTooltip="{{tooltip?.coordinate?.COORDINATES || 'Geospatial location of instrument/sensor [see WMDS 5-12, Geospatial location]'}}"></i>
+              </label>
+              <div class="col-lg-8 fv-row">
+                <div class="row">
+                  <p-button label="{{lang == 'id'?'Tambah Koordinat':'Add Coordinates'}}" (click)="coordinatesDialog('insert')" icon="pi pi-plus" styleClass="p-button-sm"></p-button>
+                  <div class="row mb-3" *ngIf="state$ | async">
+                    <p-table [value]="dataSourceCoordinates.data" [scrollable]="true" scrollDirection="horizontal">
+                      <ng-template pTemplate="header">
+                        <tr>
+                          <th style="height: 15px">{{label?.coordinate?.LATITUDE || 'Latitude'}}</th><th style="height: 15px">{{label?.coordinate?.LONGITUDE || 'Longitude'}}</th>
+                          <th style="height: 15px">{{label?.coordinate?.ELEVATION || 'Elevation'}}</th><th style="height: 15px">{{label?.coordinate?.GEOPOSITION_METHOD || 'Geopositioning Method'}}</th>
+                          <th style="height: 15px">{{label?.coordinate?.FROM || 'From'}}</th><th>Action</th>
+                        </tr>
+                      </ng-template>
+                      <ng-template pTemplate="body" let-element>
+                        <tr>
+                            <td style="width: 150px">{{element.latitude}}</td>
+                            <td style="width: 150px">{{element.longitude}}</td>
+                            <td style="width: 150px">{{element.station_elevation}}</td>
+                            <td style="width: 150px">{{element.geopositioning_name}}</td>
+                            <td style="width: 150px">{{element.from | date: 'dd-MM-yyyy'}}</td>
+                            <td style="width: 20px">
+                              <a
+                                class="btn btn-icon btn-active-light-primary w-30px h-30px"
+                                (click)="coordinatesDialog('update',element)">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16"> 
+                                  <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/> 
+                                </svg>
+                              </a>
+                              &nbsp;
+                              <a
+                                class="btn btn-icon btn-active-light-primary w-30px h-30px"
+                                (click)="deleteCoordinates(element.id)">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                  <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                </svg>
+                              </a>
+                            </td>
+                        </tr>
+                      </ng-template>
+                    </p-table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- instrument operating status --> 
+            <div class="row mb-2" *ngIf="instrument_assigned_type_id==2">
+              <label class="col-lg-4">
+                {{label?.status?.INSTRUMENT_STATUS || 'Instrument operating status'}}:
+                <!-- <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+                pTooltip="{{tooltip?.status?.INSTRUMENT_STATUS || 'The status of an instrument with respect to its operation (operational, testing, or not in use)
+                [see WMDS 5-04, Instrument operating status]'}}"></i> -->
+              </label>
+              <div class="col-lg fv-row">
+                <div class="row">
+                  <p-button label="{{lang == 'id'?'Tambah Status' : 'Add Status'}}" (click)="statusDialog('insert')" icon="pi pi-plus" styleClass="p-button-sm"></p-button>
+                  <div class="row mb-3" *ngIf="state$ | async">
+                    <p-table [value]="dataSourceInsStatus.data" [scrollable]="true" scrollDirection="horizontal">
+                      <ng-template pTemplate="header">
+                        <tr>
+                          <th>{{label?.status?.STATUS || 'Status'}}</th><th>{{label?.status?.FROM || 'From'}}</th>
+                          <th>{{label?.status?.TO || 'To'}}</th><th>Action</th>
+                        </tr>
+                      </ng-template>
+                      <ng-template pTemplate="body" let-element>
+                        <tr>
+                            <td style="width: 150px">{{element.operating_status_desc}}</td>
+                            <td style="width: 150px">{{element.from | date: 'dd-MM-yyyy'}}</td>
+                            <td style="width: 150px">{{element.to | date: 'dd-MM-yyyy'}}</td>
+                            <td style="width: 20px">
+                              <a
+                                class="btn btn-icon btn-active-light-primary w-30px h-30px"
+                                (click)="statusDialog('update',element)">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16"> 
+                                  <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/> 
+                                </svg>
+                              </a>
+                              &nbsp;
+                              <a
+                                class="btn btn-icon btn-active-light-primary w-30px h-30px"
+                                (click)="deleteStatus(element.id)">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                  <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                </svg>
+                              </a>
+                            </td>
+                        </tr>
+                      </ng-template>
+                    </p-table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- firmware -->
+            <div class="row mb-2"
+            *ngIf="instrument_assigned_type_id==2 && _showField(param?.instrument?.FIRMWARE_VERSION.is_visible, param?.instrument?.FIRMWARE_VERSION.is_basic, isBasic)">
+              <label class="col-lg-4">
+                {{label?.instrument?.FIRMWARE_VERSION || 'Firmware version'}}:
+              </label>
+              <div class="col-lg fv-row">
+                <input
+                  pInputText
+                  type="text" 
+                  [(ngModel)]="config.data.firmware_version"
+                  class="p-inputtext-sm"/>
+              </div>
+            </div>
+            <!-- instrument spesifcation -->
+            <div class="row mb-2"
+            *ngIf="instrument_assigned_type_id==2 && _showField(param?.instrument?.SPECIFICATION.is_visible, param?.instrument?.SPECIFICATION.is_basic, isBasic)">
+              <label class="col-lg-4">
+                {{label?.instrument?.SPECIFICATION || 'Instrument specifications'}}:
+              </label>
+              <div class="row sub-form">
+                <label class="col-lg-4">
+                  {{label?.instrument?.OBSERVABLE || 'Observable range'}}:
+                </label>
+                <div class="col-lg fv-row">
+                  <input
+                    pInputText
+                    type="text" 
+                    [(ngModel)]="config.data.observable_range"
+                    class="p-inputtext-sm"/>
+                </div>
+              </div>
+              <div class="row sub-form"
+              *ngIf="instrument_assigned_type_id==2 && _showField(param?.instrument?.RELATIVE.is_visible, param?.instrument?.RELATIVE.is_basic, isBasic)">
+                <label class="col-lg-4">
+                  {{label?.instrument?.RELATIVE || 'Relative uncertainty'}}:
+                  <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+                  pTooltip="{{tooltip?.instrument?.RELATIVE || 'Specify a reasonable estimate (e.g., the median) of the relative uncertainty of the observations. [see WMDS 8-01, Uncertainty of measurement, and 8-02, Procedure used to estimate uncertainty]'}}"></i>
+                </label>
+                <div class="col-lg fv-row">
+                  <input
+                    pInputText
+                    type="text" 
+                    [(ngModel)]="config.data.relative_uncertainty"
+                    class="p-inputtext-sm"/>
+                </div>
+              </div>
+              <div class="row sub-form"
+              *ngIf="instrument_assigned_type_id==2 && _showField(param?.instrument?.ABSOLUTE.is_visible, param?.instrument?.ABSOLUTE.is_basic, isBasic)">
+                <label class="col-lg-4">
+                  {{label?.instrument?.ABSOLUTE || 'Absolute uncertainty'}}:
+                </label>
+                <div class="col-lg fv-row">
+                  <input
+                    pInputText
+                    type="text" 
+                    [(ngModel)]="config.data.absolute_uncertainty"
+                    class="p-inputtext-sm"/>
+                </div>
+              </div>
+              <div class="row sub-form"
+              *ngIf="instrument_assigned_type_id==2 && _showField(param?.instrument?.DRIFT.is_visible, param?.instrument?.DRIFT.is_basic, isBasic)">
+                <label class="col-lg-4">
+                  {{label?.instrument?.DRIFT || 'Drift per unit time'}}:
+                </label>
+                <div class="col-lg fv-row">
+                  <input
+                    pInputText
+                    type="number" 
+                    [(ngModel)]="config.data.drift_per_unit_time"
+                    class="p-inputtext-sm"/>
+                </div>
+              </div>
+              <div class="row sub-form"
+              *ngIf="instrument_assigned_type_id==2 && _showField(param?.instrument?.SPEC_URL.is_visible, param?.instrument?.SPEC_URL.is_basic, isBasic)">
+                <label class="col-lg-4">
+                  {{label?.instrument?.SPEC_URL || 'Specification URL :'}}
+                </label>
+                <div class="col-lg fv-row">
+                  <input
+                    pInputText
+                    type="text" 
+                    [(ngModel)]="config.data.specification_url"
+                    class="p-inputtext-sm"/>
+                </div>
+              </div>
+              <div class="row sub-form"
+              *ngIf="instrument_assigned_type_id==2 && _showField(param?.instrument?.UNCERTAINTY.is_visible, param?.instrument?.UNCERTAINTY.is_basic, isBasic)">
+                <label class="col-lg-4 col-form-label fs-6">
+                  {{label?.instrument?.UNCERTAINTY || 'Uncertainty evaluation procedure :'}}
+                  <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+                  pTooltip="{{tooltip?.instrument?.UNCERTAINTY || 'Briefly describe the procedures involved in analyzing a sample. [see WMDS 6-01, Sampling procedures]'}}"></i>
+                </label>
+                <div class="col-lg-8 fv-row">
+                  <p-dropdown  
+                     appendTo="body"
+                     [filter]="true"
+                     [(ngModel)]="config.data.uncertaintyEvaluationProcedure"
+                     [options]="config.data.uncertaintyEstimateProductOption"
+                     optionLabel="label"
+                     [style]="{'width':'100%'}"></p-dropdown>
+                </div>
+              </div>
+            </div>
+            <!-- frequency -->
+            <div class="row mb-2"
+            *ngIf="instrument_assigned_type_id==2 && _showField(param?.frequency?.FREQUENCY.is_visible, param?.frequency?.FREQUENCY.is_basic, isBasic)">
+              <label class="col-lg-4">
+                {{label?.frequency?.FREQUENCY || 'Frequency'}}:
+              </label>
+              <div class="row sub-form mb-2">
+                <label class="col-lg-4">
+                  {{label?.frequency?.OBSERVATION || 'Observation frequency and polarization'}}:</label>
+                <div class="col-lg-8 fv-row">
+                  <div class="row">
+                    <p-button label="{{lang == 'id' ? 'Tambah Frekuensi Pengamatan Dan Polarisasi' : 'Add Observation Frequency And Polarization'}}" (click)="frequencyDialog(true,'insert')" icon="pi pi-plus" styleClass="p-button-sm"></p-button>
+                    <div class="row mb-3" *ngIf="state$ | async">
+                      <p-table [value]="dataSourceObsFrequency.data" [scrollable]="true" scrollDirection="horizontal">
+                        <ng-template pTemplate="header">
+                          <tr>
+                            <th>{{label?.frequency?.USE_FREQUENCY || 'Use Of Frequency'}}</th><th>{{label?.frequency?.FREQUENCY || 'Frequency'}}</th>
+                            <th>{{label?.frequency?.BANDWIDTH || 'Bandwidth'}}</th><th>{{label?.frequency?.TRANSMISSION || 'Transmission Mode'}}</th>
+                            <th>{{label?.frequency?.POLARIZATION || 'Polarization'}}</th><th>Actions</th>
+                          </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-element>
+                          <tr>
+                              <td style="width: 150px">{{element.frequency_type_desc}}</td>
+                              <td style="width: 150px">{{element.frequency}} {{element.frequency_unit_desc}}</td>
+                              <td style="width: 150px">{{element.bandwidth}} {{element.bandwidth_unit_desc}}</td>
+                              <td style="width: 150px">{{element.transmission_desc}}</td>
+                              <td style="width: 150px">{{element.polarization_desc}}</td>
+                              <td style="width: 20px">
+                                <a
+                                  class="btn btn-icon btn-active-light-primary w-30px h-30px"
+                                  (click)="frequencyDialog(true,'update',element)">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16"> 
+                                    <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/> 
+                                  </svg>
+                                </a>
+                                &nbsp;
+                                <a
+                                  class="btn btn-icon btn-active-light-primary w-30px h-30px"
+                                  (click)="deleteFrequency(element.id,true)">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                    <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                  </svg>
+                                </a>
+                              </td>
+                          </tr>
+                        </ng-template>
+                      </p-table>
+                    </div>      
+                  </div> 
+                </div>
+              </div>
+              <div class="row sub-form mb-2">
+                <label class="col-lg-4 col-form-label fs-6">
+                  {{label?.frequency?.TELECOMMUNICATION || 'Telecommunication frequency'}}:
+                  <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+                  pTooltip="{{tooltip?.frequency?.TELECOMMUNICATION || 'Communication frequencies of the instrument.'}}"></i>
+                </label>
+                <div class="col-lg-8 fv-row">
+                  <div class="row">
+                    <p-button label="{{lang == 'id'?'Tambah Frekuensi Telekomunikasi':'Add Telecommunication Frequency'}}" (click)="frequencyDialog(false,'insert')" icon="pi pi-plus" styleClass="p-button-sm"></p-button>
+                    <div class="row mb-3" *ngIf="state$ | async">
+                      <p-table [value]="dataSourceTeleFrequency.data" [scrollable]="true" scrollDirection="horizontal">
+                        <ng-template pTemplate="header">
+                          <tr>
+                            <th>{{label?.frequency?.USE_FREQUENCY || 'Use Of Frequency'}}</th><th>{{label?.frequency?.FREQUENCY || 'Frequency'}}</th>
+                            <th>{{label?.frequency?.BANDWIDTH || 'Bandwidth'}}</th><th>Actions</th>
+                          </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-element>
+                          <tr>
+                              <td style="width: 150px">{{element.frequency_type_desc}}</td>
+                              <td style="width: 150px">{{element.frequency}} {{element.frequency_unit_desc}}</td>
+                              <td style="width: 150px">{{element.bandwidth}} {{element.bandwidth_unit_desc}}</td>
+                              <td style="width: 20px">
+                                <a
+                                  class="btn btn-icon btn-active-light-primary w-30px h-30px"
+                                  (click)="frequencyDialog(false,'update',element)">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16"> 
+                                    <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/> 
+                                  </svg>
+                                </a>
+                                &nbsp;
+                                <a
+                                  class="btn btn-icon btn-active-light-primary w-30px h-30px"
+                                  (click)="deleteFrequency(element.id,false)">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                    <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                  </svg>
+                                </a>
+                              </td>
+                          </tr>
+                        </ng-template>
+                      </p-table>
+                    </div>
+                  </div> 
+                </div>
+              </div>
+            </div>
+            <!-- comment -->
+            <div class="row mb-2"
+            *ngIf="instrument_assigned_type_id==2 && _showField(param?.instrument?.COMMENT.is_visible, param?.instrument?.COMMENT.is_basic, isBasic)">
+              <label class="col-lg-4">
+                {{label?.instrument?.COMMENT || 'Comments'}}:
+              </label>
+              <div class="col-lg fv-row">
+                <div class="row">
+                  <mat-form-field class="example-full-width" appearance="outline">
+                    <textarea matInput [(ngModel)]="config.data.instrumentComments"></textarea>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+            <!-- maintenance logbook --> 
+            <div class="row mb-2"
+            *ngIf="instrument_assigned_type_id==2 && _showField(param?.maintenance?.LOGBOOK.is_visible, param?.maintenance?.LOGBOOK.is_basic, isBasic)">
+              <label class="col-lg-4 col-form-label fs-6">
+                {{label?.maintenance?.LOGBOOK || 'Maintenance logbook'}}: 
+                <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+                pTooltip="{{tooltip?.maintenance?.LOGBOOK || 'A description of schedule maintenance that is performed on an instrument [see WMDS 5-10, Instrument routine maintenance]'}}"></i>
+              </label>
+              <div class="col-lg-8 fv-row">
+                <div class="row">
+                  <p-button label="{{lang=='id'?'Tambah Catatan Pemeliharaan':'Add Maintenance Log Entry'}}}" (click)="maintenanceDialog('insert')" icon="pi pi-plus" styleClass="p-button-sm"></p-button>
+                  <div class="row mb-3" *ngIf="state$ | async">
+                    <p-table [value]="dataSourceMaintenance.data" [scrollable]="true" scrollDirection="horizontal">
+                      <ng-template pTemplate="header">
+                        <tr>
+                          <th>{{label?.maintenance?.DATE || 'Date'}} </th><th>{{label?.maintenance?.PARTY || 'Maintenance Party'}}</th>
+                          <th>{{label?.maintenance?.INDIVIDUAL || 'Individual'}}</th><th>{{label?.maintenance?.DESC || 'Description'}}</th>
+                          <th>{{label?.maintenance?.AUTHOR || 'Author'}}</th><th>{{label?.maintenance?.DOC_URL || 'Documentation URL'}}</th>
+                            <th>Actions</th>
+                        </tr>
+                      </ng-template>
+                      <ng-template pTemplate="body" let-element>
+                        <tr>
+                            <td style="width: 150px">{{element.maintenance_date | date: 'dd-MM-yyyy'}}</td>
+                            <td style="width: 150px">{{element.maintenance_party_desc}}</td>
+                            <td style="width: 150px">{{element.individual}}</td>
+                            <td style="width: 150px">{{element.description}}</td>
+                            <td style="width: 150px">{{element.author}}</td>
+                            <td style="width: 150px">{{element.documentation_url}}</td>
+                            <td style="width: 20px">
+                              <a
+                                class="btn btn-icon btn-active-light-primary w-30px h-30px"
+                                (click)="maintenanceDialog('update',element)">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16"> 
+                                  <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/> 
+                                </svg>
+                              </a>
+                              &nbsp;
+                              <a
+                                class="btn btn-icon btn-active-light-primary w-30px h-30px"
+                                (click)="deleteMaintenance(element.id)">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                  <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                </svg>
+                              </a>
+                            </td>
+                        </tr>
+                      </ng-template>
+                    </p-table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- quality -->
+            <div class="row mb-2"
+            *ngIf="instrument_assigned_type_id==2 && _showField(param?.assurance?.ASSURANCE.is_visible, param?.assurance?.ASSURANCE.is_basic, isBasic)">
+              <label class="col-lg-4 col-form-label fs-6">
+                {{label?.assurance?.ASSURANCE || 'Quality assurance logbook'}}:
+                <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+                pTooltip="{{tooltip?.assurance?.ASSURANCE || 'Specify the quality assurance of your instrument [see WMDS 5-08, Instrument control result]'}}"></i>
+              </label>
+              <div class="col-lg-8 fv-row">
+                <div class="row">
+                  <p-button label="{{lang == 'id'?'Tambah Catatan Penjaminan Mutu' :'Add Quality Assurance Log Entry'}}" (click)="qualityAssuranceDialog('insert')" icon="pi pi-plus" styleClass="p-button-sm"></p-button>
+                  <div class="row mb-3" *ngIf="state$ | async">
+                    <p-table [value]="dataSourceQuality.data" [scrollable]="true" scrollDirection="horizontal">
+                      <ng-template pTemplate="header">
+                        <tr>
+                          <th>{{label?.assurance?.LOCATION || 'Location'}}</th><th>{{label?.assurance?.DATE || 'Activity Date'}}</th>
+                          <th>{{label?.assurance?.TYPE || 'Type Standart'}}</th><th>{{label?.assurance?.NAME || 'Standart Name'}}</th>
+                          <th>{{label?.assurance?.SERIAL_NUMBER || 'Standart Serial Number'}}</th><th>{{label?.assurance?.RESULT || 'Activity Result'}}</th>
+                          <th>{{label?.assurance?.DOC_URL || 'Documentation URL'}}</th><th>{{label?.assurance?.AUTHOR || 'Author'}}</th>
+                            <th>Actions</th>
+                        </tr>
+                      </ng-template>
+                      <ng-template pTemplate="body" let-element>
+                        <tr>
+                            <td style="width: 150px">{{element.location_desc}}</td>
+                            <td style="width: 150px">{{element.activity_date | date: 'dd-MM-yyyy'}}</td>
+                            <td style="width: 150px">{{element.standart_desc}}</td>
+                            <td style="width: 150px">{{element.standard_name}}</td>
+                            <td style="width: 150px">{{element.standard_serial_number}}</td>
+                            <td style="width: 150px">{{element.activity_desc}}</td>
+                            <td style="width: 150px">{{element.documentation_url}}</td>
+                            <td style="width: 150px">{{element.author}}</td>
+                            <td style="width: 20px">
+                              <a
+                                class="btn btn-icon btn-active-light-primary w-30px h-30px"
+                                (click)="qualityAssuranceDialog('update',element)">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16"> 
+                                  <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/> 
+                                </svg>
+                              </a>
+                              &nbsp;
+                              <a
+                                class="btn btn-icon btn-active-light-primary w-30px h-30px"
+                                (click)="deleteQuality(element.id)">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                  <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                </svg>
+                              </a>
+                            </td>
+                        </tr>
+                      </ng-template>
+                    </p-table>
+                  </div>    
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  
+    <!-- Data Generation -->
+    <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <div class="row mb-2">
+              <b>Data Generation</b>
+            </div>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="row mb-0 p-l-10">
+          <div class="row mb-2">
+            <p-button label="{{lang == 'id'?'Pembuatan Data Manajemen':'Management Data Generation'}}" (click)="generationDialog('insert')" styleClass="p-button-sm"></p-button>
+          </div>
+          <div *ngIf="state$ | async">
+            <ng-container *ngFor="let genItem of dataGenerations">
+              <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      <label class="col-lg-0 ">&nbsp;{{genItem.tittle}}</label>
+                    </mat-panel-title>
+                    <div class="footer-container">
+                      <div class="div-right">
+                        <ul class="footer">
+                          <mat-panel-description>
+                            <a (click)="generationDialog('update',genItem)"
+                              class="btn btn-icon btn-active-light-primary w-30px h-30px">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16"> 
+                                <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/> 
+                              </svg>
+                            </a>
+                            &nbsp;
+                            <a (click)="deleteDataGeneration(genItem.id)"
+                              class="btn btn-icon btn-active-light-primary w-30px h-30px">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                              </svg>
+                            </a>
+                          </mat-panel-description>
+                        </ul>
+                      </div>
+                    </div>
+                  </mat-expansion-panel-header>
+                  <!-- Sampling -->
+                  <div *ngIf="genItem.sampling!=null">
+                    <b>{{label?.sampling?.SAMPLING || 'Sample'}}</b>
+                    <div class="row mb-6" *ngIf="genItem.sampling.sampling_strategy_desc!=null">
+                      <label class="col-lg-4">{{label?.sampling?.STRATEGY || 'Sampling Strategy'}}:</label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.sampling.sampling_strategy_desc}}
+                      </div>
+                    </div>
+                    <div class="row mb-6" *ngIf="genItem.sampling.sampling_interval!=null &&genItem.sampling.interval_unit_desc!=null ">
+                      <label class="col-lg-4">{{label?.sampling?.INTERVAL || 'Sampling Interval'}}:</label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.sampling.sampling_interval}} {{genItem.sampling.interval_unit_desc}}
+                      </div>
+                    </div>
+                    <div class="row mb-6" *ngIf="genItem.sampling.sampling_period!=null &&genItem.sampling.priod_unit_desc!=null ">
+                      <label class="col-lg-4">{{label?.sampling?.PRIOD || 'Sampling Period'}}:</label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.sampling.sampling_period}} {{genItem.sampling.priod_unit_desc}}
+                      </div>
+                    </div>
+                    <div class="row mb-6" *ngIf="genItem.sampling.spatial_sampling_resolution!=null">
+                      <label class="col-lg-4">{{label?.sampling?.RESOLUTION || 'Spatial Sampling Resolution (m)'}}:</label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.sampling.spatial_sampling_resolution}}
+                      </div>
+                    </div>
+                    <div class="row mb-6" *ngIf="genItem.sampling.sampling_procedure_desc!=null">
+                      <label class="col-lg-4">{{label?.sampling?.PROCEDURE || 'Sampling Procedure'}}:</label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.sampling.sampling_procedure_desc}}
+                      </div>
+                    </div>
+                    <div class="row mb-6" *ngIf="genItem.sampling.sampling_procedure_description!=null">
+                      <label class="col-lg-4">{{label?.sampling?.PROCEDURE_DESC || 'Sampling Procedure Description'}}:</label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.sampling.sampling_procedure_description}}
+                      </div>
+                    </div>
+                    <div class="row mb-6" *ngIf="genItem.sampling.sample_treatment_desc!=null">
+                      <label class="col-lg-4">{{label?.sampling?.TREATMENT || 'Sample treatment'}}:</label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.sampling.sample_treatment_desc}}
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Processing -->
+                  <div *ngIf="genItem.processing!=null">
+                    <b>{{label?.processing?.PROCESSING || 'Processing'}}</b>
+                    <div class="row mb-6" *ngIf="genItem.processing.aggregation_priod!=null && genItem.processing.interval_unit_desc!=null">
+                      <label class="col-lg-4">{{label?.processing?.PROCESSING_PRIOD || 'Aggregation Priod'}}:</label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.processing.aggregation_priod}} {{genItem.processing.interval_unit_desc}}
+                      </div>
+                    </div>
+                    <div class="row mb-6" *ngIf="genItem.processing.data_processing_method!=null">
+                      <label class="col-lg-4">{{label?.processing?.PROCESSING_METHOD || 'Data Processing Method'}}:</label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.processing.data_processing_method}}
+                      </div>
+                    </div>
+                    <div class="row mb-6" *ngIf="genItem.processing.software_version!=null">
+                      <label class="col-lg-4">{{label?.processing?.PROCESSING_VERSION || 'Software / Processing And Version'}}:</label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.processing.software_version}}
+                      </div>
+                    </div>
+                    <div class="row mb-6" *ngIf="genItem.processing.software_repository_url!=null">
+                      <label class="col-lg-4">{{label?.processing?.PROCESSING_URL || 'Software / Sourcode Repository URL'}}:</label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.processing.software_repository_url}}
+                      </div>
+                    </div>
+                    <div class="row mb-6" *ngIf="genItem.processing.processing_centre_desc!=null">
+                      <label class="col-lg-4">{{label?.processing?.PROCESSING_ANALYSIS || 'Processing / Analysis Centre'}}:</label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.processing.processing_centre_desc}}
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Reporting -->
+                  <div *ngIf="genItem.reporting!=null">
+                    <b>{{label?.reporting?.PROCESSING_ANALYSIS || 'Reporting'}}</b>
+                    <div class="row mb-6" *ngIf="genItem.reporting.schedule.is_used_for_international_reporting!=null">
+                      <label class="col-lg-4">Intended for international exchange:</label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.reporting.schedule.is_used_for_international_reporting==1?'Yes':'No'}}
+                      </div>
+                    </div>
+                    <div class="row mb-6" *ngIf="genItem.reporting.schedule.reporting_interval!=null">
+                      <label class="col-lg-4">Reporting interval:</label>
+                      <div class="col-lg-8 fv-row">
+                        <label *ngIf="reportingTime.get(genItem.id).Weeks !=0">{{reportingTime.get(genItem.id).Weeks}} Week </label> &nbsp;
+                        <label *ngIf="reportingTime.get(genItem.id).Days !=0">{{reportingTime.get(genItem.id).Days}} Day </label> &nbsp;
+                        <label *ngIf="reportingTime.get(genItem.id).Hours !=0">{{reportingTime.get(genItem.id).Hours}} Hour </label> &nbsp;
+                        <label *ngIf="reportingTime.get(genItem.id).Minutes !=0">{{reportingTime.get(genItem.id).Minutes}} Minute </label>
+                      </div>
+                    </div>
+                    <div class="row mb-6">
+                      <label class="col-lg-4">{{label?.reporting?.SCHE_MONTH || 'Month'}}:</label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.reporting.schedule.period_of_reporting.month.from}} - {{genItem.reporting.schedule.period_of_reporting.month.to}}
+                      </div>
+                    </div>
+                    <div class="row mb-6">
+                      <label class="col-lg-4">{{label?.reporting?.SCHE_DAY || 'Day'}} :</label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.reporting.schedule.period_of_reporting.day.from}} - {{genItem.reporting.schedule.period_of_reporting.day.to}}
+                      </div>
+                    </div>
+                    <div class="row mb-6">
+                      <label class="col-lg-4">{{label?.reporting?.SCHE_TIME || 'UTC'}}:</label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.reporting.schedule.period_of_reporting.time.from}} - {{genItem.reporting.schedule.period_of_reporting.time.to}}
+                      </div>
+                    </div>
+                    <div class="row mb-6" *ngIf="genItem.reporting.schedule.diurnal_base_time!=null">
+                      <label class="col-lg-4">{{label?.reporting?.SCHE_DIURNAL || 'Diurnal Base Time'}}:</label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.reporting.schedule.diurnal_base_time}}
+                      </div>
+                    </div>
+                    <div class="row mb-6" *ngIf="genItem.reporting.observation_count!=null">
+                      <label class="col-lg-4">{{label?.reporting?.OBS || 'Number Of Observations In Reporting Period'}}:</label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.reporting.observation_count}}
+                      </div>
+                    </div>
+                    <div class="row mb-6" *ngIf="genItem.reporting.measurement_unit_desc!=null">
+                      <label class="col-lg-4">{{label?.reporting?.MEASURMENT || 'Measurement Unit'}}:</label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.reporting.measurement_unit_desc}}
+                      </div>
+                    </div>
+                    <div class="row mb-6" *ngIf="genItem.reporting.data_policy_desc!=null">
+                      <label class="col-lg-4">{{label?.reporting?.POLICY || 'Data Policy'}}:</label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.reporting.data_policy_desc}}
+                      </div>
+                    </div>
+                    <div class="row mb-6" *ngIf="genItem.reporting.spatial_reporting_interval!=null">
+                      <label class="col-lg-4">{{label?.reporting?.INTERVAL || 'Spatial Reporting Interval (m)'}}: </label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.reporting.spatial_reporting_interval}}
+                      </div>
+                    </div>
+                    <div class="row mb-6" *ngIf="genItem.reporting.timeliness_desc!=null">
+                      <label class="col-lg-4">{{label?.reporting?.TIMELINESS || 'Timeliness'}}:</label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.reporting.timeliness_desc}}
+                      </div>
+                    </div>
+                    <div class="row mb-6" *ngIf="genItem.reporting.numerical_resolution!=null">
+                      <label class="col-lg-4">{{label?.reporting?.RESOLUTION || 'Numerical Resolution'}}:</label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.reporting.numerical_resolution}}
+                      </div>
+                    </div>
+                    <div class="row mb-6" *ngIf="genItem.reporting.level_of_data_desc!=null">
+                      <label class="col-lg-4">{{label?.reporting?.LEVEL || 'Level Of Data'}}:</label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.reporting.level_of_data_desc}}
+                      </div>
+                    </div>
+                    <div class="row mb-6" *ngIf="genItem.reporting.data_format_desc!=null">
+                      <label class="col-lg-4">{{label?.reporting?.FORMAT || 'Data Format'}}: </label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.reporting.data_format_desc}}
+                      </div>
+                    </div>
+                    <div class="row mb-6" *ngIf="genItem.reporting.data_format_version!=null">
+                      <label class="col-lg-4">{{label?.reporting?.VERSION || 'Data Format Version'}}:</label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.reporting.data_format_version}}
+                      </div>
+                    </div>
+                    <div class="row mb-6" *ngIf="genItem.reporting.reference_datum!=null">
+                      <label class="col-lg-4">{{label?.reporting?.DATUM || 'Reference Datum'}}:</label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.reporting.reference_datum}}
+                      </div>
+                    </div>
+                    <div class="row mb-6" *ngIf="genItem.reporting.reference_time_desc!=null">
+                      <label class="col-lg-4">{{label?.reporting?.TIME_SOURCE || 'Reference Time Source'}}:</label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.reporting.reference_time_desc}}
+                      </div>
+                    </div>
+  
+                    <div class="row mb-6" *ngIf="genItem.reporting.is_traceable!=null">
+                      <label class="col-lg-4">{{label?.reporting?.OBSERVATION_STANDART || 'Is the observation traceable to a standard?'}}:</label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.reporting.is_traceable==1?'Yes':'No'}}
+                      </div>
+                    </div>
+                    <div class="row mb-6" *ngIf="genItem.reporting.quality_flag_system_desc!=null">
+                      <label class="col-lg-4">{{label?.reporting?.QUALITY_FLAGGING || 'Data Quality Flagging System'}}:</label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.reporting.quality_flag_system_desc}}
+                      </div>
+                    </div>
+                    <div class="row mb-6" *ngIf="genItem.reporting.is_primary!=null">
+                      <label class="col-lg-4">{{label?.reporting?.PRIMARY_OBSERVATION || 'Primary observation'}}:</label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.reporting.is_primary==1?'Yes':'No'}}
+                      </div>
+                    </div>
+                    <div class="row mb-6" *ngIf="genItem.reporting.timestamp_meaning_desc!=null">
+                      <label class="col-lg-4">{{label?.reporting?.MEANING_TIMESTAMPP || 'Meaning Of Timestamp In Data Reports'}}: </label>
+                      <div class="col-lg-8 fv-row">
+                        {{genItem.reporting.timestamp_meaning_desc}}
+                      </div>
+                    </div>
+                    <!-- attribution -->
+                    <div *ngIf="genItem.reporting.attribution!=null">
+                      <label class="col-lg-4">Attribution:</label>
+                      <div class="row sub-form mb-2" *ngIf="genItem.reporting.attribution.title_of_work!=null">
+                        <label class="col-lg-4">{{label?.reporting?.TITTLE_WORK || 'Title Of Work'}}:</label>
+                        <div class="col-lg-8 fv-row">
+                          {{genItem.reporting.attribution.title_of_work}}
+                        </div>
+                      </div>
+                      <div class="row sub-form mb-2" *ngIf="genItem.reporting.attribution.attribution_url!=null">
+                        <label class="col-lg-4">{{label?.reporting?.ATTRIBUTION_URL || 'Attribution (URL)'}}:</label>
+                        <div class="col-lg-8 fv-row">
+                          {{genItem.reporting.attribution.attribution_url}}
+                        </div>
+                      </div>
+                      <div class="row sub-form mb-2" *ngIf="genItem.reporting.attribution.originator_of_work!=null">
+                        <label class="col-lg-4">{{label?.reporting?.ORIGINATOR || 'Originator of work'}}:</label>
+                        <div class="col-lg-8 fv-row">
+                          {{genItem.reporting.attribution.originator_of_work}}
+                        </div>
+                      </div>
+                      <div class="row sub-form mb-2" *ngIf="genItem.reporting.attribution.source_work_url!=null">
+                        <label class="col-lg-4">{{label?.reporting?.SOURCE_URL || 'Source work is based on (URL)'}}:</label>
+                        <div class="col-lg-8 fv-row">
+                          {{genItem.reporting.attribution.source_work_url}}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </ng-container>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <div class="footer-container">
+      <div class="div-right">
+        <p-button label="{{lang == 'id'?'Simpan Penyebaran':'Save Deployment'}}" (click)="onSave()" icon="pi pi-save" styleClass="p-button-sm"></p-button>
+      </div>
+    </div>
+  </div>
+</div>

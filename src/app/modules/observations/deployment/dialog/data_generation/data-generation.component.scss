@@ -1,0 +1,89 @@
+.server-editor-container {
+  position: relative;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+}
+.form-group{
+display: flex;
+flex-direction: column
+}
+
+.div-left{
+  float:left;
+  padding-left:10px;
+}
+.div-right{
+  float:right;
+  padding-right:10px;
+}
+.footer-container{
+  height:40px;
+  max-width:980px;
+  padding-top:5px;
+}
+.footer {
+  height:30px;
+}
+ul {
+  list-style-type:none;
+  padding:0px;
+  margin:0px;
+}
+
+.sub-form{
+  padding-top:5px;
+  padding-left: 50px;
+}
+
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-flex {
+  height: 32px !important
+  }
+  
+::ng-deep .mat-form-field-infix {
+  padding-top: 1px !important;
+}
+
+.mat-form-field {
+  font-size: 0.88rem;
+
+  input {
+    font-size: 1rem;
+  }
+
+  label.mat-form-field-label {
+    font-size: 1rem;
+    top: 1.45em;
+  }
+
+  &.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label,
+  &.mat-form-field-can-float
+    .mat-input-server:focus
+    + .mat-form-field-label-wrapper
+    .mat-form-field-label {
+    transform: translateY(-1.25em) scale(0.75);
+    // transform: translateY(-10.25em) scale(0.2);
+    width: 133.33333%;
+  }
+}
+
+.mat-list .mat-list-item {
+  height: 15px; /* default is 72px */
+  font-size: 1rem;
+  margin-top: 5px;
+}
+
+.mat-radio-group {
+  font-size: 0.88rem;
+}
+
+// .language-field {
+//   position: absolute;
+//   right: 0;
+//   top: 0;
+//   margin-top: -16px;
+//   width: 115px;
+//   height:40px;
+//   padding-top: -1.84375em;    
+// }

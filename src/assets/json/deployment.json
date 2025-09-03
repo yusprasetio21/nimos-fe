@@ -1,0 +1,95 @@
+{
+  "id": "_0",
+  "from": "2022-12-01T17:00:00.000Z",
+  "to": null,
+  "observation_id": 8,
+  "source_of_observation_id": 4,
+  "distance_from_reference_surface": 33,
+  "reference_surface_type_id": 2,
+  "application_areas": [],
+  "exposure_id": 4,
+  "representativeness_id": null,
+  "measurement_leader": null,
+  "organization_id": null,
+  "data_urls": [],
+  "data_centre_id": null,
+  "data_communication_method_id": null,
+  "instrument": {
+    "id": "_1",
+    "deployment_id": "_0",
+    "instrument_assigned_type_id": "2",
+    "manufacturer_id": null,
+    "instrument_model_id": null,
+    "observing_method_id": 61,
+    "instrument_specifications": {
+      "uncertainty_evaluation_procedure": null
+    },
+    "coordinates": [
+      {
+        "id": "_2",
+        "instrument_id": "_1",
+        "latitude": 2,
+        "longitude": 3,
+        "station_elevation": 5,
+        "geopositioning_method_id": 2,
+        "from": "2022-12-21"
+      }
+    ],
+    "operating_statuses": [],
+    "observation_frequency_and_polarization": [],
+    "telecommunication_frequencies": [],
+    "maintenance_logbooks": [],
+    "quality_assurance_logbooks": []
+  },
+  "data_generation": [
+    {
+      "id": "_1",
+      "from": "2022-12-02T17:00:00.000Z",
+      "reporting": {
+        "id": "_1",
+        "data_generation_id": 1,
+        "schedule": {
+          "is_used_for_international_reporting": 0,
+          "reporting_interval": 720,
+          "period_of_reporting": {
+            "time": {
+              "from": "00",
+              "to": "23"
+            },
+            "day": {
+              "from": "Saturday",
+              "to": "Sunday"
+            },
+            "month": {
+              "from": "January",
+              "to": "December"
+            }
+          },
+          "diurnal_base_time": null
+        },
+        "measurement_unit_id": 3,
+        "data_policy_id": 2,
+        "spatial_reporting_interval": 22,
+        "timeliness_unit": null,
+        "level_of_data_id": null,
+        "data_format_id": null,
+        "reference_datum": "dfa",
+        "reference_time_id": null,
+        "is_traceable": null,
+        "quality_flag_system_id": null,
+        "is_primary": null,
+        "timestamp_meaning_id": 4,
+        "timeliness_desc": null,
+        "attribution": {},
+        "measurement_unit_desc": "Kementerian Koordinator Bidang Kemaritiman",
+        "data_policy_desc": "WMOAdditional",
+        "level_of_data_desc": null,
+        "data_format_desc": null,
+        "reference_time_desc": null,
+        "quality_flag_system_desc": null,
+        "timestamp_meaning_desc": "Middle"
+      },
+      "tittle": "FROM 2022-12-03"
+    }
+  ]
+}

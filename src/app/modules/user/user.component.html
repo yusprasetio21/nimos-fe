@@ -1,0 +1,275 @@
+<div class="p-col-12">
+    <div class="card">
+        <ng-container *ngIf="dataSource$.length">
+            <p-toast></p-toast>
+            <div class="card card-flush">
+                <p-toolbar>
+                    <ng-template pTemplate="left" class="card-title">
+                        <div class="d-flex align-items-center position-relative my-1 me-5">
+                            <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
+                            <span class="svg-icon svg-icon-1 position-absolute ms-6">
+                                <svg
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <rect
+                                        opacity="0.5"
+                                        x="17.0365"
+                                        y="15.1223"
+                                        width="8.15546"
+                                        height="2"
+                                        rx="1"
+                                        transform="rotate(45 17.0365 15.1223)"
+                                        fill="currentColor" />
+                                    <path
+                                        d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z"
+                                        fill="currentColor" />
+                                </svg>
+                            </span>
+                            <!--end::Svg Icon-->
+                            <input
+                                type="text"
+                                pInputText
+                                (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                                class="form-control form-control-solid w-250px ps-15"
+                                placeholder="Search Users" />
+                        </div>
+                        <!--end::Search-->
+                    </ng-template>
+                    <!--begin::Card toolbar-->
+                    <ng-template pTemplate="right" class="card-toolbar">
+                        <!--begin::Button-->
+                        <button
+                            type="button"
+                            class="btn btn-light-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#kt_modal_add_user"
+                            (click)="addData()">
+                            <!--begin::Svg Icon | path: icons/duotune/general/gen035.svg-->
+                            <span class="svg-icon svg-icon-3">
+                                <svg
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <rect opacity="0.3" x="2" y="2" width="20" height="20" rx="5" fill="currentColor" />
+                                    <rect
+                                        x="10.8891"
+                                        y="17.8033"
+                                        width="12"
+                                        height="2"
+                                        rx="1"
+                                        transform="rotate(-90 10.8891 17.8033)"
+                                        fill="currentColor" />
+                                    <rect x="6.01041" y="10.9247" width="12" height="2" rx="1" fill="currentColor" />
+                                </svg>
+                            </span>
+                            <!--end::Svg Icon-->Add User
+                        </button>
+                        <!--end::Button-->
+                    </ng-template>
+                    <!-- </ng-template> -->
+                </p-toolbar>
+                <p-table
+                    #dt
+                    [columns]="cols"
+                    [value]="dataSource$"
+                    [rows]="10"
+                    [paginator]="true"
+                    responsiveLayout="scroll"
+                    [rowHover]="true"
+                    dataKey="id"
+                    styleClass="card-body pt-0"
+                    tableStyleClass="table align-middle table-row-dashed fs-6 gy-5 mb-0"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                    [showCurrentPageReport]="true">
+                    <ng-template pTemplate="header" let-columns>
+                        <tr class="text-start text-gray-400 fw-bold text-uppercase fs-7 gs-0">
+                            <th *ngFor="let col of columns" [pSortableColumn]="col.field" class="min-w-125px">
+                                {{ col.header }} <p-sortIcon field="{{ col.field }}"></p-sortIcon>
+                            </th>
+                            <th class="text-end min-w-100px">Action</th>
+                        </tr>
+                    </ng-template>
+
+                    <ng-template pTemplate="body" let-data>
+                        <tr>
+                            <td>{{ data.name }}</td>
+                            <td>{{ data.notlp }}</td>
+                            <td>{{ data.kategori_nama }}</td>
+                            <td>{{ data.instansi_nama }}</td>
+                            <td>{{ data.email_instansi }}</td>
+                            <td>{{ data.email }}</td>
+                            <td>{{ data.active_des }}</td>
+                            <td>
+                                <a class="btn btn-icon btn-active-light-primary w-30px h-30px" (click)="editData(data)">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="16"
+                                        height="16"
+                                        fill="currentColor"
+                                        class="bi bi-file-earmark-post-fill"
+                                        viewBox="0 0 16 16">
+                                        <path
+                                            d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zm-5-.5H7a.5.5 0 0 1 0 1H4.5a.5.5 0 0 1 0-1zm0 3h7a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5z" />
+                                    </svg>
+                                </a>
+                                &nbsp;
+                                <button
+                                    class="btn btn-icon btn-active-light-primary w-30px h-30px"
+                                    (click)="delete(data)">
+                                    <span class="svg-icon svg-icon-3">
+                                        <svg
+                                            width="24"
+                                            height="24"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M5 9C5 8.44772 5.44772 8 6 8H18C18.5523 8 19 8.44772 19 9V18C19 19.6569 17.6569 21 16 21H8C6.34315 21 5 19.6569 5 18V9Z"
+                                                fill="currentColor" />
+                                            <path
+                                                opacity="0.5"
+                                                d="M5 5C5 4.44772 5.44772 4 6 4H18C18.5523 4 19 4.44772 19 5V5C19 5.55228 18.5523 6 18 6H6C5.44772 6 5 5.55228 5 5V5Z"
+                                                fill="currentColor" />
+                                            <path
+                                                opacity="0.5"
+                                                d="M9 4C9 3.44772 9.44772 3 10 3H14C14.5523 3 15 3.44772 15 4V4H9V4Z"
+                                                fill="currentColor" />
+                                        </svg>
+                                    </span>
+                                </button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </ng-container>
+    </div>
+    <form [formGroup]="dataForm" (ngSubmit)="validate()" *ngIf="dataForm">
+        <p-dialog
+            [(visible)]="dataForm"
+            [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+            [style]="{ width: '50vw' }"
+            [modal]="true">
+            <ng-template pTemplate="header"> User Details </ng-template>
+            <div class="card-body border-top p-9">
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label required fw-bold fs-6">Nama</label>
+                    <div class="col-lg-8 fv-row">
+                        <input
+                            pInputText
+                            type="text"
+                            class="form-control form-control-lg"
+                            placeholder="Nama"
+                            name="name"
+                            formControlName="name" />
+                    </div>
+                </div>
+
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label required fw-bold fs-6">No HP</label>
+                    <div class="col-lg-8 fv-row">
+                        <input
+                            pInputText
+                            type="number"
+                            class="form-control form-control-lg"
+                            placeholder="No Telepon"
+                            name="notlp"
+                            formControlName="notlp" />
+                    </div>
+                </div>
+
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label required fw-bold fs-6">Kategori</label>
+                    <div class="col-lg-8 fv-row">
+                        <p-dropdown
+                            [options]="kategoriOptions"
+                            (onChange)="onSelectKategori()"
+                            formControlName="kategori"></p-dropdown>
+                    </div>
+                </div>
+
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label required fw-bold fs-6">Instansi</label>
+                    <div class="col-lg-8 fv-row">
+                        <p-dropdown
+                            [options]="instansiOptions"
+                            formControlName="instansi"
+                            [disabled]="disableInstansi"></p-dropdown>
+                    </div>
+                </div>
+
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label required fw-bold fs-6">Is Active</label>
+                    <div class="col-lg-8 fv-row">
+                        <p-dropdown [options]="isActiveOptions" formControlName="isActive"></p-dropdown>
+                    </div>
+                </div>
+
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label required fw-bold fs-6">Email</label>
+                    <div class="col-lg-8 fv-row">
+                        <input
+                            pInputText
+                            type="text"
+                            class="form-control form-control-lg"
+                            placeholder="Email Pribadi"
+                            name="email"
+                            formControlName="email" />
+                    </div>
+                </div>
+
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label required fw-bold fs-6">Email Instansi</label>
+                    <div class="col-lg-8 fv-row">
+                        <input
+                            pInputText
+                            type="text"
+                            class="form-control form-control-lg"
+                            placeholder="Email Instansi"
+                            name="emailInstansi"
+                            formControlName="emailInstansi"
+                            [readonly]="disableInstansi" />
+                    </div>
+                </div>
+
+                <div class="card-body" *ngIf="showPassword">
+                    <div class="row mb-6">
+                        <label class="col-lg-4 col-form-label required fw-bold fs-6">Password</label>
+                        <div class="col-lg-8 fv-row">
+                            <input
+                                pInputText
+                                type="password"
+                                class="form-control form-control-lg"
+                                placeholder="Password"
+                                name="password"
+                                formControlName="password" />
+                        </div>
+                    </div>
+
+                    <div class="row mb-6">
+                        <label class="col-lg-4 col-form-label required fw-bold fs-6">Repeat Password</label>
+                        <div class="col-lg-8 fv-row">
+                            <input
+                                pInputText
+                                type="password"
+                                class="form-control form-control-lg"
+                                placeholder="Repeat Password"
+                                name="repeatPassword"
+                                formControlName="repeatPassword" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <ng-template pTemplate="footer">
+                <button type="submit" pButton pRipple icon="pi pi-save" class="btn btn-sm btn-primary">Save</button>
+            </ng-template>
+        </p-dialog>
+    </form>
+
+    <p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
+</div>

@@ -1,0 +1,23 @@
+<!--begin::Title-->
+<p-toast></p-toast>
+<ng-container *ngIf="isLoading$ | async">
+    <div class="text-center mb-10">
+        <h1 class="text-dark mb-3">Email Verifying Page</h1>
+    </div>
+    <!--end::Title-->
+    <!-- begin::Alert info-->
+    <ng-container *ngIf="!hasError">
+        <div class="mb-10 bg-light-info p-8 rounded">
+            <div class="text-info">Email Verified Successfully</div>
+        </div>
+    </ng-container>
+    <!-- end::Alert info-->
+
+    <!-- begin::Alert error-->
+    <ng-container *ngIf="hasError">
+        <div class="mb-lg-15 alert alert-danger">
+            <div class="alert-text font-weight-bold">{{ message }}</div>
+        </div>
+    </ng-container>
+    <!-- end::Alert error-->
+</ng-container>

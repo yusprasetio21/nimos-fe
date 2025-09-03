@@ -1,0 +1,83 @@
+<style>
+    img {
+        border: 1px solid #ddd; /* Gray border */
+        border-radius: 4px; /* Rounded border */
+        padding: 5px; /* Some padding */
+        width: 150px; /* Set a small width */
+    }
+
+    /* Add a hover effect (blue shadow) */
+    img:hover {
+        box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+    }
+</style>
+<ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+<div class="mb-0" style="background-color: #eaeaea" *ngIf="state$ | async">
+    <!--begin::Wrapper-->
+    <div class="pt-0">
+        <!--begin::Container-->
+        <div class="container">
+            <!--begin::Row-->
+            <div class="row">
+                <!--begin::Col-->
+                <div class="col-lg-3">
+                    <div
+                        style="
+                            background-color: white;
+                            margin-top: 10px;
+                            border-radius: 5px;
+                            padding: 5px;
+                            height: 100%;
+                        ">
+                        <div style="margin: 15px">
+                            <div style="font-weight: bold; font-size: 16px">Quick Access</div>
+                            <div style="font-weight: bold; font-size: 14px; padding-top: 15px">
+                                Generate station report by
+                            </div>
+                            <div>Station Id</div>
+                            <p-autoComplete
+                                [(ngModel)]="station"
+                                [suggestions]="filteredStations"
+                                (completeMethod)="searchStationById($event)"
+                                field="identifier"
+                                [style]="{ width: '100%' }"
+                                class="p-fluid"
+                                placeholder="- ketik station id -"
+                                (onSelect)="onSelect($event)"></p-autoComplete>
+
+                            <div>Station Name</div>
+                            <p-autoComplete
+                                [(ngModel)]="station"
+                                [suggestions]="filteredStations"
+                                (completeMethod)="searchStationByName($event)"
+                                field="name"
+                                [style]="{ width: '100%' }"
+                                class="p-fluid"
+                                placeholder="- ketik station name -"
+                                (onSelect)="onSelect($event)"></p-autoComplete>
+                        </div>
+                    </div>
+                    <!--end::Block-->
+                </div>
+                <!--end::Col-->
+                <!--begin::Col-->
+                <div class="col-lg-9">
+                    <div style="margin-top: 10px; border-radius: 5px">
+                        <div class="card mb-5 mb-xl-10">
+                            <div class="card-body border-top p-9">
+                                <h3 style="margin: 15px">Account not authorised to edit this station</h3>
+                                <div style="margin: 15px">
+                                    Your account is not authorised to edit this station. Please contact an existing
+                                    station contact to provide you access or contact the administrators of the system.
+                                </div>
+                                <div id="map" style="height: 250px"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--end::Row-->
+        </div>
+        <!--end::Container-->
+    </div>
+</div>

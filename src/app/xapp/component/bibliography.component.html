@@ -1,0 +1,175 @@
+<ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+<p-toast></p-toast>
+
+<div id="kt_app_content" class="app-content flex-column-fluid" *ngIf="state$ | async">
+    <div class="card card-flush">
+        <div class="col-xl-12">
+            <div class="card-body pt-6">
+                <div class="tab-content" *ngIf="!station_id">
+                    Please select station first in Station Management Menu. <br />
+                    You will be redirect to Station Management Menu in 3 second.
+                </div>
+                <div class="tab-content" *ngIf="station_id">
+                    <h3>.:: {{ station_name }} [{{ station_identifier }}]</h3>
+                    <!--begin::Button-->
+                    <button pButton class="btn btn-primary" (click)="addData()">
+                        <!--begin::Svg Icon | path: icons/duotune/general/gen035.svg-->
+                        <span class="svg-icon svg-icon-3">
+                            <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <rect opacity="0.3" x="2" y="2" width="20" height="20" rx="5" fill="currentColor" />
+                                <rect
+                                    x="10.8891"
+                                    y="17.8033"
+                                    width="12"
+                                    height="2"
+                                    rx="1"
+                                    transform="rotate(-90 10.8891 17.8033)"
+                                    fill="currentColor" />
+                                <rect x="6.01041" y="10.9247" width="12" height="2" rx="1" fill="currentColor" />
+                            </svg>
+                        </span>
+                        <!--end::Svg Icon-->Add Bibliography
+                    </button>
+                    <!--end::Button-->
+                    <div *ngIf="datas && datas.length > 0" class="mt-5">
+                        <p-table
+                            #dt
+                            [columns]="cols"
+                            [value]="datas"
+                            styleClass="card-body pt-0"
+                            tableStyleClass="table align-middle table-row-dashed fs-6 gy-5 mb-0">
+                            <ng-template pTemplate="header" let-columns>
+                                <tr class="text-start text-gray-400 fw-bold text-uppercase fs-7 gs-0">
+                                    <th class="min-w-125px">Bibliography</th>
+                                    <th class="text-end min-w-100px">Action</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-data>
+                                <tr>
+                                    <td>
+                                        {{ data.text }}
+                                    </td>
+                                    <td class="text-end">
+                                        <button
+                                            class="btn btn-icon btn-active-light-primary w-30px h-30px me-3"
+                                            pTooltip="Edit"
+                                            tooltipPosition="left"
+                                            (click)="editData(data)">
+                                            <span
+                                                [inlineSVG]="'./assets/media/icons/duotune/art/art005.svg'"
+                                                class="svg-icon svg-icon-3"></span>
+                                        </button>
+                                        <button
+                                            class="btn btn-icon btn-active-light-primary w-30px h-30px"
+                                            pTooltip="Delete"
+                                            tooltipPosition="left"
+                                            (click)="deleteWithConfirm(data)">
+                                            <span class="svg-icon svg-icon-3">
+                                                <svg
+                                                    width="24"
+                                                    height="24"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path
+                                                        d="M5 9C5 8.44772 5.44772 8 6 8H18C18.5523 8 19 8.44772 19 9V18C19 19.6569 17.6569 21 16 21H8C6.34315 21 5 19.6569 5 18V9Z"
+                                                        fill="currentColor" />
+                                                    <path
+                                                        opacity="0.5"
+                                                        d="M5 5C5 4.44772 5.44772 4 6 4H18C18.5523 4 19 4.44772 19 5V5C19 5.55228 18.5523 6 18 6H6C5.44772 6 5 5.55228 5 5V5Z"
+                                                        fill="currentColor" />
+                                                    <path
+                                                        opacity="0.5"
+                                                        d="M9 4C9 3.44772 9.44772 3 10 3H14C14.5523 3 15 3.44772 15 4V4H9V4Z"
+                                                        fill="currentColor" />
+                                                </svg>
+                                            </span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                    <div class="text-end">
+                        <button
+                            pButton
+                            type="button"
+                            class="btn btn-primary"
+                            data-kt-users-modal-action="submit"
+                            (click)="save()"
+                            [disabled]="disabled">
+                            Save
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form [formGroup]="dataForm" (ngSubmit)="saveToList()">
+    <p-dialog
+        [(visible)]="dialogForm"
+        [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+        [style]="{ width: '50vw' }"
+        [modal]="true">
+        <ng-template pTemplate="header"> Bibliography Details </ng-template>
+        Please only submit reference(s) that are properly formatted in BibTex.You can obtain references from various
+        sources, e.g. <a href="http://www.endnote.com" target="_blank">EndNote</a> or
+        <a href="http://www.atmospheric-chemistry-and-physics.net/index.html" target="_blank">ACP</a> or
+        <a href="http://apps.webofknowledge.com/" target="_blank">ISI Web of Knowledge</a>. Click
+        <a [routerLink]="" (click)="showExample()">here</a> to see an example. <br />
+        <textarea
+            pInputTextarea
+            *ngIf="display"
+            [rows]="11"
+            readonly
+            [style]="{ width: '100%' }"
+            style="background-color: lightgrey">
+            @inproceedings{ding_dagbase_2020,
+                title = {Dagbase: a decentralized database platform {Using} {DAG}-based consensus},
+                copyright = {All rights reserved},
+                isbn = {1-72817-303-5},
+                booktitle = {2020 {IEEE} 44th {Annual} {Computers}, {Software}, and {Applications} {Conference} ({COMPSAC})},
+                publisher = {IEEE},
+                author = {Ding, Yepeng and Sato, Hiroyuki},
+                year = {2020},
+                pages = {798--807},
+            }
+        </textarea>
+        <br />
+        For more information, please visit <a href="http://www.bibtex.org" target="_blank">BibTeX</a>.
+        <input pInputText formControlName="id" hidden />
+        <div class="card-body p-3">
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label required fw-bold fs-6">Bibliography</label>
+                <div class="col-lg-8 fv-row">
+                    <textarea
+                        pInputTextarea
+                        class="form-control form-control-lg"
+                        formControlName="bibtex"
+                        [rows]="10"></textarea>
+                </div>
+            </div>
+        </div>
+        <ng-template pTemplate="footer">
+            <button
+                type="submit"
+                pButton
+                pRipple
+                icon="pi pi-save"
+                class="btn btn-sm btn-primary"
+                class="btn btn-primary"
+                [disabled]="!dataForm.valid">
+                Save
+            </button>
+        </ng-template>
+    </p-dialog>
+</form>
+
+<p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>

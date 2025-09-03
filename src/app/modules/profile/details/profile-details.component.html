@@ -1,0 +1,82 @@
+<div class="p-col-12">
+  <p-toast></p-toast>
+  <div class="card">
+    <form [formGroup]="dataForm" (ngSubmit)="validate()" *ngIf="dataForm" novalidate>
+      <div class="card-body border-top p-9">
+        <div class="row mb-6">
+          <label class="col-lg-4 col-form-label required fw-bold fs-6">Nama</label>
+          <div class="col-lg-8 fv-row">
+            <input pInputText
+              type="text"
+              class="form-control form-control-lg"
+              placeholder="Nama"
+              name="name"
+              formControlName="name"/>
+          </div>
+        </div>
+
+        <div class="row mb-6">
+          <label class="col-lg-4 col-form-label required fw-bold fs-6">No HP</label>
+          <div class="col-lg-8 fv-row">
+            <input pInputText
+              type="number"
+              class="form-control form-control-lg"
+              placeholder="No Telepon"
+              name="notlp"
+              formControlName="notlp"/>
+          </div>
+        </div>
+
+        <div class="row mb-6">
+          <label class="col-lg-4 col-form-label required fw-bold fs-6">Kategori</label>
+          <div class="col-lg-8 fv-row">
+            <p-dropdown [options]="kategoriOptions" (onChange)="onSelectKategori()" formControlName="kategori"></p-dropdown>
+          </div>
+        </div>
+
+        <div class="row mb-6">
+          <label class="col-lg-4 col-form-label required fw-bold fs-6">Instansi</label>
+          <div class="col-lg-8 fv-row">
+            <p-dropdown [options]="instansiOptions" formControlName="instansi" [disabled]="disableInstansi"></p-dropdown>
+          </div>
+        </div>
+
+        <div class="row mb-6">
+          <label class="col-lg-4 col-form-label required fw-bold fs-6">Is Active</label>
+          <div class="col-lg-8 fv-row">
+            <p-dropdown [options]="isActiveOptions" formControlName="isActive"></p-dropdown>
+          </div>
+        </div>
+
+        <div class="row mb-6">
+          <label class="col-lg-4 col-form-label required fw-bold fs-6">Email</label>
+          <div class="col-lg-8 fv-row">
+            <input pInputText
+              type="text"
+              class="form-control form-control-lg"
+              placeholder="Email Pribadi"
+              name="email"
+              formControlName="email"/>
+          </div>
+        </div>
+
+        <div class="row mb-6">
+          <label class="col-lg-4 col-form-label required fw-bold fs-6">Email Instansi</label>
+          <div class="col-lg-8 fv-row">
+            <input pInputText
+              type="text"
+              class="form-control form-control-lg"
+              placeholder="Email Instansi"
+              name="emailInstansi"
+              formControlName="emailInstansi"
+              [readonly]="disableInstansi" />
+          </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end py-6 px-9">
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </div>
+    </form>
+     
+  </div>
+</div>

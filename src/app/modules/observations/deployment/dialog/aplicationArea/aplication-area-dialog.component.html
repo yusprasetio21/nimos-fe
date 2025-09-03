@@ -1,0 +1,21 @@
+<div class="full-height">
+  <div class="p-col-12">
+    <div class="card">
+      <div class="row mb-2">
+        <p-dropdown  
+             id="strategy"
+             appendTo="body"
+             [filter]="true"
+             [(ngModel)]="config.data.aplication_area"
+             [options]="areasOption"
+             optionLabel="label"
+             [style]="{'width':'100%'}"></p-dropdown>
+      </div>
+    </div>
+  </div>
+  <div class="footer-container">
+    <div class="div-right">
+      <p-button label="Save Area" (click)="onOke()" icon="pi pi-save" styleClass="p-button-sm"></p-button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,19 @@
+<div class="p-col-12">
+  <div class="card">
+    <div class="row mb-2">
+      <input
+        pInputText
+        type="text" 
+        [(ngModel)]="config.data.url"
+        class="p-inputtext-sm"
+        [style]="{'width':'100%'}"/>
+    </div>
+  </div>
+  <div class="full-height">
+    <div class="footer-container">
+      <div class="div-right">
+        <p-button label="Add URL" (click)="onOke()" icon="pi pi-plush" styleClass="p-button-sm"></p-button>
+      </div>
+    </div>
+  </div>
+</div>

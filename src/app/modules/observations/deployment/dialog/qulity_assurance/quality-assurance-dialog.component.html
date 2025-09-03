@@ -1,0 +1,129 @@
+<div mat-dialog-content>
+  <div class="full-height">
+    <mat-form-field class="example-full-width" appearance="fill" hidden>
+      <input matInput placeholder="Variabel" [(ngModel)]="config.data.id" [disabled]="true">
+    </mat-form-field>
+    <div class="row mb-0">
+      <div class="row mb-0">
+        <label class="col-lg col-form-label required fs-6">
+          {{label?.assurance?.LOCATION || 'Location'}}:
+        </label>
+        <div class="col-lg-8 fv-row">
+          <p-dropdown  
+             appendTo="body"
+             [filter]="true"
+             [(ngModel)]="config.data.location"
+             [options]="config.data.locationTypesOption"
+             optionLabel="label"
+             [style]="{'width':'100%'}"></p-dropdown>
+        </div>
+      </div>
+      <div class="row mb-0">
+        <label class="col-lg-4 col-form-label required fs-6">
+          {{label?.assurance?.DATE || 'Activity Date'}}:
+          <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"
+          pTooltip="{{tooltip?.assurance?.DATE || 'Date of the QA application'}}"></i>
+        </label>
+        <div class="col-lg fv-row">
+          <!-- <p-calendar [(ngModel)]="config.data.activity_date" [showIcon]="true" inputId="icon" appendTo="body"
+                          [style]="{'width':'35%'}"></p-calendar> -->
+            <!-- <ng-template #attachMe0></ng-template> -->
+            <p-calendar dataType="string" [(ngModel)]="config.data.activity_date" [showIcon]="true" inputId="icon" appendTo="body" dateFormat="dd-mm-yy"
+            [style]="{'width':'35%'}"></p-calendar>
+        </div>
+      </div>
+      <div class="row mb-0">
+        <label class="col-lg col-form-label required fs-6">
+          {{label?.assurance?.TYPE || 'Standard type'}}:</label>
+        <div class="col-lg-8 fv-row">
+          <p-dropdown  
+             appendTo="body"
+             [filter]="true"
+             [(ngModel)]="config.data.standard_type"
+             [options]="config.data.standartTypeOption"
+             optionLabel="label"
+             [style]="{'width':'100%'}"></p-dropdown>
+        </div>
+      </div>
+      <div class="row mb-0">
+        <label class="col-lg col-form-label fs-6">
+          {{label?.assurance?.NAME || 'Standard Name'}}:
+          <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"
+          pTooltip="{{tooltip?.assurance?.NAME || 'Name the applied standard'}}"></i>
+        </label>
+        <div class="col-lg-8 fv-row">
+          <input
+            pInputText
+            type="text" 
+            [(ngModel)]="config.data.standard_name"
+            class="p-inputtext-sm"
+            [style]="{'width':'100%'}"/>
+        </div>
+      </div>
+      <div class="row mb-0">
+        <label class="col-lg col-form-label fs-6">
+          {{label?.assurance?.SERIAL_NUMBER || 'Standard Serial Number'}}:
+          <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"
+          pTooltip="{{tooltip?.assurance?.SERIAL_NUMBER || 'Give the standards serial number'}}"></i>
+        </label>
+        <div class="col-lg-8 fv-row">
+          <input
+            pInputText
+            type="text" 
+            [(ngModel)]="config.data.standard_serial_number"
+            class="p-inputtext-sm"
+            [style]="{'width':'100%'}"/>
+        </div>
+      </div>
+      <div class="row mb-0">
+        <label class="col-lg col-form-label fs-6">
+          {{label?.assurance?.RESULT || 'Activity Result'}}:
+        </label>
+        <div class="col-lg-8 fv-row">
+          <p-dropdown  
+             appendTo="body"
+             [filter]="true"
+             [(ngModel)]="config.data.activityResult"
+             [options]="config.data.activityResultOption"
+             optionLabel="label"
+             [style]="{'width':'100%'}"></p-dropdown>
+        </div>
+      </div>
+      
+      <div class="row mb-0">
+        <label class="col-lg col-form-label fs-6">
+          {{label?.assurance?.DOC_URL || 'Documentation URL'}}:
+          <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"
+          pTooltip="{{tooltip?.assurance?.DATE || 'Provide a direct link to quality assurace documentation supporting the quality assurance activity'}}"></i>
+        </label>
+        <div class="col-lg-8 fv-row">
+          <input
+            pInputText
+            type="text" 
+            [(ngModel)]="config.data.documentation_url"
+            class="p-inputtext-sm"
+            [style]="{'width':'100%'}"/>
+        </div>
+      </div>
+      <div class="row mb-0">
+        <label class="col-lg col-form-label fs-6">
+          {{label?.assurance?.AUTHOR || 'Author'}}:
+        </label>
+        <div class="col-lg-8 fv-row">
+          <input
+            pInputText
+            type="text" 
+            [(ngModel)]="config.data.author"
+            class="p-inputtext-sm"
+            [style]="{'width':'100%'}"/>
+        </div>
+      </div>
+    </div>
+    
+      <div class="footer-container">
+        <div class="div-right">
+          <p-button label="Save Quality Assurance" (click)="onOke()" icon="pi pi-plush" styleClass="p-button-sm"></p-button>
+        </div>
+      </div>
+  </div>
+</div>

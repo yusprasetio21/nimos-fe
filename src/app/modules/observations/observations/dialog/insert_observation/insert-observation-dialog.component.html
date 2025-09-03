@@ -1,0 +1,99 @@
+
+<div mat-dialog-content>
+  <div class="full-height">
+    <div class="card-body border-top p-5">
+      <div class="row mb-6">
+        <mat-form-field class="example-full-width" appearance="fill" hidden>
+          <input matInput placeholder="Variabel" [(ngModel)]="config.data.id" [disabled]="true">
+        </mat-form-field>
+        <mat-form-field class="example-full-width" appearance="fill" hidden>
+          <input matInput placeholder="Variabel" [(ngModel)]="config.data.observed_variable_id" [disabled]="true">
+        </mat-form-field>
+        <div class="row mb-2">
+          <label class="col-lg-4 col-form-label required fs-6">
+            {{label?.observation?.VARIABLE_OBSERVATION || 'Variable'}}
+            <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+              pTooltip="{{tooltip?.observation?.VARIABLE_OBSERVATION || 'Variable intended to be measured or observed or derived,
+              including the biogeophyscal context [see WMDS 1-01]'}}"></i>
+          </label>
+          <div class="col-lg-8 fv-row">
+            <input
+              pInputText
+              [style]="{'width':'100%'}"
+              type="text" 
+              [(ngModel)]="config.data.variable"
+              disabled/>
+          </div>
+        </div>
+        <div class="row mb-0">
+          <label class="col-lg-4 col-form-label required fs-6">
+            {{label?.observation?.GEOMETRY_OBSERVATION || 'Geometry'}}
+            <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+            pTooltip="{{tooltip?.observation?.GEOMETRY_OBSERVATION || 'coverd by the observasions can be a zero-, one-,two-,or three- dimentional feature [see WMDS 1-04, spatial extend]'}}"></i>
+          </label>
+          <div class="col-lg fv-row">
+            <p-dropdown  
+               id="strategy"
+               appendTo="body"
+               [(ngModel)]="config.data.geometry"
+               [options]="geomteryOptions"
+               optionLabel="label"
+               [style]="{'width':'100%'}"></p-dropdown>
+          </div>
+        </div>
+        <div class="row mb-0">
+          <label class="col-lg-4 col-form-label required fs-6">
+            {{label?.observation?.PROGRAM_OBSERVATION || 'Program/network affiliation'}}
+            <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+            pTooltip="{{tooltip?.observation?.PROGRAM_OBSERVATION || 'Affiliate this station with your program of responsibility'}}"></i>
+          </label>
+          <div class="col-lg fv-row">
+            <div class="row">
+              <mat-form-field class="example-full-width" appearance="outline">
+                  <input matInput type="search" [(ngModel)]="config.data.programs_text" disabled="true">
+                  <button matSuffix mat-stroked-button aria-label="clear" (click)="affiliationDialog()">
+                    <mat-icon>add</mat-icon>
+                  </button>
+                  <button matSuffix mat-stroked-button aria-label="clear" (click)="clearData()">
+                    <mat-icon>clear</mat-icon>
+                  </button>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <!-- jika update maka hide -->
+        <div *ngIf="config.data.action=='insert'">
+          <div class="row mb-0">
+            <!-- <mat-label class="col-lg-4 col-form-label fw-bold fs-6">Observed Since</mat-label> -->
+            <label class="col-lg-4 col-form-label fs-6">
+              {{label?.observation?.OBSERVE_SINCE || 'Observed Since'}}
+            </label>
+            <div class="col-lg fv-row">
+              <div class="row">
+                <p-calendar 
+                dataType="string" [(ngModel)]="config.data.observed_since" [showIcon]="true" inputId="icon" appendTo="body" dateFormat="dd-mm-yy"
+                            [style]="{'width':'30%'}" appendTo="body"></p-calendar>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-6">
+            <label class="col-lg-4 col-form-label fs-6">
+              {{label?.observation?.OBSERVING_METHODE || 'Observed Method'}}
+            </label>
+            <!-- <mat-label class="col-lg-4 col-form-label fw-bold fs-6">Observing Method</mat-label> -->
+            <div class="col-lg-8 fv-row">
+              <p-button (click)="addMethod()" label=" {{config.data.methodNode != undefined? config.data.methodNode.text : '-- Observation--'}}" icon="pi pi-save" styleClass="p-button-sm">
+              </p-button>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    <div class="footer-container">
+      <div class="div-right">
+        <p-button (click)="onSave()" label="{{lang=='id'?'Simpan':'Save'}}" icon="pi pi-save" styleClass="p-button-sm"></p-button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,815 @@
+<!-- <h1 mat-dialog-title>{{tittle}}</h1> -->
+<div mat-dialog-content>
+  <div class="full-height">
+    <div class="card-body border-top p-5 mb-4">
+      <div class="row mb-4">
+        <div class="field-radiobutton ui-g-12 ms-6">
+            <p-radioButton name="isBasic" [value]="true" [(ngModel)]="isBasic" inputId="isBasic1"></p-radioButton
+            >&nbsp; <label for="isBasic1">Basic</label>&nbsp;
+            <p-radioButton name="isBasic" [value]="false" [(ngModel)]="isBasic" inputId="isBasic2"></p-radioButton
+            >&nbsp;
+            <label for="isBasic2">Advance</label>
+          </div>
+      </div>
+    </div>
+  
+    <div class="card-body mb-3 p-5 fs-7">
+      <div class="row mb-4">
+        <label class="col-lg-4">
+          {{label?.dataGeneration?.PRIOD_FROM || 'Period covered'}}:
+        </label>
+        <div class="col-lg-4 fv-row">
+          <label class="required"></label>
+          <p-calendar  dataType="string" [(ngModel)]="config.data.from" [showIcon]="true" inputId="icon" placeholder="FROM" appendTo="body" dateFormat="dd-mm-yy"
+                          [style]="{'width':'75%'}"></p-calendar>
+        </div>
+        <div class="col-lg-4 fv-row">
+          &nbsp;
+          <p-calendar  dataType="string" [(ngModel)]="config.data.to" [showIcon]="true" inputId="icon" placeholder="TO" appendTo="body" dateFormat="dd-mm-yy"
+                          [style]="{'width':'75%'}"></p-calendar>
+        </div>
+      </div>
+  
+      <!-- Sample -->
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+            <b> Sample
+              {{label?.sampling?.SAMPLING || 'Sample'}}
+            </b>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <!-- Sampling Strategy -->
+          <div class="row mb-4 fs-7">
+            <label class="col-lg-4 col-form-label fs-6">
+              {{label?.sampling?.STRATEGY || 'Sampling Strategy'}}:
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+              pTooltip="{{tooltip?.sampling?.STRATEGY || 'Indicate wich strategy is used to obseve the variable (continuous, discrete or event based). [see WMDS 6-03, Sampling strategy'}}"></i>
+            </label>
+            <div class="col-lg fv-row">
+              <div class="row">
+                <p-dropdown  
+                id="strategy"
+                appendTo="body"
+                [filter]="true"
+                [(ngModel)]="config.data.sampling_strategy"
+                [options]="config.data.samplingStrategyOption"
+                optionLabel="label"
+                [style]="{'width':'100%'}"></p-dropdown>
+              </div>
+            </div>
+          </div>
+          <!-- Sampling Interval -->
+          <div class="row mb-4 fs-7">
+            <label class="col-lg-4 col-form-label fs-6">
+              {{label?.sampling?.INTERVAL || 'Sampling Interval'}}:
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+              pTooltip="{{tooltip?.sampling?.INTERVAL || 'The time interval (e.g. seconds) between the beginning of consecutive sampling events. [see WMDS 6-06, Temporal sampling interval]'}}"></i>
+            </label>
+            <div class="col-lg-4 fv-row">
+              <input
+                    pInputText
+                    type="number" 
+                    [(ngModel)]="config.data.sampling_interval"
+                    class="p-inputtext-sm"
+                    [style]="{'width':'100%'}"
+                    name="alamat" />
+            </div>
+            <div class="col-lg-4 fv-row">
+              <p-dropdown  
+                id="strategy"
+                appendTo="body"
+                [filter]="true"
+                [(ngModel)]="config.data.interval_unit"
+                [options]="config.data.intervalUnitOption"
+                optionLabel="label"
+                [style]="{'width':'100%'}"></p-dropdown>
+            </div>
+          </div>
+          <!-- Sampling Period -->
+          <div class="row mb-4 fs-7"
+          *ngIf="_showField(param?.sampling?.PRIOD.is_visible, param?.sampling?.PRIOD.is_basic, isBasic)">
+            <label class="col-lg-4 col-form-label fs-6">
+              {{label?.sampling?.PRIOD || 'Sampling Period'}}:
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+              pTooltip="{{tooltip?.sampling?.PRIOD || 'The time period (e.g. seconds) over wich a measurements is taken or a sample is collected during each sampling interval. For integral sampling stategies, this is the same as the sampling interval. [see WMDS 6-04, Sampling time period]'}}"></i>
+            </label>
+            <div class="col-lg-4 fv-row">
+              <input
+                    pInputText
+                    type="number" 
+                    class="p-inputtext-sm"
+                    [style]="{'width':'100%'}"
+                    [(ngModel)]="config.data.sampling_period"
+                    name="alamat" />
+            </div>
+            <div class="col-lg-4 fv-row">
+              <p-dropdown  
+                id="priod"
+                appendTo="body"
+                [filter]="true"
+                [(ngModel)]="config.data.priod_unit"
+                [options]="config.data.intervalUnitOption"
+                optionLabel="label"
+                [style]="{'width':'100%'}"></p-dropdown>
+            </div>
+          </div>
+          <!-- >Spatial Sampling Resolution (m) -->
+          <div class="row mb-4 fs-7" *ngIf="_showField(param?.sampling?.RESOLUTION.is_visible, param?.sampling?.RESOLUTION.is_basic, isBasic)">
+            <label class="col-lg-4 col-form-label fs-6">
+              {{label?.sampling?.RESOLUTION || 'Spatial Sampling Resolution (m)'}}:
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+              pTooltip="{{tooltip?.sampling?.RESOLUTION || 'Only applicable to remote sensing observations and mobile platforms in general. For most remote sensing observations, this will be strongly correlated with Temporal sampling interval (WMDS 6-05). Specify a representative value (e.g. the median square root of a pixel area), dimension is length'}}"></i>
+            </label>
+            <div class="col-lg-8 fv-row">
+                <input
+                    pInputText
+                    type="number" 
+                    [(ngModel)]="config.data.spatial_sampling_resolution"
+                    class="p-inputtext-sm"
+                    [style]="{'width':'100%'}"
+                    name="alamat"/>
+              </div>
+          </div>
+          <!-- Sampling Procedure -->
+          <div class="row mb-4 fs-7"
+          *ngIf="_showField(param?.sampling?.PROCEDURE.is_visible, param?.sampling?.PROCEDURE.is_basic, isBasic)">
+            <label class="col-lg-4 col-form-label fs-6">
+              {{label?.sampling?.PROCEDURE || 'Sampling Procedure'}}:
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+              pTooltip="{{tooltip?.sampling?.PROCEDURE || 'Procedures involved in obtaining a sample [see WMDS 6-01, Sampling procedures]'}}"></i>
+            </label>
+            <div class="col-lg fv-row">
+              <div class="row">
+                <p-dropdown  
+                id="procedure"
+                appendTo="body"
+                [filter]="true"
+                [(ngModel)]="config.data.sampling_procedure"
+                [options]="config.data.samplingProcedureOption"
+                optionLabel="label"
+                [style]="{'width':'100%'}"></p-dropdown>
+              </div>
+            </div>
+          </div>
+          <!-- Sampling Procedure Description -->
+          <div class="row mb-4 fs-7"
+          *ngIf="_showField(param?.sampling?.PROCEDURE_DESC.is_visible, param?.sampling?.PROCEDURE_DESC.is_basic, isBasic)">
+            <label class="col-lg-4 col-form-label    fs-6">
+              {{label?.sampling?.PROCEDURE_DESC || 'Sampling Procedure Description'}}:</label>
+            <div class="col-lg-8 fv-row">
+                <input
+                    pInputText
+                    [(ngModel)]="config.data.sampling_procedure_description"
+                    type="text" 
+                    class="p-inputtext-sm"
+                    [style]="{'width':'100%'}"/>
+              </div>
+          </div>
+          <!-- Sample Treatment -->
+          <div class="row mb-4" fs-7
+          *ngIf="_showField(param?.sampling?.TREATMENT.is_visible, param?.sampling?.TREATMENT.is_basic, isBasic)">
+            <label class="col-lg-4 col-form-label fs-6">
+              {{label?.sampling?.TREATMENT || 'Sampling Treatment'}}:
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+              pTooltip="{{tooltip?.sampling?.TREATMENT || 'Briefly describe the chemical or physical treatment of sample prior to analysis [see WMDS 6-02, Sample treatment]'}}"></i>
+            </label>
+            <div class="col-lg fv-row">
+              <div class="row">
+                <p-dropdown  
+                id="treatment"
+                appendTo="body"
+                [filter]="true"
+                [(ngModel)]="config.data.sample_treatment"
+                [options]="config.data.samplingTreatmentOption"
+                optionLabel="label"
+                [style]="{'width':'100%'}"></p-dropdown>
+              </div>
+            </div>
+          </div>
+          
+        </mat-expansion-panel>
+      </mat-accordion>
+  
+      <!-- Processing -->
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+            <b> 
+              {{label?.processing?.PROCESSING || 'Processing'}}</b>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="row mb-4 fs-7">
+            <label class="col-lg-4 col-form-label    fs-6">
+              {{label?.processing?.PROCESSING_PRIOD || 'Aggregation Priod'}}:
+            </label>
+            <div class="col-lg-4 fv-row">
+              <input
+                    pInputText
+                    type="number" 
+                    [(ngModel)]="config.data.aggregation_priod"
+                    class="p-inputtext-sm"
+                    [style]="{'width':'100%'}"
+                    name="alamat" />
+            </div>
+            <div class="col-lg-4 fv-row">
+              <p-dropdown  
+                id="strategy"
+                appendTo="body"
+                [filter]="true"
+                [(ngModel)]="config.data.interval_unit_aggregation"
+                [options]="config.data.intervalUnitOption"
+                optionLabel="label"
+                [style]="{'width':'100%'}"></p-dropdown>
+            </div>
+          </div>
+          <div class="row mb-4 fs-7" *ngIf="_showField(param?.processing?.PROCESSING_METHOD.is_visible, param?.processing?.PROCESSING_METHOD.is_basic, isBasic)">
+            <label class="col-lg-4 col-form-label fs-6">
+              {{label?.processing?.PROCESSING_METHOD || 'Data Processing Method'}}:
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+              pTooltip="{{tooltip?.processing?.PROCESSING_METHOD || 'Briefly describe what data processing/algorithms are used to generate the reported values of an observed or derived variable. A publicly available reference to a description of the procedures used is acceptable. [see WMDS 7-01, Data processing methods and algorithms]'}}"></i>
+            </label>
+            <div class="col-lg-8 fv-row">
+              <input
+                    pInputText
+                    type="text" 
+                    [(ngModel)]="config.data.data_processing_method"
+                    class="p-inputtext-sm"
+                    [style]="{'width':'100%'}"
+                    name="alamat" />
+            </div>
+          </div>
+          <div class="row mb-4 fs-7"
+          *ngIf="_showField(param?.processing?.PROCESSING_VERSION.is_visible, param?.processing?.PROCESSING_VERSION.is_basic, isBasic)">
+            <label class="col-lg-4 col-form-label fs-6">
+              {{label?.processing?.PROCESSING_VERSION || 'Software / Processing And Version'}}:
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+              pTooltip="{{tooltip?.processing?.PROCESSING_VERSION || 'Name and version of the software or processor utilized to derive the element value. [see WMDS 7-05, Software/processor and version]'}}"></i>
+            </label>
+            <div class="col-lg-8 fv-row">
+              <input
+                    pInputText
+                    type="text" 
+                    [(ngModel)]="config.data.software_version"
+                    class="p-inputtext-sm"
+                    [style]="{'width':'100%'}"
+                    name="alamat" />
+            </div>
+          </div>
+          <div class="row mb-4 fs-7"
+          *ngIf="_showField(param?.processing?.PROCESSING_URL.is_visible, param?.processing?.PROCESSING_URL.is_basic, isBasic)">
+            <label class="col-lg-4 col-form-label fs-6">
+              {{label?.processing?.PROCESSING_URL || 'Software / Sourcode Repository URL'}}:
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+              pTooltip="{{tooltip?.processing?.PROCESSING_URL || 'Specify the URL at wich the source is made available'}}"></i>
+            </label>
+            <div class="col-lg-8 fv-row">
+              <input
+                    pInputText
+                    type="text" 
+                    [(ngModel)]="config.data.software_repository_url"
+                    class="p-inputtext-sm"
+                    [style]="{'width':'100%'}"
+                    name="alamat" />
+            </div>
+          </div>
+          <div class="row mb-4 fs-7"
+          *ngIf="_showField(param?.processing?.PROCESSING_ANALYSIS.is_visible, param?.processing?.PROCESSING_ANALYSIS.is_basic, isBasic)">
+            <label class="col-lg-4 col-form-label fs-6">
+              {{label?.processing?.PROCESSING_ANALYSIS || 'Processing / Analysis Centre'}}:</label>
+            <div class="col-lg-8 fv-row">
+              <p-dropdown  
+                id="strategy"
+                appendTo="body"
+                [filter]="true"
+                [(ngModel)]="config.data.processing_centre"
+                [options]="config.data.processingOption"
+                optionLabel="label"
+                [style]="{'width':'100%'}"></p-dropdown>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+      
+      <!-- Reporting -->
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+            <b>
+              {{label?.reporting?.PROCESSING_ANALYSIS || 'Reporting'}}
+            </b>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <!-- Schedule -->
+          <div class="card-body border-top p-5 mb-4">
+            <div class="row mb-4 fs-7">
+              <label class="col-lg-4 col-form-label    fs-6">Schedule</label>
+              <div class="row mb-0 div-right">
+                <div class="p-field-checkbox">
+                  <p-checkbox name="group1" [(ngModel)]="isUsedForInternationalReporting" [binary]="true" [inputId]="ny"></p-checkbox>
+                  <label for="ny">
+                    {{label?.reporting?.SCHE_INT || 'Used for international reporting'}}
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-4 fs-7">
+              <label class="col-lg-4 col-form-label required fs-6">
+                {{label?.reporting?.SCHE_INTERVAL || 'Reporting Interval'}}: 
+                <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+                pTooltip="{{tooltip?.reporting?.SCHE_INTERVAL || 'The time interval (e.g. in hours) at which the observed variable is reported / transmitted. [see WMDS 7-03, Temporal reporting period]'}}"></i>
+              </label>
+              <div class="col-lg-8 fv-row">
+                <p-button styleClass="p-button-sm" (click)="time(10)">10 Min</p-button>&nbsp;
+                <p-button styleClass="p-button-sm" (click)="time(60)">Hourly</p-button>&nbsp;
+                <p-button styleClass="p-button-sm" (click)="time(180)">3 Hourly</p-button>&nbsp;
+                <p-button styleClass="p-button-sm" (click)="time(360)">6 Hourly</p-button>&nbsp;
+                <p-button styleClass="p-button-sm" (click)="time(720)">12 Hourly</p-button>&nbsp;
+                  <input
+                    pInputText
+                    type="number" 
+                    placeholder="Interval (Min)"
+                    [(ngModel)]="config.data.reporting_interval"
+                    [style]="{'width':'30%'}"/>
+              </div>
+            </div>
+            <!-- Period of reporting -->
+            <div class="row mb-4 fs-7">
+              <label class="col-lg-4 col-form-label  required  fs-6">
+                {{label?.reporting?.SCHE_PRIOD || 'Priod of Reporting'}}:</label>
+              <div class="col-lg-8 fv-row">
+                <div class="col-lg-12 fv-row">
+                  <p-button styleClass="p-button-sm" (click)="priod(1)">24/7, year round</p-button>&nbsp;
+                  <p-button styleClass="p-button-sm" (click)="priod(2)">Weekdays, year round</p-button>&nbsp;
+                  <p-button styleClass="p-button-sm" (click)="priod(3)">Weekend, year round</p-button>&nbsp;
+                  <!-- <p-button styleClass="p-button-sm">Custom priod</p-button>&nbsp; -->
+                </div>
+                <div class="row-lg-12 fs-7">
+                  <table [style]="{'width':'100%'}">
+                    <tr>
+                      <td style="text-align: center">
+                        <label class="col-lg col-form-label required fw-bold fs-6">
+                          {{label?.reporting?.SCHE_TIME || 'UTC'}}
+                          <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"
+                          pTooltip="{{tooltip?.reporting?.SCHE_TIME || 
+                            'Specifies the timestamps in UTC for the first and last report on observations in a day, respectively. If the To time is inconsistent with the From time and the specified reporting interval, it will be considered as a limit of the period only'}}"></i>
+                        </label>
+                      </td>
+                      <td style="text-align: center">
+                        <label class="col-lg col-form-label required fw-bold fs-6">
+                          {{label?.reporting?.SCHE_DAY || 'Day'}} 
+                          <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"
+                          pTooltip="{{tooltip?.reporting?.SCHE_DAY || 'Specify the weekdays during wich observations are typically made, in UTC'}}"></i>
+                        </label>
+                      </td>
+                      <td style="text-align: center">
+                        <label class="col-lg col-form-label required fw-bold fs-6">
+                          {{label?.reporting?.SCHE_MONTH || 'Month'}}
+                          <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"
+                          pTooltip="{{tooltip?.reporting?.SCHE_MONTH || 'Specify the months of year during wich observations are typically made'}}"></i>
+                        </label>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p-dropdown  
+                          id="strategy"
+                          appendTo="body"
+                          [(ngModel)]="config.data.hourFrom"
+                          [options]="hourOptions"
+                          optionLabel="label"
+                          ></p-dropdown>
+                        <p-dropdown  
+                          id="strategy"
+                          appendTo="body"
+                          [(ngModel)]="config.data.hourTo"
+                          [options]="hourOptions"
+                          optionLabel="label"
+                          ></p-dropdown>
+                      </td>
+                      <td>
+                        <p-dropdown  
+                          id="strategy"
+                          appendTo="body"
+                          [(ngModel)]="config.data.dayFrom"
+                          [options]="dayOptions"
+                          optionLabel="label"
+                          ></p-dropdown>
+                        <p-dropdown  
+                          id="strategy"
+                          appendTo="body"
+                          [(ngModel)]="config.data.dayTo"
+                          [options]="dayOptions"
+                          optionLabel="label"
+                          ></p-dropdown>
+                      </td>
+                      <td>
+                        <p-dropdown  
+                          id="strategy"
+                          appendTo="body"
+                          [(ngModel)]="config.data.monthFrom"
+                          [options]="mounthOptions"
+                          optionLabel="label"
+                          ></p-dropdown>
+                        <p-dropdown  
+                          id="strategy"
+                          appendTo="body"
+                          [(ngModel)]="config.data.monthTo"
+                          [options]="mounthOptions"
+                          optionLabel="label"
+                          ></p-dropdown>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <!-- Diurnal -->
+            <div class="row mb-4 fs-7">
+              <label class="col-lg-4 col-form-label required fs-6">
+                {{label?.reporting?.SCHE_DIURNAL || 'Diurnal Base Time'}}:
+                <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+                pTooltip="{{tooltip?.reporting?.SCHE_DIURNAL || 'The time (typically hour of the day) to which the daily (24h) statistics are referenced to [see WMDS 6-07, Diural base time]. That means if one day in your statistical analysis is starting and ending at midnight, the diural base time is 00:00. If a dat is defined to start at noon until noon of the next day, the diural base time would be 12:00'}}"></i>
+              </label>
+              <div class="col-lg-8 fv-row">
+                <input
+                  pInputText
+                  type="number" 
+                  [(ngModel)]="config.data.diurnal1"/>
+                  &nbsp;:&nbsp;
+                  <input
+                    pInputText
+                    type="number" 
+                    [(ngModel)]="config.data.diurnal2"/>
+              </div>
+            </div>
+          </div>
+          <!-- Number Of Observation -->
+          <div class="row mb-4 fs-7"
+          *ngIf="_showField(param?.reporting?.OBS.is_visible, param?.reporting?.OBS.is_basic, isBasic)">
+            <label class="col-lg col-form-label fs-6">
+              {{label?.reporting?.OBS || 'Number Of Observations In Reporting Period'}}: 
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"
+              pTooltip="{{tooltip?.reporting?.OBS || 'Specify the number of observations made in the reporting period'}}"></i>
+            </label>
+            <div class="col-lg-8 fv-row">
+              <input
+                    pInputText
+                    type="number" 
+                    [(ngModel)]="config.data.observation_count"
+                    class="p-inputtext-sm"
+                    [style]="{'width':'100%'}"
+                    name="alamat" />
+            </div>
+          </div>
+          <!-- Measurement -->
+          <div class="row mb-4 fs-7">
+            <label class="col-lg-4 col-form-label required fs-6">
+              {{label?.reporting?.MEASURMENT || 'Measurement Unit'}}:
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+              pTooltip="{{tooltip?.reporting?.PROCESSING_URL || 'Real scalar quantity, defined and adopted by convention, with which any other quantity of the same kind can be compared to wexpress the ration of the two quantities as a number [see WMDS 1-02, Measurement unit]'}}"></i>
+            </label>
+            <div class="col-lg-8 fv-row">
+              <p-dropdown  
+                id="strategy"
+                appendTo="body"
+                [filter]="true"
+                [(ngModel)]="config.data.measurement_unit"
+                [options]="config.data.measurementOptions"
+                optionLabel="label"
+                [style]="{'width':'100%'}"></p-dropdown>
+            </div>
+          </div>
+          <!-- Data policy -->
+          <div class="row mb-4 fs-7">
+            <label class="col-lg-4 col-form-label required fs-6">
+              {{label?.reporting?.POLICY || 'Data Policy'}}:
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+              pTooltip="{{tooltip?.reporting?.POLICY || 'Details relating to the use and limitations surrounding data imposed by the supervising organization. [see WMDS 9-02, Data policy/use constraints]'}}"></i>
+            </label>
+            <div class="col-lg-8 fv-row">
+              <p-dropdown  
+                id="strategy"
+                appendTo="body"
+                [filter]="true"
+                [(ngModel)]="config.data.data_policy"
+                [options]="config.data.dataPoliciesOption"
+                optionLabel="label"
+                [style]="{'width':'100%'}"></p-dropdown>
+            </div>
+          </div>
+          <!-- Spatial reporting interval -->
+          <div class="row mb-4 fs-7"
+          *ngIf="_showField(param?.reporting?.INTERVAL.is_visible, param?.reporting?.INTERVAL.is_basic, isBasic)">
+            <label class="col-lg col-form-label required fs-6">
+              {{label?.reporting?.INTERVAL || 'Spatial Reporting Interval (m)'}}: 
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"
+              pTooltip="{{tooltip?.reporting?.INTERVAL || 'Only applicable to remote sensing observations and mobile platforms in general. For most remote sensing observations, this will be strongly correlated with Temporal reporting interval(WMDS 7-04). Specify a representative value (e.g., the median square root of a pixel area), dimension is length'}}"></i>
+            </label>
+            <div class="col-lg-8 fv-row">
+              <input
+                    pInputText
+                    type="number" 
+                    [(ngModel)]="config.data.spatial_reporting_interval"
+                    class="p-inputtext-sm"
+                    [style]="{'width':'100%'}"
+                    name="alamat" />
+            </div>
+          </div>
+          <!-- Timeliness -->
+          <div class="row mb-4 fs-7"
+          *ngIf="_showField(param?.reporting?.TIMELINESS.is_visible, param?.reporting?.TIMELINESS.is_basic, isBasic)">
+            <label class="col-lg col-form-label fs-6">
+              {{label?.reporting?.TIMELINESS || 'Timeliness'}}:
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"
+              pTooltip="{{tooltip?.reporting?.TIMELINESS || 'Specify the usual time lag until the observational data become available to the end user. [see WMDS 7-13, Latency (of reporting)]'}}"></i>
+            </label>
+            <div class="col-lg-4 fv-row">
+              <input
+                    pInputText
+                    type="number" 
+                    [(ngModel)]="config.data.timeliness"
+                    class="p-inputtext-sm"
+                    [style]="{'width':'100%'}"
+                    name="alamat" />
+            </div>
+            <div class="col-lg-4 fv-row">
+              <p-dropdown  
+                id="strategy"
+                appendTo="body"
+                [filter]="true"
+                [(ngModel)]="config.data.timeliness_unit"
+                [options]="config.data.intervalUnitOption"
+                optionLabel="label"
+                [style]="{'width':'100%'}"></p-dropdown>
+            </div>
+          </div>
+          <!-- Numerical resolution: -->
+          <div class="row mb-4 fs-7"
+          *ngIf="_showField(param?.reporting?.RESOLUTION.is_visible, param?.reporting?.RESOLUTION.is_basic, isBasic)">
+            <label class="col-lg col-form-label fs-6">
+              {{label?.reporting?.RESOLUTION || 'Numerical Resolution'}}:
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"
+              pTooltip="{{tooltip?.reporting?.RESOLUTION || 'Number of digits indicating the precision in wich a numerical quantity is reported. Note this does not inform about the measurement uncertainity. [see WMDS 7-12, Numerical resolution]'}}"></i>
+            </label>
+            <div class="col-lg-8 fv-row">
+              <input
+                    pInputText
+                    type="number" 
+                    [(ngModel)]="config.data.numerical_resolution"
+                    class="p-inputtext-sm"
+                    [style]="{'width':'100%'}"
+                    name="alamat" />
+            </div>
+          </div>
+          <!-- Level of data -->
+          <div class="row mb-4 fs-7"
+          *ngIf="_showField(param?.reporting?.LEVEL.is_visible, param?.reporting?.LEVEL.is_basic, isBasic)">
+            <label class="col-lg col-form-label fs-6">
+              {{label?.reporting?.LEVEL || 'Level Of Data'}}:
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"
+              pTooltip="{{tooltip?.reporting?.LEVEL || 'Level of data processing. [see WMDS 7-06, Level of data]'}}"></i>
+            </label>
+            <div class="col-lg-8 fv-row">
+              <p-dropdown  
+                id="strategy"
+                appendTo="body"
+                [filter]="true"
+                [(ngModel)]="config.data.level_of_data"
+                [options]="config.data.levelOption"
+                optionLabel="label"
+                [style]="{'width':'100%'}"></p-dropdown>
+            </div>
+          </div>
+          <!-- Data format -->
+          <div class="row mb-4 fs-7"
+          *ngIf="_showField(param?.reporting?.FORMAT.is_visible, param?.reporting?.FORMAT.is_basic, isBasic)">
+            <label class="col-lg col-form-label fs-6">
+              {{label?.reporting?.FORMAT || 'Data Format'}}: 
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"
+              pTooltip="{{tooltip?.reporting?.FORMAT || 'Specify the primary data transmission format for the observations. Note that products derived from the data may be using a different format. [see WMDS 7-07, Data format]'}}"></i>
+            </label>
+            <div class="col-lg-8 fv-row">
+              <p-dropdown  
+                id="strategy"
+                appendTo="body"
+                [filter]="true"
+                [(ngModel)]="config.data.data_format"
+                [options]="config.data.formatsOption"
+                optionLabel="label"
+                [style]="{'width':'100%'}"></p-dropdown>
+            </div>
+          </div>
+          <!-- Data format version: -->
+          <div class="row mb-4 fs-7"
+          *ngIf="_showField(param?.reporting?.VERSION.is_visible, param?.reporting?.VERSION.is_basic, isBasic)">
+            <label class="col-lg col-form-label fs-6">
+              {{label?.reporting?.VERSION || 'Data Format Version'}}: 
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"
+              pTooltip="{{tooltip?.reporting?.VERSION || 'Specify the version of the data format used. [see WMDS 7-08, Data format version]'}}"></i>
+            </label>
+            <div class="col-lg-8 fv-row">
+              <input
+                    pInputText
+                    type="text" 
+                    [(ngModel)]="config.data.data_format_version"
+                    class="p-inputtext-sm"
+                    [style]="{'width':'100%'}"
+                    name="alamat" />
+            </div>
+          </div>
+          <!-- Reference datum: -->
+          <div class="row mb-4 fs-7"
+          *ngIf="_showField(param?.reporting?.DATUM.is_visible, param?.reporting?.DATUM.is_basic, isBasic)">
+            <label class="col-lg col-form-label required fs-6">
+              {{label?.reporting?.DATUM || 'Reference Datum'}}:
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"
+              pTooltip="{{tooltip?.reporting?.DATUM || 'Briefly describe reerence datum to which the observed varable is reported. [see WMDS 7-11, Reference datum]'}}"></i>
+            </label>
+            <div class="col-lg-8 fv-row">
+              <input
+                    pInputText
+                    type="text" 
+                    [(ngModel)]="config.data.reference_datum"
+                    class="p-inputtext-sm"
+                    [style]="{'width':'100%'}"
+                    name="alamat" />
+            </div>
+          </div>
+          <!-- Reference time source -->
+          <div class="row mb-4 fs-7"
+          *ngIf="_showField(param?.reporting?.TIME_SOURCE.is_visible, param?.reporting?.TIME_SOURCE.is_basic, isBasic)">
+            <label class="col-lg col-form-label fs-6">
+              {{label?.reporting?.TIME_SOURCE || 'Reference Time Source'}}: 
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"
+              pTooltip="{{tooltip?.reporting?.TIME_SOURCE || 'Specify the source for date and time of the observations. [see WMDS 7-10, Reference time]'}}"></i>
+            </label>
+            <div class="col-lg-8 fv-row">
+              <p-dropdown  
+                id="strategy"
+                appendTo="body"
+                [filter]="true"
+                [(ngModel)]="config.data.reference_time"
+                [options]="config.data.referenceTimesOption"
+                optionLabel="label"
+                [style]="{'width':'100%'}"></p-dropdown>
+            </div>
+          </div>
+          <!-- Is the observation traceable to a standard? -->
+          <div class="row mb-6 fs-7"
+          *ngIf="_showField(param?.reporting?.OBSERVATION_STANDART.is_visible, param?.reporting?.OBSERVATION_STANDART.is_basic, isBasic)">
+            <label class="col-lg col-form-label fs-6">
+              {{label?.reporting?.OBSERVATION_STANDART || 'Is the observation traceable to a standard?'}}:
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"
+              pTooltip="{{tooltip?.reporting?.OBSERVATION_STANDART || 'Statement defining traceability to a standard, indcluding sequence of measurement standards and calibrations that used to relate a measurement result to a reference [VIM 3 2.4.2] [ WMDS 8-05, Treaceability]'}}"></i>
+            </label>
+            <div class="col-lg fv-row">
+              <div class="row">
+                <div class="field-radiobutton ui-g-12 ui-md-4">
+                  <p-radioButton name="config.data.is_traceable" value="yes" [(ngModel)]="config.data.is_traceable" inputId="city3"></p-radioButton>
+                  <label for="city3">Yes</label>
+                  &nbsp;
+                  <p-radioButton name="config.data.is_traceable" value="no" [(ngModel)]="config.data.is_traceable" inputId="city4"></p-radioButton>
+                  <label for="city4">No</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Data quality flagging system -->
+          <div class="row mb-4 fs-7"
+          *ngIf="_showField(param?.reporting?.QUALITY_FLAGGING.is_visible, param?.reporting?.QUALITY_FLAGGING.is_basic, isBasic)">
+            <label class="col-lg col-form-label fs-6">
+              {{label?.reporting?.QUALITY_FLAGGING || 'Data Quality Flagging System'}}: 
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"
+              pTooltip="{{tooltip?.reporting?.QUALITY_FLAGGING || 'Indicate which data quality flagging system is used to characterize data quality. A publicly accesible reference is acceptable'}}"></i>
+            </label>
+            <div class="col-lg-8 fv-row">
+              <p-dropdown  
+                id="strategy"
+                appendTo="body"
+                [filter]="true"
+                [(ngModel)]="config.data.quality_flag_system"
+                [options]="config.data.qualityOption"
+                optionLabel="label"
+                [style]="{'width':'100%'}"></p-dropdown>
+            </div>
+          </div>
+          <!-- Primary observation -->
+          <div class="row mb-6 fs-7"
+          *ngIf="_showField(param?.reporting?.PRIMARY_OBSERVATION.is_visible, param?.reporting?.PRIMARY_OBSERVATION.is_basic, isBasic)">
+            <label class="col-lg col-form-label fs-6">
+              {{label?.reporting?.PRIMARY_OBSERVATION || 'Primary observation'}}: 
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"
+              pTooltip="{{tooltip?.reporting?.PRIMARY_OBSERVATION || 'Indicate whether the observation is the primary/official one or an additional/supplementary observation. [see WMDS 5-14, Status of observation]'}}"></i>
+            </label>
+            <div class="col-lg fv-row">
+              <div class="row">
+                <div class="field-radiobutton ui-g-12 ui-md-4">
+                  <p-radioButton name="config.data.is_primary" value="yes" [(ngModel)]="config.data.is_primary" inputId="city3"></p-radioButton>
+                  <label for="city3">Yes</label>
+                  &nbsp;
+                  <p-radioButton name="config.data.is_primary" value="no" [(ngModel)]="config.data.is_primary" inputId="city4"></p-radioButton>
+                  <label for="city4">No</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Meaning of timestamp in data reports -->
+          <div class="row mb-4 fs-7"
+          *ngIf="_showField(param?.reporting?.MEANING_TIMESTAMPP.is_visible, param?.reporting?.MEANING_TIMESTAMPP.is_basic, isBasic)">
+            <label class="col-lg col-form-label required fs-6">
+              {{label?.reporting?.MEANING_TIMESTAMPP || 'Meaning Of Timestamp In Data Reports'}}: 
+              <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"
+              pTooltip="{{tooltip?.reporting?.MEANING_TIMESTAMPP || 'Specify wheter timestamps indicate the beginning, middle, or end of a reporting period.'}}"></i>
+            </label>
+            <div class="col-lg-8 fv-row">
+              <p-dropdown  
+                id="strategy"
+                appendTo="body"
+                [filter]="true"
+                [(ngModel)]="config.data.timestamp_meaning"
+                [options]="config.data.timestampMeaningsOption"
+                optionLabel="label"
+                [style]="{'width':'100%'}"></p-dropdown>
+            </div>
+          </div>
+          <!-- Attribution -->
+          <div class="row mb-4 fs-7"
+          *ngIf="_showField(param?.reporting?.TITTLE_WORK.is_visible, param?.reporting?.TITTLE_WORK.is_basic, isBasic)">
+            <label class="col-lg-4">Attribution:</label>
+            <!-- Title of work: -->
+            <div class="row sub-form">
+              <label class="col-lg-4 col-form-label    fs-6">
+                {{label?.reporting?.TITTLE_WORK || 'Title Of Work'}}:
+              </label>
+              <div class="col-lg-8 fv-row">
+                <input
+                  pInputText
+                  type="text" 
+                  [(ngModel)]="config.data.title_of_work"
+                  class="p-inputtext-sm"
+                    [style]="{'width':'100%'}"
+                  name="alamat" />
+              </div>
+            </div>
+            <!-- Attribution (URL): -->
+            <div class="row sub-form fs-7">
+              <label class="col-lg-4 col-form-label    fs-6">
+                {{label?.reporting?.ATTRIBUTION_URL || 'Attribution (URL)'}}:</label>
+              <div class="col-lg-8 fv-row">
+                <input
+                  pInputText
+                  type="text" 
+                  [(ngModel)]="config.data.attribution_url"
+                  class="p-inputtext-sm"
+                    [style]="{'width':'100%'}"
+                  name="alamat" />
+              </div>
+            </div>
+            <!-- Originator of work: -->
+            <div class="row sub-form fs-7">
+              <label class="col-lg-4 col-form-label    fs-6">
+                {{label?.reporting?.ORIGINATOR || 'Originator of work'}}:</label>
+              <div class="col-lg-8 fv-row">
+                <input
+                  pInputText
+                  type="text" 
+                  [(ngModel)]="config.data.originator_of_work"
+                  class="p-inputtext-sm"
+                    [style]="{'width':'100%'}"
+                  name="alamat" />
+              </div>
+            </div>
+            <!-- Source work is based on (URL): -->
+            <div class="row sub-form fs-7">
+              <label class="col-lg-4 col-form-label    fs-6">
+                {{label?.reporting?.SOURCE_URL || 'Source work is based on (URL)'}}:
+              </label>
+              <div class="col-lg-8 fv-row">
+                <input
+                  pInputText
+                  type="text" 
+                  [(ngModel)]="config.data.source_work_url"
+                  class="p-inputtext-sm"
+                  [style]="{'width':'100%'}"
+                  name="alamat" />
+              </div>
+            </div>
+            
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+  
+    </div>
+      <div class="footer-container">
+        <div class="div-right">
+          <p-button label="{{lang =='id'?'Simpan Generasi Data':'Save Data Generation'}}" (click)="save()" icon="pi pi-save" styleClass="p-button-sm"></p-button>
+        </div>
+      </div>
+  </div>
+  <!-- <button mat-button (click)="close()">Close</button>
+  <button mat-button (click)="save()" cdkFocusInitial>Save</button> -->
+</div>

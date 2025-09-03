@@ -1,0 +1,37 @@
+<!-- <h1 mat-dialog-title>Hi {{data.name}}</h1>
+<div mat-dialog-content>
+  <p>What's your favorite animal?</p>
+  <mat-form-field appearance="fill">
+    <mat-label>Favorite Animal</mat-label>
+    <input matInput [(ngModel)]="data.animal">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button [mat-dialog-close]="data.animal" cdkFocusInitial>Ok</button>
+</div> -->
+<h1 mat-dialog-title>{{data.tittle}}</h1>
+<div mat-dialog-content>
+  <div class="row mb-6">
+    <mat-form-field class="example-full-width" appearance="fill" hidden>
+      <mat-label>ID Tree</mat-label>
+      <input matInput placeholder="Variabel" [(ngModel)]="data.treeId" disable>
+    </mat-form-field>
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Variabel</mat-label>
+      <input matInput placeholder="Variabel" [(ngModel)]="data.variable" disable>
+    </mat-form-field>
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Geometry</mat-label>
+      <mat-select [(ngModel)]="data.geometryId" name="Geometry">
+        <mat-option *ngFor="let data of data.geomteryOptions" [value]="data.value">
+          {{data.label}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <!-- <button mat-button (click)="onCancel()">No Thanks</button> -->
+  <!-- <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button> -->
+  <button mat-button (click)="onClose()" >Close</button>
+  <button mat-button (click)="onSave()" cdkFocusInitial>Save</button>
+</div>

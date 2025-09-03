@@ -1,0 +1,119 @@
+<ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+<p-toast></p-toast>
+<div class="mb-0" style="background-color: #eaeaea" *ngIf="state$ | async">
+    <!--begin::Wrapper-->
+    <div class="pt-0">
+        <!--begin::Container-->
+        <div class="container">
+            <!--begin::Row-->
+            <div class="row">
+                <!--begin::Col-->
+                <div class="col-lg-3">
+                    <div
+                        style="
+                            background-color: white;
+                            margin-top: 10px;
+                            border-radius: 5px;
+                            padding: 5px;
+                            height: 100%;
+                        ">
+                        <div style="margin: 15px">
+                            <div style="font-weight: bold; font-size: 16px">Quick Access</div>
+                            <div style="font-weight: bold; font-size: 14px; padding-top: 15px">
+                                Generate station report by
+                            </div>
+                            <div>Station Id</div>
+                            <p-autoComplete
+                                [(ngModel)]="station"
+                                [suggestions]="filteredStations"
+                                (completeMethod)="searchStationById($event)"
+                                field="identifier"
+                                [style]="{ width: '100%' }"
+                                class="p-fluid"
+                                placeholder="- ketik station id -"
+                                (onSelect)="onSelect($event)"></p-autoComplete>
+
+                            <div>Station Name</div>
+                            <p-autoComplete
+                                [(ngModel)]="station"
+                                [suggestions]="filteredStations"
+                                (completeMethod)="searchStationByName($event)"
+                                field="name"
+                                [style]="{ width: '100%' }"
+                                class="p-fluid"
+                                placeholder="- ketik station name -"
+                                (onSelect)="onSelect($event)"></p-autoComplete>
+                            <div style="font-weight: bold; font-size: 14px; padding-top: 15px">Map Filter</div>
+                            <div>Institutions</div>
+                            <p-dropdown
+                                [options]="institutionOptions"
+                                [(ngModel)]="institutionId"
+                                [filter]="true"
+                                [style]="{ width: '100%' }"
+                                [virtualScroll]="true"
+                                [virtualScrollItemSize]="30"
+                                (onChange)="onSelectInstitutions($event)"></p-dropdown>
+                            <div>Usage</div>
+                            <p-dropdown
+                                [options]="usageTypeOptions"
+                                [(ngModel)]="usageType"
+                                [filter]="true"
+                                [style]="{ width: '100%' }"
+                                (onChange)="onSelectUsage($event)"></p-dropdown>
+                            <div>Status</div>
+                            <p-dropdown
+                                [options]="statusOptions"
+                                [(ngModel)]="status"
+                                [style]="{ width: '100%' }"
+                                (onChange)="onSelectStatus($event)"></p-dropdown>
+                        </div>
+                    </div>
+                    <!--end::Block-->
+                </div>
+                <!--end::Col-->
+                <!--begin::Col-->
+                <div class="col-lg-9">
+                    <div
+                        style="
+                            background-color: white;
+                            margin-top: 10px;
+                            border-radius: 5px;
+                            padding: 5px;
+                            height: 100%;
+                        ">
+                        <h2 style="margin: 15px">Welcome To NIMOS</h2>
+                        <!-- div id="map" style="height: 300px" leaflet [leafletOptions]="options"></!-->
+                        <!--div class="map-container">
+                            <div class="map-frame">
+                                <div id="map">
+                                   
+                                </div>
+                            </div>
+                        </div !-->
+
+                        <div id="map" style="height: 500px"></div>
+                        <div>
+                            <div class="row g-0 m-6 fw-bold fs-6">{{ label?.home?.LATEST_NEWS || 'Latest News' }}</div>
+                            <div *ngFor="let item of news">
+                                <div class="row g-0 mx-6">
+                                    <div class="col-lg-2">{{ item.created_at | date: 'dd-MM-yyyy' }}</div>
+                                    <div class="col-lg-10 fw-bold">{{ item.title }}</div>
+                                </div>
+                                <div class="row g-0 mx-6 mb-4">
+                                    <div class="col-lg-2">&nbsp;</div>
+                                    <div class="col-lg-10" [innerHTML]="item.news"></div>
+                                </div>
+                                <div class="row g-0 mx-6 mb-4" *ngIf="item.is_read_more">
+                                    <div class="col-lg-2">&nbsp;</div>
+                                    <div class="col-lg-10">[ <a routerLink="/news2">read more</a> ]</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--end::Row-->
+            </div>
+            <!--end::Container-->
+        </div>
+    </div>
+</div>

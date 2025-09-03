@@ -1,0 +1,246 @@
+<ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+<div class="mb-0" style="background-color: #eaeaea">
+    <!--begin::Wrapper-->
+    <div class="pt-0">
+        <!--begin::Container-->
+        <div class="container">
+            <!--begin::Row-->
+            <div class="row">
+                <!--begin::Col-->
+                <div class="col-lg-3">
+                    <div
+                        style="
+                            background-color: white;
+                            margin-top: 10px;
+                            border-radius: 5px;
+                            padding: 5px;
+                            height: 100%;
+                        ">
+                        <h2 style="margin-top: 20px">&nbsp;&nbsp;Panduan Registrasi</h2>
+                        <br />
+                        <a class="active py-3 px-4 px-xxl-6" href="#" style="font-size: 15px"
+                            >&nbsp;&nbsp;&nbsp;&bull; Registrasi</a
+                        ><br /><br />
+                        <a class="active py-3 px-4 px-xxl-6" href="#" style="font-size: 15px"
+                            >&nbsp;&nbsp;&nbsp;&bull; Dokumen Pendukung</a
+                        >
+                    </div>
+                    <!--end::Block-->
+                </div>
+                <!--end::Col-->
+                <!--begin::Col-->
+                <div class="col-lg-9">
+                    <div style="margin-top: 10px; border-radius: 5px">
+                        <div class="card mb-5 mb-xl-10">
+                            <div
+                                class="card-header border-0 cursor-pointer"
+                                role="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#kt_account_profile_details"
+                                aria-expanded="true"
+                                aria-controls="kt_account_profile_details">
+                                <div class="card-title m-0">
+                                    <h3 class="fw-bolder m-0">Registration Form</h3>
+                                </div>
+                            </div>
+                            <div id="kt_account_profile_details" class="collapse show">
+                                <form [formGroup]="dataForm" (ngSubmit)="save()" *ngIf="dataForm">
+                                    <div class="card-body border-top p-9">
+                                        <div class="row mb-6">
+                                            <label class="col-lg-4 col-form-label fw-bold fs-6">
+                                                <span class="required">Kategori</span>&nbsp;&nbsp;
+                                                <i
+                                                    class="fas fa-exclamation-circle ms-1 fs-7"
+                                                    data-bs-toggle="tooltip"
+                                                    title="Select Kategori."></i>
+                                            </label>
+
+                                            <div class="col-lg-8 fv-row">
+                                                <p-dropdown
+                                                    [options]="categoryOrgOptions"
+                                                    (onChange)="onChangeCategoryOrg()"
+                                                    formControlName="category_org"
+                                                    [style]="{ width: '100%' }"></p-dropdown>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-6" *ngIf="!isMandiri">
+                                            <label class="col-lg-4 col-form-label fw-bold fs-6">
+                                                <span class="required">Instansi</span>&nbsp;&nbsp;
+                                                <i
+                                                    class="fas fa-exclamation-circle ms-1 fs-7"
+                                                    data-bs-toggle="tooltip"
+                                                    title="Select Instansi."></i>
+                                            </label>
+                                            <div class="col-lg-8 fv-row">
+                                                <p-dropdown
+                                                    [options]="organizationOptions"
+                                                    formControlName="organization_id"
+                                                    [filter]="true"
+                                                    [style]="{ width: '100%' }"
+                                                    [virtualScroll]="true"
+                                                    [virtualScrollItemSize]="30"></p-dropdown>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-6" *ngIf="!isMandiri">
+                                            <label class="col-lg-4 col-form-label fw-bold fs-6">
+                                                <span class="required">Email Instansi</span>&nbsp;&nbsp;
+                                                <i
+                                                    class="fas fa-exclamation-circle ms-1 fs-7"
+                                                    data-bs-toggle="tooltip"
+                                                    title="Enter Email Instansi."></i>
+                                            </label>
+                                            <div class="col-lg-8 fv-row">
+                                                <input
+                                                    pInputText
+                                                    type="email"
+                                                    class="form-control form-control-lg form-control-solid"
+                                                    formControlName="email_organization" />
+                                            </div>
+                                        </div>
+                                        <div class="row mb-6">
+                                            <label class="col-lg-4 col-form-label fw-bold fs-6">
+                                                <span class="required">Email Pribadi</span>&nbsp;&nbsp;
+                                                <i
+                                                    class="fas fa-exclamation-circle ms-1 fs-7"
+                                                    data-bs-toggle="tooltip"
+                                                    title="Enter Email Pribadi."></i>
+                                            </label>
+                                            <div class="col-lg-8 fv-row">
+                                                <input
+                                                    pInputText
+                                                    type="email"
+                                                    class="form-control form-control-lg form-control-solid"
+                                                    formControlName="email" />
+                                            </div>
+                                        </div>
+                                        <div class="row mb-6">
+                                            <label class="col-lg-4 col-form-label fw-bold fs-6">
+                                                <span class="required">Sandi</span>&nbsp;&nbsp;
+                                                <i
+                                                    class="fas fa-exclamation-circle ms-1 fs-7"
+                                                    data-bs-toggle="tooltip"
+                                                    title="Enter Sandi."></i>
+                                            </label>
+                                            <div class="col-lg-8 fv-row">
+                                                <input
+                                                    pPassword
+                                                    type="password"
+                                                    class="form-control form-control-lg form-control-solid"
+                                                    formControlName="password"
+                                                    [feedback]="false" />
+                                            </div>
+                                        </div>
+                                        <div class="row mb-6">
+                                            <label class="col-lg-4 col-form-label fw-bold fs-6">
+                                                <span class="required">Verifikasi Sandi</span>&nbsp;&nbsp;
+                                                <i
+                                                    class="fas fa-exclamation-circle ms-1 fs-7"
+                                                    data-bs-toggle="tooltip"
+                                                    title="Enter Verifikasi Sandi."></i>
+                                            </label>
+                                            <div class="col-lg-8 fv-row">
+                                                <input
+                                                    pPassword
+                                                    type="password"
+                                                    class="form-control form-control-lg form-control-solid"
+                                                    formControlName="password_confirmation"
+                                                    [feedback]="false" />
+                                            </div>
+                                        </div>
+                                        <div class="row mb-6">
+                                            <label class="col-lg-4 col-form-label fw-bold fs-6">
+                                                <span class="required">Nama PIC</span>&nbsp;&nbsp;
+                                                <i
+                                                    class="fas fa-exclamation-circle ms-1 fs-7"
+                                                    data-bs-toggle="tooltip"
+                                                    title="Enter Nama PIC."></i>
+                                            </label>
+                                            <div class="col-lg-8 fv-row">
+                                                <input
+                                                    pInputText
+                                                    type="text"
+                                                    class="form-control form-control-lg form-control-solid"
+                                                    formControlName="name" />
+                                            </div>
+                                        </div>
+                                        <div class="row mb-6">
+                                            <label class="col-lg-4 col-form-label fw-bold fs-6">
+                                                <span class="required">No HP</span>&nbsp;&nbsp;
+                                                <i
+                                                    class="fas fa-exclamation-circle ms-1 fs-7"
+                                                    data-bs-toggle="tooltip"
+                                                    title="Enter No HP."></i>
+                                            </label>
+                                            <div class="col-lg-8 fv-row">
+                                                <input
+                                                    pInputText
+                                                    type="text"
+                                                    class="form-control form-control-lg form-control-solid"
+                                                    formControlName="phone"
+                                                    pKeyFilter="pint" />
+                                            </div>
+                                        </div>
+                                        <div class="row mb-6">
+                                            <label class="col-lg-4 col-form-label fw-bold fs-6">
+                                                <span class="required">Upload File</span>&nbsp;&nbsp;
+                                                <i
+                                                    class="fas fa-exclamation-circle ms-1 fs-7"
+                                                    data-bs-toggle="tooltip"
+                                                    title="Choose File."></i>
+                                            </label>
+                                            <div class="col-lg-8 fv-row">
+                                                <input
+                                                    formControlName="document"
+                                                    id="file"
+                                                    type="file"
+                                                    class="form-control"
+                                                    accept="application/pdf"
+                                                    (change)="onFileChange($event)" />
+                                            </div>
+                                        </div>
+                                        <div class="row mb-6">
+                                            <p>
+                                                <b style="color: red">** </b>Untuk mendukung manajemen pengguna layanan
+                                                Portal NIMOS BMKG dalam rangka meningkatkan layanan, pendaftar harus
+                                                memberikan informasi data diri secara benar dan memperbarui data diri
+                                                ketika terdapat perubahan. Informasi pendaftar bersifat rahasia sehingga
+                                                harus dilindungi dan hanya boleh dimanfaatkan untuk peningkatan layanan
+                                                Portal NIMOS BMKG.
+                                            </p>
+                                        </div>
+                                        <div class="row mb-6">
+                                            <div class="form-check form-check-custom form-check-solid">
+                                                <p-checkbox
+                                                    name="agree"
+                                                    class="form-check-input"
+                                                    [binary]="true"
+                                                    formControlName="agree"></p-checkbox>
+                                                <label
+                                                    for="kt_login_toc_agree"
+                                                    class="form-check-label fw-bold text-gray-700 fs-6">
+                                                    I Agree the&nbsp;<a
+                                                        href="https://keenthemes.com/metronic/?page=faq"
+                                                        target="_blank"
+                                                        class="ms-1 link-primary"
+                                                        >terms and conditions</a
+                                                    >.
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer d-flex justify-content-end py-6 px-9">
+                                        <button type="submit" class="btn btn-primary" [disabled]="!dataForm.valid">
+                                            Register
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--end::Row-->
+            </div>
+            <!--end::Container-->
+        </div>
+    </div>
+</div>

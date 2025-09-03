@@ -1,0 +1,107 @@
+<ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+<p-toast></p-toast>
+<div id="kt_app_content" class="app-content flex-column-fluid" *ngIf="state$ | async">
+    <!--begin::Content container-->
+    <div id="kt_app_content_container" class="app-container container-fluid">
+        <!--begin::Row-->
+        <div class="row gx-5 gx-xl-10">
+            <!--begin::Col-->
+            <div class="mb-4 mb-xl-8">
+                <!--begin::Chart widget 8-->
+                <div class="card card-flush h-xl-100">
+                    <!--begin::Body-->
+                    <div class="row">
+                        <div class="card-body pt-6">
+                            <div class="tab-content">
+                                <div class="text-end">
+                                    <button
+                                        type="text"
+                                        pButton
+                                        label="Usage Filter"
+                                        (click)="op1.toggle($event)"
+                                        class="me-4"
+                                        style="width: 150px"></button>
+                                    <button
+                                        type="text"
+                                        pButton
+                                        label="Map Filter"
+                                        (click)="op2.toggle($event)"
+                                        style="width: 150px"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--begin::Body-->
+                    <div class="row">
+                        <!--begin::Col-->
+                        <div>
+                            <div class="card-body pt-6">
+                                <!--begin::Tab content-->
+                                <div class="tab-content">
+                                    <div id="map" style="height: 500px"></div>
+                                </div>
+                                <!--end::Tab content-->
+                            </div>
+                        </div>
+                    </div>
+                    <!--end::Body-->
+                </div>
+                <!--end::Chart widget 8-->
+            </div>
+            <!--end::Col-->
+        </div>
+        <!--end::Row-->
+        <!--begin::Row-->
+        <div class="row gx-5 gx-xl-10">
+            <!--begin::Col-->
+            <div class="col-xl-4 mb-5 mb-xl-10">
+                <!--begin::Chart widget 8-->
+                <div class="card card-flush h-xl-100">
+                    <!--begin::Header-->
+                    <div class="card-header pt-5">
+                        <!--begin::Title-->
+                        <h3 class="card-title align-items-start flex-column">
+                            <span class="card-label fw-bold text-dark">Instrument Condition</span>
+                        </h3>
+                        <!--end::Title-->
+                    </div>
+                    <!--end::Header-->
+                    <!--begin::Body-->
+                    <div>
+                        <!--begin::Tab content-->
+                        <div class="tab-content">
+                            <p-chart
+                                type="pie"
+                                [data]="pieData"
+                                [options]="chartOptions"
+                                [style]="{ width: '80%' }"></p-chart>
+                        </div>
+                        <!--end::Tab content-->
+                    </div>
+                    <!--end::Body-->
+                </div>
+                <!--end::Chart widget 8-->
+            </div>
+        </div>
+    </div>
+</div>
+<p-overlayPanel #op1>
+    <ng-template pTemplate>
+        <!--div>Usage</!--div-->
+        <p-dropdown
+            [options]="usageTypeOptions"
+            [(ngModel)]="usageType"
+            [style]="{ width: '100%' }"
+            (onChange)="onSelectUsage($event)"></p-dropdown>
+    </ng-template>
+</p-overlayPanel>
+<p-overlayPanel #op2>
+    <ng-template pTemplate>
+        <!--div>Display Information</!--div-->
+        <p-dropdown
+            [options]="mapTypeOptions"
+            [(ngModel)]="mapType"
+            [style]="{ width: '100%' }"
+            (onChange)="onSelectMap($event)"></p-dropdown>
+    </ng-template>
+</p-overlayPanel>

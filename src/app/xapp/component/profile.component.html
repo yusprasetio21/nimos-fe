@@ -1,0 +1,338 @@
+<ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+<p-toast></p-toast>
+<div id="kt_app_content" class="app-content flex-column-fluid" *ngIf="state$ | async">
+    <!--begin::Content container-->
+    <div id="kt_app_content_container" class="app-container container-fluid">
+        <!--begin::Row-->
+        <div class="row gx-5 gx-xl-10">
+            <!--begin::Col-->
+            <div class="mb-5 mb-xl-10">
+                <!--begin::Chart widget 8-->
+                <div class="card card-flush h-xl-100">
+                    <!--begin::Header-->
+                    <div class="card-header pt-5">
+                        <!--begin::Title-->
+                        <h3 class="card-title align-items-start flex-column">
+                            <span class="card-label fw-bold text-dark">Organization</span>
+                        </h3>
+                        <!--end::Title-->
+                    </div>
+                    <!--end::Header-->
+                    <!--begin::Body-->
+                    <div class="row gx-5 gx-xl-10">
+                        <!--begin::Col-->
+                        <div class="col-xl-6 mb-5 mb-xl-10">
+                            <div class="card-body pt-6">
+                                <!--begin::Tab content-->
+                                <div class="tab-content">
+                                    <div class="row mb-6">
+                                        <label class="col-lg-4 col-form-label fw-bold fs-6">{{
+                                            label?.profile?.ORG_LONG_NAME || 'Long Name'
+                                        }}</label>
+                                        <div class="col-lg-8 fv-row">
+                                            <input
+                                                pInputText
+                                                type="text"
+                                                class="form-control form-control-lg"
+                                                [(ngModel)]="organization.long_name"
+                                                readonly />
+                                        </div>
+                                    </div>
+                                    <div class="row mb-6">
+                                        <label class="col-lg-4 col-form-label fw-bold fs-6">{{
+                                            label?.profile?.ORG_SHORT_NAME || 'Short Name'
+                                        }}</label>
+                                        <div class="col-lg-8 fv-row">
+                                            <input
+                                                pInputText
+                                                type="text"
+                                                class="form-control form-control-lg"
+                                                [(ngModel)]="organization.short_name"
+                                                readonly />
+                                        </div>
+                                    </div>
+                                    <div class="row mb-6">
+                                        <label class="col-lg-4 col-form-label fw-bold fs-6">{{
+                                            label?.profile?.ORG_CATEGORY || 'Category'
+                                        }}</label>
+                                        <div class="col-lg-8 fv-row">
+                                            <input
+                                                pInputText
+                                                type="text"
+                                                class="form-control form-control-lg"
+                                                [(ngModel)]="org_category"
+                                                readonly />
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--end::Tab content-->
+                            </div>
+                        </div>
+                        <div class="col-xl-6 mb-5 mb-xl-10">
+                            <div class="card-body pt-6">
+                                <!--begin::Tab content-->
+                                <div class="tab-content">
+                                    <div class="row mb-6">
+                                        <label class="col-lg-4 col-form-label fw-bold fs-6">{{
+                                            label?.profile?.ORG_COUNTRY || 'Country'
+                                        }}</label>
+                                        <div class="col-lg-8 fv-row">
+                                            <input
+                                                pInputText
+                                                type="text"
+                                                class="form-control form-control-lg"
+                                                [(ngModel)]="org_country"
+                                                readonly />
+                                        </div>
+                                    </div>
+                                    <div class="row mb-6">
+                                        <label class="col-lg-4 col-form-label fw-bold fs-6">URL</label>
+                                        <div class="col-lg-8 fv-row">
+                                            <input
+                                                pInputText
+                                                type="text"
+                                                class="form-control form-control-lg"
+                                                [(ngModel)]="organization.url"
+                                                readonly />
+                                        </div>
+                                    </div>
+                                    <div class="row mb-6">
+                                        <label class="col-lg-4 col-form-label fw-bold fs-6">{{
+                                            label?.profile?.ORG_TYPE || 'Type'
+                                        }}</label>
+                                        <div class="col-lg-8 fv-row">
+                                            <input
+                                                pInputText
+                                                type="text"
+                                                class="form-control form-control-lg"
+                                                [(ngModel)]="org_internal"
+                                                readonly />
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--end::Tab content-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--end::Body-->
+                </div>
+                <!--end::Chart widget 8-->
+            </div>
+            <!--end::Col-->
+        </div>
+        <!--end::Row-->
+        <!--begin::Row-->
+        <div class="row gx-5 gx-xl-10">
+            <!--begin::Col-->
+            <div class="col-xl-6 mb-5 mb-xl-10">
+                <!--begin::Chart widget 8-->
+                <div class="card card-flush h-xl-100">
+                    <!--begin::Header-->
+                    <div class="card-header pt-5">
+                        <!--begin::Title-->
+                        <h3 class="card-title align-items-start flex-column">
+                            <span class="card-label fw-bold text-dark">Profile</span>
+                        </h3>
+                        <!--end::Title-->
+                    </div>
+                    <!--end::Header-->
+                    <!--begin::Body-->
+                    <div class="card-body pt-6">
+                        <!--begin::Tab content-->
+                        <div class="tab-content">
+                            <form [formGroup]="dataFormProfile" (ngSubmit)="saveProfile()" *ngIf="dataFormProfile">
+                                <input pInputText formControlName="id" hidden />
+                                <input pInputText formControlName="is_active" hidden />
+                                <input pInputText formControlName="category" hidden />
+                                <input pInputText formControlName="organization_id" hidden />
+                                <div class="row mb-6">
+                                    <label class="col-lg-4 col-form-label required fw-bold fs-6">{{
+                                        label?.profile?.USER_NAME || 'Name'
+                                    }}</label>
+                                    <div class="col-lg-8 fv-row">
+                                        <input
+                                            pInputText
+                                            type="text"
+                                            class="form-control form-control-lg"
+                                            placeholder="Name"
+                                            formControlName="name" />
+                                    </div>
+                                </div>
+                                <div class="row mb-6">
+                                    <label class="col-lg-4 col-form-label required fw-bold fs-6">{{
+                                        label?.profile?.USER_HP_NO || 'HP No'
+                                    }}</label>
+                                    <div class="col-lg-8 fv-row">
+                                        <input
+                                            pInputText
+                                            type="text"
+                                            class="form-control form-control-lg"
+                                            placeholder="HP No"
+                                            formControlName="phone"
+                                            pKeyFilter="pint" />
+                                    </div>
+                                </div>
+                                <div class="row mb-6">
+                                    <label class="col-lg-4 col-form-label required fw-bold fs-6">{{
+                                        label?.profile?.USER_EMAIL || 'Email'
+                                    }}</label>
+                                    <div class="col-lg-8 fv-row">
+                                        <input
+                                            pInputText
+                                            type="text"
+                                            class="form-control form-control-lg"
+                                            placeholder="Email"
+                                            formControlName="email" />
+                                    </div>
+                                </div>
+                                <div class="row mb-6" *ngIf="user.category === 1">
+                                    <label class="col-lg-4 col-form-label required fw-bold fs-6">{{
+                                        label?.profile?.USER_EMAIL_INS || 'Email Institution'
+                                    }}</label>
+                                    <div class="col-lg-8 fv-row">
+                                        <input
+                                            pInputText
+                                            type="text"
+                                            class="form-control form-control-lg"
+                                            placeholder="Email Institution"
+                                            formControlName="email_organization" />
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <button
+                                        pButton
+                                        type="submit"
+                                        class="btn btn-primary"
+                                        data-kt-users-modal-action="submit"
+                                        [disabled]="!dataFormProfile.valid">
+                                        Save
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <!--end::Tab content-->
+                    </div>
+                    <!--end::Body-->
+                </div>
+                <!--end::Chart widget 8-->
+            </div>
+            <!--end::Col-->
+            <!--begin::Col-->
+            <div class="col-xl-6 mb-5 mb-xl-10">
+                <!--begin::Chart widget 8-->
+                <div class="card card-flush h-xl-100">
+                    <!--begin::Header-->
+                    <div class="card-header pt-5">
+                        <!--begin::Title-->
+                        <h3 class="card-title align-items-start flex-column">
+                            <span class="card-label fw-bold text-dark">Change Password</span>
+                        </h3>
+                        <!--end::Title-->
+                    </div>
+                    <!--end::Header-->
+                    <!--begin::Body-->
+                    <div class="card-body pt-6">
+                        <!--begin::Tab content-->
+                        <div class="tab-content">
+                            <form [formGroup]="dataFormPassword" (ngSubmit)="changePassword()" *ngIf="dataFormPassword">
+                                <div class="row mb-6">
+                                    <label class="col-lg-4 col-form-label required fw-bold fs-6">{{
+                                        label?.profile?.PSW_OLD || 'Password Old'
+                                    }}</label>
+                                    <div class="col-lg-8 fv-row">
+                                        <input
+                                            pInputText
+                                            type="password"
+                                            class="form-control form-control-lg"
+                                            placeholder="Password Old"
+                                            formControlName="previousPassword" />
+                                    </div>
+                                </div>
+                                <div class="row mb-6">
+                                    <label class="col-lg-4 col-form-label fw-bold fs-6">{{
+                                        label?.profile?.PSW_NEW || 'Password New'
+                                    }}</label>
+                                    <div class="col-lg-8 fv-row">
+                                        <input
+                                            pInputText
+                                            type="password"
+                                            class="form-control form-control-lg"
+                                            placeholder="Password New"
+                                            formControlName="newPassword" />
+                                    </div>
+                                </div>
+                                <div class="row mb-6">
+                                    <label class="col-lg-4 col-form-label fw-bold fs-6">{{
+                                        label?.profile?.PSW_CONF || 'Password New Confirm'
+                                    }}</label>
+                                    <div class="col-lg-8 fv-row">
+                                        <input
+                                            pInputText
+                                            type="password"
+                                            class="form-control form-control-lg"
+                                            placeholder="Password New Confirm"
+                                            formControlName="repeatPassword" />
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <button
+                                        pButton
+                                        type="submit"
+                                        class="btn btn-primary"
+                                        data-kt-users-modal-action="submit"
+                                        [disabled]="!dataFormPassword.valid">
+                                        <span class="indicator-label">Save</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <!--end::Tab content-->
+                    </div>
+                    <!--end::Body-->
+                </div>
+                <!--end::Chart widget 8-->
+            </div>
+        </div>
+
+        <!--begin::Row-->
+        <div class="row gx-5 gx-xl-10">
+            <!--begin::Col-->
+            <div class="col-xl-6 mb-5 mb-xl-10">
+                <!--begin::Chart widget 8-->
+                <div class="card card-flush h-xl-100">
+                    <!--begin::Header-->
+                    <div class="card-header pt-5">
+                        <!--begin::Title-->
+                        <h3 class="card-title align-items-start flex-column">
+                            <span class="card-label fw-bold text-dark">Access</span>
+                        </h3>
+                        <!--end::Title-->
+                    </div>
+                    <!--end::Header-->
+                    <!--begin::Body-->
+                    <div class="card-body pt-6">
+                        <!--begin::Tab content-->
+                        <div class="tab-content">
+                            <div class="row mb-6">
+                                <label class="col-lg-4 col-form-label fw-bold fs-6">API Token</label>
+                                <div class="col-lg-8 fv-row">
+                                    <textarea
+                                        pInputTextarea
+                                        class="form-control form-control-flush mb-3"
+                                        rows="10"
+                                        readonly
+                                        [(ngModel)]="access.accessToken"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <!--end::Tab content-->
+                    </div>
+                    <!--end::Body-->
+                </div>
+                <!--end::Chart widget 8-->
+            </div>
+            <!--end::Col-->
+        </div>
+    </div>
+</div>

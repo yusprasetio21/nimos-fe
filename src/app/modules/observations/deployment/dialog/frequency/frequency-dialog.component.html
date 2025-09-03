@@ -1,0 +1,106 @@
+<!-- <h2 mat-dialog-title>{{tittle}}</h2> -->
+<div mat-dialog-content>
+  <div class="full-height">
+    <mat-form-field class="example-full-width" appearance="fill" hidden>
+      <input matInput placeholder="Variabel" [(ngModel)]="config.data.id" [disabled]="true">
+    </mat-form-field>
+    <div class="row mb-0 fs-7">
+      <div class="row mt-2">
+        <!-- <label class="col-lg-4 required">Use of frequency:</label> -->
+        <label class="col-lg-4 col-form-label required fs-6">
+          {{label?.frequency?.USE_FREQUENCY || 'Use of frequency'}}:
+        </label>
+        <div class="col-lg-8 fv-row">
+          <div class="row">
+            <mat-radio-group [(ngModel)]="config.data.use_of_frequency" aria-label="Select an option" >
+              &nbsp;<mat-radio-button *ngFor="let item of config.data.frequencyTypes" [value]="item.id">{{item.name}}</mat-radio-button> &nbsp;
+            </mat-radio-group>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-4">
+        <label class="col-lg-4 col-form-label required fs-6">
+          {{label?.frequency?.FREQUENCY || 'Frequency'}}:
+          <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"
+          pTooltip="{{tooltip?.frequency?.FREQUENCY || 'Applies only to instruments making observations using electromagnetic waves'}}"></i>
+        </label>
+        <div class="col-lg-4 fv-row">
+          <input
+            pInputText
+            type="number" 
+            [(ngModel)]="config.data.frequency"
+            class="p-inputtext-sm"
+            [style]="{'width':'100%'}"/>
+        </div>
+        <div class="col-lg-4 fv-row">
+          <p-dropdown  
+             appendTo="body"
+             [filter]="true"
+             [(ngModel)]="config.data.frequency_unit"
+             [options]="config.data.frequencyUnitTypeOption"
+             optionLabel="label"
+             [style]="{'width':'100%'}"></p-dropdown>
+        </div>
+      </div>
+      <div class="row mb-4">
+        <label class="col-lg-4 col-form-label fs-6">
+          {{label?.frequency?.BANDWIDTH || 'Bandwidth'}}:
+          <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"
+          pTooltip="{{tooltip?.frequency?.BANDWIDTH || 'Applies only to instruments making observations using electromagnetic waves'}}"></i>
+        </label>
+        <div class="col-lg-4 fv-row">
+          <input
+            pInputText
+            type="number" 
+            [(ngModel)]="config.data.bandwidth"
+            class="p-inputtext-sm"
+            [style]="{'width':'100%'}"/>
+        </div>
+        <div class="col-lg-4 fv-row">
+          <p-dropdown  
+             appendTo="body"
+             [filter]="true"
+             [(ngModel)]="config.data.bandwidth_unit"
+             [options]="config.data.frequencyUnitTypeOption"
+             optionLabel="label"
+             [style]="{'width':'100%'}"></p-dropdown>
+        </div>
+      </div>
+      <div class="row mb-4" *ngIf="config.data.observation">
+        <label class="col-lg-4 col-form-label fs-6">
+          {{label?.frequency?.TRANSMISSION || 'Transmission mode'}}
+        </label>
+        <div class="col-lg-8 fv-row">
+          <p-dropdown  
+             appendTo="body"
+             [filter]="true"
+             [(ngModel)]="config.data.transmission_mode"
+             [options]="config.data.transmissionOption"
+             optionLabel="label"
+             [style]="{'width':'100%'}"></p-dropdown>
+        </div>
+      </div>
+      <div class="row mb-4" *ngIf="config.data.observation">
+        <label class="col-lg col-form-label fs-6">
+          {{label?.frequency?.POLARIZATION || 'Polarization'}}:
+          <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"
+          pTooltip="{{tooltip?.frequency?.POLARIZATION || 'Applies only to instruments making observations using electromagnetic waves'}}"></i>
+        </label>
+        <div class="col-lg-8 fv-row">
+          <p-dropdown  
+             appendTo="body"
+             [filter]="true"
+             [(ngModel)]="config.data.polarization"
+             [options]="config.data.polarizationOption"
+             optionLabel="label"
+             [style]="{'width':'100%'}"></p-dropdown>
+        </div>
+      </div>
+    </div>
+      <div class="footer-container">
+        <div class="div-right">
+          <p-button label="Save Frequency" (click)="onOke()" icon="pi pi-plush" styleClass="p-button-sm"></p-button>
+        </div>
+      </div>
+  </div>
+</div>

@@ -1,0 +1,65 @@
+<div class="p-col-12">
+  <div class="card">
+    <div class="row mb-2" *ngIf="programOption.length ==1" >
+      <label class="col-lg col-form-label " style="color: red;width: 100%;">
+        {{lang=='id'?'Jika data Jaringan / Afiliasi Porgam kosong bisa ditambahkan dari menu Station Characteristic':'If the Network / Affiliate data is empty, you can add it from the Station Characteristics menu'}}
+      </label>
+    </div>
+    <div class="row mb-2">
+      <label class="col-lg-4 col-form-label required">
+        {{label?.observation?.PROGRAM_OBSERVATION || 'Program/network affiliation'}}
+        <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" 
+        pTooltip="{{tooltip?.observation?.PROGRAM_OBSERVATION || 'List the programs to which the observations contribute. At least one program must be selected. Note that some programs are subject to approval.'}}"></i>
+      </label>
+      <div class="col-lg-8 fv-row">
+        <p-dropdown  
+          id="strategy"
+          appendTo="body"
+          [filter]="true"
+          (onChange)="addData()"
+          [(ngModel)]="config.data.program"
+          [options]="programOption"
+          optionLabel="label"
+          [style]="{'width':'100%'}"></p-dropdown>
+      </div>
+    </div>
+    <div class="row mb-3" *ngIf="state$ | async">
+      <table mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="text">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let element"> 
+            {{element.label}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let element">
+            <div class="footer-container">
+              <div class="div-right">
+                <ul class="footer">
+                  <mat-panel-description>
+                    <a
+                      class="btn btn-icon btn-active-light-primary w-30px h-30px"
+                      (click)="delete(element)">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                      </svg>
+                    </a>
+                  </mat-panel-description>
+                </ul>
+              </div>
+            </div>
+
+            
+          </td>
+        </ng-container>
+    
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+  </div>
+  <p-button label="Save" (click)="save()" icon="pi pi-save" styleClass="p-button-sm"></p-button>
+</div>

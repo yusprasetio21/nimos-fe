@@ -1,0 +1,26 @@
+<div mat-dialog-content>
+  <div class="row mb-6">
+    <mat-form-field>
+      <input matInput minlength="2" [(ngModel)]="search" (input)="applyFilter($event)" placeholder="Filter">
+    </mat-form-field>
+<cdk-virtual-scroll-viewport itemSize="50" class="example-viewport" style="height: 500px;">
+      <mat-tree [dataSource]="dataSourceTree" [treeControl]="treeControl">
+        <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+          <a
+          class="btn btn-active-light-primary" (click)="getData(node);">
+              {{node.text}}
+          </a>
+        </mat-tree-node>
+        <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+          <button mat-icon-button matTreeNodeToggle
+                  [attr.aria-label]="'Toggle ' + node.name">
+            <mat-icon class="mat-icon-rtl-mirror">
+              {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+            </mat-icon>
+          </button>
+          {{node.text}}
+        </mat-tree-node>
+      </mat-tree>
+    </cdk-virtual-scroll-viewport>
+  </div>
+</div>

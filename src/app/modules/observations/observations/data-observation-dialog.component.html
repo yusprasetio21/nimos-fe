@@ -1,0 +1,68 @@
+<div class="full-height">
+  <div class="card">
+    <div class="row mb-6">
+      <mat-form-field>
+        <input matInput minlength="2" [(ngModel)]="search" (input)="applyFilter($event)" placeholder="Filter">
+      </mat-form-field>
+      <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
+        <mat-tree [dataSource]="dataSourceTree" [treeControl]="treeControl">
+          <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+            <button mat-icon-button disabled></button>
+            <a class="btn btn-active-light-primary" (click)="insertData(node);">{{node.text}}</a>
+          </mat-tree-node>
+          <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+            <button mat-icon-button matTreeNodeToggle
+                    [attr.aria-label]="'Toggle ' + node.name">
+              <mat-icon class="mat-icon-rtl-mirror">
+                {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+              </mat-icon>
+            </button>
+            {{node.text}}
+          </mat-tree-node>
+        </mat-tree>
+      </cdk-virtual-scroll-viewport>
+    </div>
+    <div class="row mb-3">
+      <p-table [value]="dataSource.data" [scrollable]="true" scrollDirection="horizontal">
+        <ng-template pTemplate="header">
+          <tr>
+              <th>{{label?.observation?.VARIABLE_OBSERVATION || 'Observation Variable'}} :</th><th>Geometry</th>
+              <th>Program / Network Affliation</th><th>Observed Since</th>
+              <th>Observing Method</th><th>Actions</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-element>
+          <tr>
+              <td style="width: 150px">{{element.variable}}</td>
+              <td style="width: 150px">{{element.geometryName}}</td>
+              <td style="width: 150px">{{element.programs_text}}</td>
+              <td style="width: 150px">{{element.observed_since | date: 'dd-MM-yyyy'}}</td>
+              <td style="width: 150px">{{element.methodName}}</td>
+              <td style="width: 20px">
+                <a
+                  class="btn btn-icon btn-active-light-primary w-30px h-30px"
+                  (click)="updateData(element);">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-post-fill" viewBox="0 0 16 16">
+                    <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zm-5-.5H7a.5.5 0 0 1 0 1H4.5a.5.5 0 0 1 0-1zm0 3h7a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5z"/>
+                  </svg>
+                </a>
+                &nbsp;
+                <a
+                  class="btn btn-icon btn-active-light-primary w-30px h-30px"
+                  (click)="deleteData(element);">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                    <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                  </svg>
+                </a>
+              </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+  <div class="div-right">
+    <p-button label="{{lang=='id'?'Simpan':'Save'}}" (click)="onOke()" icon="pi pi-save" styleClass="p-button-sm"></p-button>
+  </div>
+</div>
+<!-- <button mat-button (click)="dataDummy()" cdkFocusInitial>Dummy</button> -->

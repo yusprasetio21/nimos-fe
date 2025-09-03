@@ -1,0 +1,71 @@
+<div mat-dialog-content>
+  <div class="p-col-12">
+    <div class="card">
+      <div class="row mb-6">
+        <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
+          <mat-tree [dataSource]="dataSourceTree" [treeControl]="treeControl">
+            <!-- This is the tree node template for leaf nodes -->
+            <!-- <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding> -->
+            <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+              <a
+              class="btn btn-active-light-primary" (click)="insertData(node);">
+                  {{node.text}}<!-- ini adalah untuk ujungnya -->
+              </a>
+            </mat-tree-node>
+            <!-- This is the tree node template for expandable nodes -->
+            <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+              <button mat-icon-button matTreeNodeToggle
+                      [attr.aria-label]="'Toggle ' + node.name">
+                <mat-icon class="mat-icon-rtl-mirror">
+                  {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                </mat-icon>
+              </button>
+              {{node.text}}
+            </mat-tree-node>
+          </mat-tree>
+        </cdk-virtual-scroll-viewport>
+      </div>
+      <div class="row mb-6">
+        <table mat-table [dataSource]="dataSource">
+          <ng-container matColumnDef="path">
+            <th mat-header-cell *matHeaderCellDef> Path </th>
+            <td mat-cell *matCellDef="let element"> {{element.path}} </td>
+          </ng-container>
+      
+          <ng-container matColumnDef="variable">
+            <th mat-header-cell *matHeaderCellDef> Variabel </th>
+            <td mat-cell *matCellDef="let element"> {{element.variable}} </td>
+          </ng-container>
+      
+          <ng-container matColumnDef="geometry">
+            <th mat-header-cell *matHeaderCellDef> Geometri </th>
+            <td mat-cell *matCellDef="let element"> {{element.geometry}} </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <td mat-cell *matCellDef="let element">
+              <a
+                class="btn btn-icon btn-active-light-primary w-30px h-30px"
+                (click)="updateData(element);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-post-fill" viewBox="0 0 16 16">
+                  <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zm-5-.5H7a.5.5 0 0 1 0 1H4.5a.5.5 0 0 1 0-1zm0 3h7a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5z"/>
+                </svg>
+              </a>
+            </td>
+          </ng-container>
+      
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      
+        <!-- <mat-paginator [pageSizeOptions]="[3, 6, 12]"
+                       showFirstLastButtons 
+                       aria-label="Select page of periodic elements">
+        </mat-paginator> -->
+      </div>
+    </div>
+  </div>
+  <button mat-button (click)="onOke()" cdkFocusInitial>Ok</button>
+  <!-- <button mat-button [mat-dialog-close]="dataSource" cdkFocusInitial>Ok</button> -->
+</div>

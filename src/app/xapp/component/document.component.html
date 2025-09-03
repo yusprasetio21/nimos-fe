@@ -1,0 +1,222 @@
+<ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+<p-toast></p-toast>
+
+<div id="kt_app_content" class="app-content flex-column-fluid" *ngIf="state$ | async">
+    <div class="card card-flush">
+        <div class="col-xl-12">
+            <div class="card-body pt-6">
+                <div class="tab-content" *ngIf="!station_id">
+                    Please select station first in Station Management Menu. <br />
+                    You will be redirect to Station Management Menu in 3 second.
+                </div>
+                <div class="tab-content" *ngIf="station_id">
+                    <h3>.:: {{ station_name }} [{{ station_identifier }}]</h3>
+                    <!--begin::Button-->
+                    <button pButton class="btn btn-primary" (click)="addData()">
+                        <!--begin::Svg Icon | path: icons/duotune/general/gen035.svg-->
+                        <span class="svg-icon svg-icon-3">
+                            <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <rect opacity="0.3" x="2" y="2" width="20" height="20" rx="5" fill="currentColor" />
+                                <rect
+                                    x="10.8891"
+                                    y="17.8033"
+                                    width="12"
+                                    height="2"
+                                    rx="1"
+                                    transform="rotate(-90 10.8891 17.8033)"
+                                    fill="currentColor" />
+                                <rect x="6.01041" y="10.9247" width="12" height="2" rx="1" fill="currentColor" />
+                            </svg>
+                        </span>
+                        <!--end::Svg Icon-->Add Document
+                    </button>
+                    <!--end::Button-->
+                    <div *ngIf="datas.length > 0" class="mt-5">
+                        <p-table
+                            #dt
+                            [columns]="cols"
+                            [value]="datas"
+                            styleClass="card-body pt-0"
+                            tableStyleClass="table align-middle table-row-dashed fs-6 gy-5 mb-0">
+                            <ng-template pTemplate="header" let-columns>
+                                <tr class="text-start text-gray-400 fw-bold text-uppercase fs-7 gs-0">
+                                    <th class="min-w-125px">Title</th>
+                                    <th class="min-w-125px">Author</th>
+                                    <th class="min-w-125px">Description</th>
+                                    <th class="min-w-125px">Date</th>
+                                    <th class="text-end min-w-100px">Action</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-data>
+                                <tr>
+                                    <td>
+                                        {{ data.title }}
+                                    </td>
+                                    <td>
+                                        {{ data.author }}
+                                    </td>
+                                    <td>
+                                        {{ data.description }}
+                                    </td>
+                                    <td>
+                                        {{ data.date | date: 'dd-MM-yyyy' }}
+                                    </td>
+                                    <td class="text-end">
+                                        <button
+                                            class="btn btn-icon btn-active-light-primary w-30px h-30px me-3"
+                                            pTooltip="Edit"
+                                            tooltipPosition="left"
+                                            (click)="editData(data)">
+                                            <span
+                                                [inlineSVG]="'./assets/media/icons/duotune/art/art005.svg'"
+                                                class="svg-icon svg-icon-3"></span>
+                                        </button>
+                                        <button
+                                            class="btn btn-icon btn-active-light-primary w-30px h-30px"
+                                            pTooltip="Delete"
+                                            tooltipPosition="left"
+                                            (click)="deleteWithConfirm(data)">
+                                            <span class="svg-icon svg-icon-3">
+                                                <svg
+                                                    width="24"
+                                                    height="24"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path
+                                                        d="M5 9C5 8.44772 5.44772 8 6 8H18C18.5523 8 19 8.44772 19 9V18C19 19.6569 17.6569 21 16 21H8C6.34315 21 5 19.6569 5 18V9Z"
+                                                        fill="currentColor" />
+                                                    <path
+                                                        opacity="0.5"
+                                                        d="M5 5C5 4.44772 5.44772 4 6 4H18C18.5523 4 19 4.44772 19 5V5C19 5.55228 18.5523 6 18 6H6C5.44772 6 5 5.55228 5 5V5Z"
+                                                        fill="currentColor" />
+                                                    <path
+                                                        opacity="0.5"
+                                                        d="M9 4C9 3.44772 9.44772 3 10 3H14C14.5523 3 15 3.44772 15 4V4H9V4Z"
+                                                        fill="currentColor" />
+                                                </svg>
+                                            </span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                    <div class="text-end">
+                        <button
+                            pButton
+                            type="button"
+                            class="btn btn-primary"
+                            data-kt-users-modal-action="submit"
+                            (click)="save()"
+                            [disabled]="disabled">
+                            Save
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form [formGroup]="dataForm" (ngSubmit)="saveToList()">
+    <p-dialog
+        [(visible)]="dialogForm"
+        [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+        [style]="{ width: '50vw' }"
+        [modal]="true">
+        <ng-template pTemplate="header"> Document Details </ng-template>
+        <input pInputText formControlName="id" hidden />
+        <div class="card-body p-3">
+            <div class="row mb-6" *ngIf="newData">
+                <label class="col-lg-4 col-form-label required fw-bold fs-6">Upload File</label>
+                <div class="col-lg-8 fv-row">
+                    <input
+                        formControlName="document"
+                        id="file"
+                        type="file"
+                        class="form-control"
+                        accept="application/pdf"
+                        (change)="onFileChange($event)" />
+                </div>
+            </div>
+            <div class="row mb-6" *ngIf="!newData">
+                <label class="col-lg-4 col-form-label fw-bold fs-6">Upload File</label>
+                <div class="col-lg-8 fv-row">
+                    <p-button (click)="showPdfViewer()" icon="pi pi-external-link" label="View Pdf"></p-button>
+                </div>
+            </div>
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label required fw-bold fs-6">Title</label>
+                <div class="col-lg-8 fv-row">
+                    <input
+                        pInputText
+                        type="text"
+                        class="form-control form-control-lg"
+                        placeholder="Title"
+                        formControlName="title" />
+                </div>
+            </div>
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label fw-bold fs-6">Author</label>
+                <div class="col-lg-8 fv-row">
+                    <input
+                        pInputText
+                        type="text"
+                        class="form-control form-control-lg"
+                        placeholder="Author"
+                        formControlName="author" />
+                </div>
+            </div>
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label fw-bold fs-6">Description</label>
+                <div class="col-lg-8 fv-row">
+                    <input
+                        pInputText
+                        type="text"
+                        class="form-control form-control-lg"
+                        placeholder="Description"
+                        formControlName="description" />
+                </div>
+            </div>
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label fw-bold fs-6">Date</label>
+                <div class="col-lg-8 fv-row">
+                    <p-calendar
+                        dateFormat="dd-mm-yy"
+                        [showIcon]="true"
+                        inputId="icon"
+                        formControlName="date"
+                        appendTo="body"></p-calendar>
+                </div>
+            </div>
+        </div>
+        <ng-template pTemplate="footer">
+            <button
+                type="submit"
+                pButton
+                pRipple
+                icon="pi pi-save"
+                class="btn btn-sm btn-primary"
+                class="btn btn-primary"
+                [disabled]="!dataForm.valid">
+                Save
+            </button>
+        </ng-template>
+    </p-dialog>
+</form>
+
+<p-dialog [(visible)]="displayPdfViewer" [modal]="true">
+    <pdf-viewer
+        [src]="pdfSrc"
+        [render-text]="true"
+        [original-size]="false"
+        style="width: 400px; height: 500px"></pdf-viewer>
+</p-dialog>
+
+<p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>

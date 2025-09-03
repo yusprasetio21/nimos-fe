@@ -1,0 +1,88 @@
+<div mat-dialog-content #iye>
+  <div class="full-height">
+    <body>
+      <div class="row mb-2">
+        <div class="row mb-2">
+          <!-- <label class="col-lg-4">Maintenance party:</label> -->
+          <label class="col-lg col-form-label required fs-6">
+            {{label?.maintenance?.PARTY || 'Maintenance party'}}:
+            <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"
+            pTooltip="{{tooltip?.maintenance?.PARTY || 'Identifier of the organization or individual who performed the maintenance activity [see WMDS 5-11, Maintenance party]'}}"></i>
+          </label>
+          <div class="col-lg-8 fv-row">
+            <p-dropdown  
+               appendTo="body"
+               [filter]="true"
+               [(ngModel)]="config.data.maintenanceParty"
+               [options]="config.data.maintenancePartyOption"
+               optionLabel="label"
+               [style]="{'width':'100%'}"></p-dropdown>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <label class="col-lg-4 col-form-label required fs-6">
+            {{label?.maintenance?.DATE || 'Maintenance Date'}}:
+            <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"
+            pTooltip="{{tooltip?.maintenance?.DATE || 'Date when maintenance was performed'}}"></i>
+          </label>
+          <div class="col-lg-8 fv-row">
+            <p-calendar dataType="string" [(ngModel)]="config.data.maintenance_date" [showIcon]="true" inputId="icon" appendTo="body" dateFormat="dd-mm-yy"
+                            [style]="{'width':'35%'}"></p-calendar>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <label class="col-lg-4 col-form-label required fs-6">
+            {{label?.maintenance?.INDIVIDUAL || 'Individual'}}:
+          </label>
+          <div class="col-lg-8 fv-row">
+            <input
+              pInputText
+              type="text" 
+              [(ngModel)]="config.data.individual"
+              class="p-inputtext-sm"
+              [style]="{'width':'100%'}"/>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <label class="col-lg-4 col-form-label required fs-6">
+            {{label?.maintenance?.DESC || 'Description'}}:
+          </label>
+          <div class="col-lg-8 fv-row">
+            <textarea pInputTextarea [(ngModel)]="config.data.description" [style]="{'width':'100%'}"></textarea>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <label class="col-lg-4 col-form-label required fs-6">
+            {{label?.maintenance?.AUTHOR || 'Author'}}:
+          </label>
+          <div class="col-lg-8 fv-row">
+            <input
+              pInputText
+              type="text" 
+              [(ngModel)]="config.data.author"
+              class="p-inputtext-sm"
+              [style]="{'width':'100%'}"/>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <label class="col-lg-4 col-form-label required fs-6">
+            {{label?.maintenance?.DOC_URL || 'Documentation URL'}}:
+          </label>
+          <div class="col-lg-8 fv-row">
+            <input
+              pInputText
+              type="text" 
+              [(ngModel)]="config.data.documentation_url"
+              class="p-inputtext-sm"
+              [style]="{'width':'100%'}"/>
+          </div>
+        </div>
+      </div>
+    </body>
+  </div>
+  <div class="footer-container">
+    <div class="div-right">
+      <p-button label="Save Maintenance" (click)="onOke()" icon="pi pi-plush" styleClass="p-button-sm"></p-button>
+    </div>
+  </div>
+</div>

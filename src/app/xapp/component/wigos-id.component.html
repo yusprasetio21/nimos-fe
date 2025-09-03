@@ -1,0 +1,168 @@
+<ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+<p-toast></p-toast>
+<div id="kt_app_content" class="app-content flex-column-fluid" *ngIf="state$ | async">
+    <div class="card card-flush mb-6">
+        <div class="col-xl-6">
+            <div class="card-body pt-6">
+                <!--begin::Tab content-->
+                <div class="tab-content">
+                    <div class="row">
+                        <label class="col-lg-4 col-form-label required fw-bold fs-6">Metode</label>
+                        <div class="col-lg-8 fv-row">
+                            <p-dropdown [options]="methodOptions" [(ngModel)]="method"></p-dropdown>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-lg-4 col-form-label required fw-bold fs-6">Usage Type</label>
+                        <div class="col-lg-8 fv-row">
+                            <!--p-dropdown
+                                [options]="usageTypeOptions"
+                                [(ngModel)]="usageType"
+                                (onChange)="onSelectUsageType()"></!--p-dropdown-->
+                            <p-dropdown
+                                [options]="usageTypes"
+                                [(ngModel)]="usageTypeId"
+                                optionLabel="name"
+                                optionValue="id"
+                                (onChange)="onSelectUsageType()"
+                                placeholder="- pilih usage type -"></p-dropdown>
+                        </div>
+                    </div>
+                    <!--
+                    <div class="row">
+                        <label class="col-lg-4 col-form-label fw-bold fs-6">Station Name</label>
+                        <div class="col-lg-8 fv-row">
+                            <input pInputText type="text" [(ngModel)]="stationName" style="width: 100%" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-lg-4 col-form-label fw-bold fs-6">&nbsp;</label>
+                        <div class="col-lg-8 fv-row">
+                            <button type="button" pButton pRipple label="Search"></button>
+                        </div>
+                    </div>
+                    -->
+                </div>
+                <!--end::Tab content-->
+            </div>
+        </div>
+    </div>
+    <div class="card card-flush">
+        <p-toolbar>
+            <!--begin::Card title-->
+            <ng-template pTemplate="left" class="card-title"><h2>Stations</h2></ng-template>
+            <!--end::Card title-->
+            <!--begin::Card title-->
+            <ng-template pTemplate="right">
+                <i *ngIf="wigosIdLast"
+                    >WIGOS ID terakhir adalah <b>{{ wigosIdLast }}</b></i
+                ></ng-template
+            >
+            <!--end::Card title-->
+        </p-toolbar>
+        <p-table
+            #dt
+            [columns]="cols"
+            [value]="datas"
+            [lazy]="true"
+            (onLazyLoad)="loadDatas($event)"
+            [paginator]="true"
+            [totalRecords]="totalRecords"
+            [showCurrentPageReport]="true"
+            [rows]="10"
+            [rowsPerPageOptions]="[10, 20, 50]"
+            sortField="-id"
+            dataKey="id"
+            [filterDelay]="1000"
+            responsiveLayout="scroll"
+            [(selection)]="selectedDatas"
+            [selectionPageOnly]="true"
+            csvSeparator=","
+            exportFilename="organizations_export"
+            [rowHover]="true"
+            styleClass="card-body pt-0"
+            tableStyleClass="table align-middle table-row-dashed fs-6 gy-5 mb-0"
+            editMode="row">
+            <ng-template pTemplate="header" let-columns>
+                <tr class="text-start text-gray-400 fw-bold text-uppercase fs-7 gs-0">
+                    <th style="width: 3rem">
+                        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                    </th>
+                    <th class="min-w-125px">
+                        Station ID
+                        <p-columnFilter
+                            type="text"
+                            field="identifier"
+                            display="menu"
+                            matchMode="contains"
+                            [showMatchModes]="true"
+                            [matchModeOptions]="matchModeOptions"
+                            [showOperator]="false"
+                            [showAddButton]="false"
+                            class="p-ml-auto"></p-columnFilter>
+                    </th>
+                    <th class="min-w-125px">
+                        Station Name
+                        <p-columnFilter
+                            type="text"
+                            field="name"
+                            display="menu"
+                            matchMode="contains"
+                            [showMatchModes]="true"
+                            [matchModeOptions]="matchModeOptions"
+                            [showOperator]="false"
+                            [showAddButton]="false"
+                            class="p-ml-auto"></p-columnFilter>
+                    </th>
+                    <th class="min-w-125px">Usage</th>
+                    <th class="min-w-125px">Wigos ID</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-data>
+                <tr>
+                    <td>
+                        <p-tableCheckbox [value]="data"></p-tableCheckbox>
+                    </td>
+                    <td>{{ data.identifier }}</td>
+                    <td>{{ data.name }}</td>
+                    <td>{{ data.usage_type_name }}</td>
+                    <td *ngIf="method === 'man'">
+                        <input pInputText [(ngModel)]="data.wigos_id_1" [style]="{ width: '50px' }" readonly /> -
+                        <input pInputText [(ngModel)]="data.wigos_id_2" [style]="{ width: '50px' }" readonly /> -
+                        <input pInputText [(ngModel)]="data.wigos_id_3" [style]="{ width: '50px' }" readonly /> -
+                        <input pInputText [(ngModel)]="data.wigos_id_4" [style]="{ width: '70px' }" size="5" />
+                    </td>
+                    <td *ngIf="method === 'oto'">
+                        <input pInputText [(ngModel)]="data.wigos_id" [style]="{ width: '100%' }" readonly />
+                    </td>
+                    <td *ngIf="!method">{{ data.wigos_id }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <p-toolbar>
+            <ng-template pTemplate="left">&nbsp;</ng-template>
+            <ng-template pTemplate="right" class="card-title">
+                <button
+                    pButton
+                    class="btn btn-danger"
+                    (click)="delete()"
+                    type="button"
+                    [disabled]="!(selectedDatas.length > 0)">
+                    Delete
+                </button>
+                &nbsp;
+                <button
+                    pButton
+                    class="btn btn-primary"
+                    (click)="save()"
+                    type="button"
+                    [disabled]="!(usageTypeId && method && selectedDatas.length > 0)">
+                    Save
+                </button>
+            </ng-template>
+        </p-toolbar>
+        <!-- button pButton class="p-button-sm" (click)="save()" type="button">Delete</!-->
+    </div>
+</div>
+
+<p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>

@@ -1,0 +1,33 @@
+<ng-container *ngIf="menuItems$ | async as _menuItems">
+    <ng-template ngFor let-menuItem [ngForOf]="_menuItems" let-i="index" [ngForTrackBy]="trackByFn">
+        <!-- Menu Item -->
+        <ng-container *ngIf="menuItem.type === 'menu-item'">
+            <app-menu-item [menuItem]="menuItem"></app-menu-item>
+        </ng-container>
+
+        <!-- Header -->
+        <ng-container *ngIf="menuItem.type === 'header'">
+            <div class="menu-item">
+                <div class="menu-content pt-8 pb-2">
+                    <span class="menu-section text-muted text-uppercase fs-8 ls-1">{{ menuItem.label }}</span>
+                </div>
+            </div>
+
+            <!-- Children -->
+            <ng-container *ngIf="menuItem.children.length > 0">
+                <ng-template ngFor let-child [ngForOf]="menuItem.children" let-i="index" [ngForTrackBy]="trackByFn">
+                    <app-menu-item [menuItem]="child"></app-menu-item>
+                </ng-template>
+            </ng-container>
+        </ng-container>
+
+        <!-- Separator -->
+        <ng-container *ngIf="menuItem.type === 'separator'">
+            <div class="menu-item">
+                <div class="menu-content">
+                    <div class="separator mx-1 my-4"></div>
+                </div>
+            </div>
+        </ng-container>
+    </ng-template>
+</ng-container>

@@ -1,0 +1,14 @@
+table {
+  width: 100%;
+}
+.mat-form-field {
+  margin-right: 4px;
+}
+.example-viewport {
+  height: 200px;
+  width: 100%;
+}
+
+.example-item {
+  height: 50px;
+}

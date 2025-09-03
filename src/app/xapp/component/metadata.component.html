@@ -1,0 +1,1890 @@
+<style>
+    img {
+        border: 1px solid #ddd; /* Gray border */
+        border-radius: 4px; /* Rounded border */
+        padding: 5px; /* Some padding */
+        width: 150px; /* Set a small width */
+    }
+
+    /* Add a hover effect (blue shadow) */
+    img:hover {
+        box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+    }
+</style>
+<ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+<div class="mb-0" style="background-color: #eaeaea" *ngIf="state$ | async">
+    <!--begin::Wrapper-->
+    <div class="pt-0">
+        <!--begin::Container-->
+        <div class="container">
+            <!--begin::Row-->
+            <div class="row">
+                <!--begin::Col-->
+                <div class="col-lg-3">
+                    <div
+                        style="
+                            background-color: white;
+                            margin-top: 10px;
+                            border-radius: 5px;
+                            padding: 5px;
+                            height: 100%;
+                        ">
+                        <div style="margin: 15px">
+                            <div style="font-weight: bold; font-size: 16px">Quick Access</div>
+                            <div style="font-weight: bold; font-size: 14px; padding-top: 15px">
+                                Generate station report by
+                            </div>
+                            <div>Station Id</div>
+                            <p-autoComplete
+                                [(ngModel)]="station"
+                                [suggestions]="filteredStations"
+                                (completeMethod)="searchStationById($event)"
+                                field="identifier"
+                                [style]="{ width: '100%' }"
+                                class="p-fluid"
+                                placeholder="- ketik station id -"
+                                (onSelect)="onSelect($event)"></p-autoComplete>
+
+                            <div>Station Name</div>
+                            <p-autoComplete
+                                [(ngModel)]="station"
+                                [suggestions]="filteredStations"
+                                (completeMethod)="searchStationByName($event)"
+                                field="name"
+                                [style]="{ width: '100%' }"
+                                class="p-fluid"
+                                placeholder="- ketik station name -"
+                                (onSelect)="onSelect($event)"></p-autoComplete>
+                            <!--
+                            <div style="font-weight: bold; font-size: 14px; padding-top: 15px">Map Filter</div>
+                            <div>Institutions</div>
+                            <p-multiSelect
+                                [options]="institutions"
+                                [(ngModel)]="selectedInstitutions"
+                                optionLabel="long_name"
+                                [style]="{ width: '100%' }"
+                                [virtualScroll]="true"
+                                [virtualScrollItemSize]="30"></p-multiSelect>
+                            <div>Usage</div>
+                            <p-dropdown
+                                [options]="usageTypeOptions"
+                                [(ngModel)]="usageType"
+                                [style]="{ width: '100%' }"></p-dropdown>
+                            <div>Status</div>
+                            <p-dropdown
+                                [options]="statusOptions"
+                                [(ngModel)]="status"
+                                [style]="{ width: '100%' }"></p-dropdown>
+                                -->
+                        </div>
+                    </div>
+                    <!--end::Block-->
+                </div>
+                <!--end::Col-->
+                <!--begin::Col-->
+                <div class="col-lg-9">
+                    <div style="margin-top: 10px; border-radius: 5px">
+                        <div class="card mb-5 mb-xl-10">
+                            <div class="card-body border-top p-9">
+                                <div style="text-align: right">
+                                    <!--a class="pi-file-edit active py-3 px-4 px-xxl-6"
+                                        [routerLink]="" (click)="edit()" style="font-size: 15px">&nbsp;&nbsp;&nbsp; Edit</!--a-->
+                                    <button
+                                        pTooltip="Edit"
+                                        pButton
+                                        type="button"
+                                        class="btn btn-primary h-30px me-3 mb-3"
+                                        (click)="edit()">
+                                        Edit
+                                    </button>
+                                    <button
+                                        pTooltip="Download XML"
+                                        pButton
+                                        type="button"
+                                        class="btn btn-primary h-30px mb-3"
+                                        (click)="download()">
+                                        Download
+                                    </button>
+                                </div>
+                                <p-accordion [multiple]="true">
+                                    <p-accordionTab header="Station characteristics" [selected]="true">
+                                        <div class="row">
+                                            <div class="col-lg-7">
+                                                <div class="row mb-6">
+                                                    <label class="col-lg-3 fw-bold fs-7">
+                                                        <span>{{ label?.station?.NAME || 'Name' }}:</span>&nbsp;&nbsp;
+                                                    </label>
+
+                                                    <div class="col-lg-9">
+                                                        {{ station_name }}
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mb-6">
+                                                    <label class="col-lg-3 fw-bold fs-7">
+                                                        <span>{{ label?.station?.NAME_ALIAS || 'Station Alias' }}:</span
+                                                        >&nbsp;&nbsp;
+                                                    </label>
+                                                    <div class="col-lg-9">
+                                                        <div *ngIf="station_aliases && station_aliases.length > 0">
+                                                            <p-table
+                                                                #dt
+                                                                [columns]="cols"
+                                                                [value]="station_aliases"
+                                                                tableStyleClass="table align-middle table-row-dashed fs-6 gy-5 mb-0">
+                                                                <ng-template pTemplate="header" let-columns>
+                                                                    <tr
+                                                                        class="text-start text-gray-400 fw-bold text-uppercase fs-8 gs-0">
+                                                                        <th>Station Alias</th>
+                                                                    </tr>
+                                                                </ng-template>
+                                                                <ng-template pTemplate="body" let-data>
+                                                                    <tr class="fs-7">
+                                                                        <td>
+                                                                            {{ data.name }}
+                                                                        </td>
+                                                                    </tr>
+                                                                </ng-template>
+                                                            </p-table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mb-6">
+                                                    <label class="col-lg-3 fw-bold fs-7">
+                                                        <span
+                                                            >{{
+                                                                label?.station?.DATE_ESTABLISHED || 'Date Established'
+                                                            }}:</span
+                                                        >&nbsp;&nbsp;
+                                                    </label>
+
+                                                    <div class="col-lg-9">
+                                                        {{ date_established | date: 'dd-MM-yyyy' }}
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mb-6">
+                                                    <label class="col-lg-3 fw-bold fs-7">
+                                                        <span>{{ label?.station?.DATE_CLOSED || 'Date Closed' }}:</span
+                                                        >&nbsp;&nbsp;
+                                                    </label>
+
+                                                    <div class="col-lg-9">
+                                                        {{ date_closed | date: 'dd-MM-yyyy' }}
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mb-6">
+                                                    <label class="col-lg-3 fw-bold fs-7">
+                                                        <span>{{ label?.station?.TYPE || 'Station Type' }}:</span
+                                                        >&nbsp;&nbsp;
+                                                    </label>
+
+                                                    <div class="col-lg-9">
+                                                        {{ station_type }}
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mb-6">
+                                                    <label class="col-lg-3 fw-bold fs-7">
+                                                        <span>{{ label?.station?.LOCAL_TYPE || 'Local Type' }}:</span
+                                                        >&nbsp;&nbsp;
+                                                    </label>
+
+                                                    <div class="col-lg-9">
+                                                        {{ station_local_type }}
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mb-6">
+                                                    <label class="col-lg-3 fw-bold fs-7">
+                                                        <span>{{ label?.station?.USAGE_TYPE || 'Usage Type' }}:</span
+                                                        >&nbsp;&nbsp;
+                                                    </label>
+
+                                                    <div class="col-lg-9">
+                                                        {{ usage_type }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-5">
+                                                <div id="map" style="height: 250px"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-6">
+                                            <label class="col-lg-3 fw-bold fs-7">
+                                                <span>{{ label?.station?.USAGE || 'Station Usage' }}:</span>&nbsp;&nbsp;
+                                            </label>
+
+                                            <div class="col-lg-9">
+                                                <div *ngIf="station_usage && station_usage.length > 0">
+                                                    <p-table
+                                                        #dt
+                                                        [columns]="cols"
+                                                        [value]="station_usage"
+                                                        tableStyleClass="table align-middle table-row-dashed fs-6 gy-5 mb-0">
+                                                        <ng-template pTemplate="header" let-columns>
+                                                            <tr
+                                                                class="text-start text-gray-400 fw-bold text-uppercase fs-8 gs-0">
+                                                                <th>Station Usage</th>
+                                                            </tr>
+                                                        </ng-template>
+                                                        <ng-template pTemplate="body" let-data>
+                                                            <tr class="fs-7">
+                                                                <td>
+                                                                    {{ data.name }}
+                                                                </td>
+                                                            </tr>
+                                                        </ng-template>
+                                                    </p-table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-6">
+                                            <label class="col-lg-3 fw-bold fs-7">
+                                                <span>{{ label?.station?.COORDINATOR || 'Coordinator' }}:</span
+                                                >&nbsp;&nbsp;
+                                            </label>
+
+                                            <div class="col-lg-9">
+                                                {{ station_coordinator }}
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-6">
+                                            <label class="col-lg-3 fw-bold fs-7">
+                                                <span>{{ label?.station?.WMO_REGION || 'WMO Region' }}:</span
+                                                >&nbsp;&nbsp;
+                                            </label>
+
+                                            <div class="col-lg-9">
+                                                {{ wmo_region_type?.name }}
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-6">
+                                            <label class="col-lg-3 fw-bold fs-7">
+                                                <span>{{ label?.station?.COUNTRY || 'Country / Territory' }}:</span
+                                                >&nbsp;&nbsp;
+                                            </label>
+
+                                            <div class="col-lg-9">
+                                                <div *ngIf="country_territories && country_territories.length > 0">
+                                                    <p-table
+                                                        #dt
+                                                        [columns]="cols"
+                                                        [value]="country_territories"
+                                                        tableStyleClass="table align-middle table-row-dashed fs-8 gy-5 mb-0">
+                                                        <ng-template pTemplate="header" let-columns>
+                                                            <tr>
+                                                                <th>Country / Territory</th>
+                                                                <th>From</th>
+                                                            </tr>
+                                                        </ng-template>
+                                                        <ng-template pTemplate="body" let-data>
+                                                            <tr class="fs-7">
+                                                                <td>
+                                                                    {{ data.country?.name }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ data.from | date: 'dd-MM-yyyy' }}
+                                                                </td>
+                                                            </tr>
+                                                        </ng-template>
+                                                    </p-table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-6">
+                                            <label class="col-lg-3 fw-bold fs-7">
+                                                <span>{{ label?.station?.WIGOS_ID || 'Wigos ID' }}:</span>&nbsp;&nbsp;
+                                            </label>
+
+                                            <div class="col-lg-9">
+                                                {{ wigos_id }}
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-6">
+                                            <label class="col-lg-3 fw-bold fs-7">
+                                                <span>{{ label?.station?.ID_STATION || 'ID Station' }}:</span
+                                                >&nbsp;&nbsp;
+                                            </label>
+
+                                            <div class="col-lg-9">
+                                                {{ identifier }}
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-6">
+                                            <label class="col-lg-3 fw-bold fs-7">
+                                                <span>{{ label?.station?.COORDINATES || 'Coordinates' }}:</span
+                                                >&nbsp;&nbsp;
+                                            </label>
+
+                                            <div class="col-lg-9">
+                                                <div *ngIf="coordinates && coordinates.length > 0">
+                                                    <p-table
+                                                        #dt
+                                                        [columns]="cols"
+                                                        [value]="coordinates"
+                                                        tableStyleClass="table align-middle table-row-dashed fs-6 gy-5 mb-0">
+                                                        <ng-template pTemplate="header" let-columns>
+                                                            <tr
+                                                                class="text-start text-gray-400 fw-bold text-uppercase fs-8 gs-0">
+                                                                <th>Latitude</th>
+                                                                <th>Longitude</th>
+                                                                <th>Station Elevation</th>
+                                                                <th>Geopositioning Method</th>
+                                                                <th>From</th>
+                                                            </tr>
+                                                        </ng-template>
+                                                        <ng-template pTemplate="body" let-data>
+                                                            <tr class="fs-7">
+                                                                <td>
+                                                                    {{ data.latitude }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ data.longitude }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ data.elevation }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ data.geopositioning_method?.name }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ data.from | date: 'dd-MM-yyyy' }}
+                                                                </td>
+                                                            </tr>
+                                                        </ng-template>
+                                                    </p-table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-6">
+                                            <label class="col-lg-3 fw-bold fs-7">
+                                                <span>{{ label?.station?.TIMEZONE || 'Time Zone' }}:</span>&nbsp;&nbsp;
+                                            </label>
+
+                                            <div class="col-lg-9">
+                                                <div *ngIf="timezones && timezones.length > 0">
+                                                    <p-table
+                                                        #dt
+                                                        [columns]="cols"
+                                                        [value]="timezones"
+                                                        tableStyleClass="table align-middle table-row-dashed fs-6 gy-5 mb-0">
+                                                        <ng-template pTemplate="header" let-columns>
+                                                            <tr
+                                                                class="text-start text-gray-400 fw-bold text-uppercase fs-8 gs-0">
+                                                                <th>Time Zone</th>
+                                                                <th>From</th>
+                                                            </tr>
+                                                        </ng-template>
+                                                        <ng-template pTemplate="body" let-data>
+                                                            <tr class="fs-7">
+                                                                <td>UTC {{ data.gmt || data.timezone?.gmt }}</td>
+                                                                <td>
+                                                                    {{ data.from | date: 'dd-MM-yyyy' }}
+                                                                </td>
+                                                            </tr>
+                                                        </ng-template>
+                                                    </p-table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-6">
+                                            <label class="col-lg-3 fw-bold fs-7">
+                                                <span
+                                                    >{{
+                                                        label?.station?.SUP_ORGANIZATION || 'Supervising Organization'
+                                                    }}:</span
+                                                >&nbsp;&nbsp;
+                                            </label>
+
+                                            <div class="col-lg-9">
+                                                <div
+                                                    *ngIf="
+                                                        supervising_organizations &&
+                                                        supervising_organizations.length > 0
+                                                    ">
+                                                    <p-table
+                                                        #dt
+                                                        [columns]="cols"
+                                                        [value]="supervising_organizations"
+                                                        tableStyleClass="table align-middle table-row-dashed fs-6 gy-5 mb-0">
+                                                        <ng-template pTemplate="header" let-columns>
+                                                            <tr
+                                                                class="text-start text-gray-400 fw-bold text-uppercase fs-8 gs-0">
+                                                                <th>Name</th>
+                                                                <th>From</th>
+                                                            </tr>
+                                                        </ng-template>
+                                                        <ng-template pTemplate="body" let-data>
+                                                            <tr class="fs-7">
+                                                                <td>
+                                                                    {{ data.organization?.long_name }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ data.from | date: 'dd-MM-yyyy' }}
+                                                                </td>
+                                                            </tr>
+                                                        </ng-template>
+                                                    </p-table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-6">
+                                            <label class="col-lg-3 fw-bold fs-7">
+                                                <span>{{ label?.station?.URL || 'Station URL' }}:</span>&nbsp;&nbsp;
+                                            </label>
+
+                                            <div class="col-lg-9">
+                                                {{ station_url }}
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-6">
+                                            <label class="col-lg-3 fw-bold fs-7">
+                                                <span>{{ label?.station?.OTHER_LINK || 'Other Link (URL)' }}:</span
+                                                >&nbsp;&nbsp;
+                                            </label>
+
+                                            <div class="col-lg-9">
+                                                {{ other_url }}
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-6">
+                                            <label class="col-lg-3 fw-bold fs-7">
+                                                <span
+                                                    >{{ label?.station?.SITE_DESCRIPTION || 'Site Description' }}:</span
+                                                >&nbsp;&nbsp;
+                                            </label>
+
+                                            <div class="col-lg-9">
+                                                <div *ngIf="site_descriptions && site_descriptions.length > 0">
+                                                    <p-table
+                                                        #dt
+                                                        [columns]="cols"
+                                                        [value]="site_descriptions"
+                                                        tableStyleClass="table align-middle table-row-dashed fs-6 gy-5 mb-0">
+                                                        <ng-template pTemplate="header" let-columns>
+                                                            <tr
+                                                                class="text-start text-gray-400 fw-bold text-uppercase fs-8 gs-0">
+                                                                <th>Site Description</th>
+                                                                <th>From</th>
+                                                            </tr>
+                                                        </ng-template>
+                                                        <ng-template pTemplate="body" let-data>
+                                                            <tr class="fs-7">
+                                                                <td>
+                                                                    {{ data.value }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ data.from | date: 'dd-MM-yyyy' }}
+                                                                </td>
+                                                            </tr>
+                                                        </ng-template>
+                                                    </p-table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-6">
+                                            <label class="col-lg-3 fw-bold fs-7">
+                                                <span>{{ label?.station?.CLIMATE_ZONE || 'Climate Zone' }}:</span
+                                                >&nbsp;&nbsp;
+                                            </label>
+
+                                            <div class="col-lg-9">
+                                                <div *ngIf="climate_zones && climate_zones.length > 0">
+                                                    <p-table
+                                                        #dt
+                                                        [columns]="cols"
+                                                        [value]="climate_zones"
+                                                        tableStyleClass="table align-middle table-row-dashed fs-6 gy-5 mb-0">
+                                                        <ng-template pTemplate="header" let-columns>
+                                                            <tr
+                                                                class="text-start text-gray-400 fw-bold text-uppercase fs-8 gs-0">
+                                                                <th>Climate Zone</th>
+                                                                <th>From</th>
+                                                            </tr>
+                                                        </ng-template>
+                                                        <ng-template pTemplate="body" let-data>
+                                                            <tr class="fs-7">
+                                                                <td>
+                                                                    {{ data.climate_zone.description }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ data.from | date: 'dd-MM-yyyy' }}
+                                                                </td>
+                                                            </tr>
+                                                        </ng-template>
+                                                    </p-table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-6">
+                                            <label class="col-lg-3 fw-bold fs-7">
+                                                <span
+                                                    >{{
+                                                        label?.station?.PREDOMINANT_SURFACE_COVER ||
+                                                            'Predominant Surface Cover'
+                                                    }}:</span
+                                                >&nbsp;&nbsp;
+                                            </label>
+
+                                            <div class="col-lg-9">
+                                                <div
+                                                    *ngIf="
+                                                        predominant_surface_covers &&
+                                                        predominant_surface_covers.length > 0
+                                                    ">
+                                                    <p-table
+                                                        #dt
+                                                        [columns]="cols"
+                                                        [value]="predominant_surface_covers"
+                                                        tableStyleClass="table align-middle table-row-dashed fs-6 gy-5 mb-0">
+                                                        <ng-template pTemplate="header" let-columns>
+                                                            <tr
+                                                                class="text-start text-gray-400 fw-bold text-uppercase fs-8 gs-0">
+                                                                <th>Surface cover classification scheme</th>
+                                                                <th>Surface cover</th>
+                                                                <th>From</th>
+                                                            </tr>
+                                                        </ng-template>
+                                                        <ng-template pTemplate="body" let-data>
+                                                            <tr class="fs-7">
+                                                                <td>
+                                                                    {{ data.surface_cover_classification?.name }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ data.surface_cover_type?.name }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ data.from | date: 'dd-MM-yyyy' }}
+                                                                </td>
+                                                            </tr>
+                                                        </ng-template>
+                                                    </p-table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-6">
+                                            <label class="col-lg-3 fw-bold fs-7">
+                                                <span
+                                                    >{{
+                                                        label?.station?.SURFACE_ROUGHNESS || 'Surface Roughness'
+                                                    }}:</span
+                                                >&nbsp;&nbsp;
+                                            </label>
+
+                                            <div class="col-lg-9">
+                                                <div *ngIf="surface_roughnesses && surface_roughnesses.length > 0">
+                                                    <p-table
+                                                        #dt
+                                                        [columns]="cols"
+                                                        [value]="surface_roughnesses"
+                                                        tableStyleClass="table align-middle table-row-dashed fs-6 gy-5 mb-0">
+                                                        <ng-template pTemplate="header" let-columns>
+                                                            <tr
+                                                                class="text-start text-gray-400 fw-bold text-uppercase fs-8 gs-0">
+                                                                <th>Surface Roughness</th>
+                                                                <th>From</th>
+                                                            </tr>
+                                                        </ng-template>
+                                                        <ng-template pTemplate="body" let-data>
+                                                            <tr class="fs-7">
+                                                                <td>
+                                                                    {{ data.surface_roughness_type?.name }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ data.from | date: 'dd-MM-yyyy' }}
+                                                                </td>
+                                                            </tr>
+                                                        </ng-template>
+                                                    </p-table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-6">
+                                            <label class="col-lg-3 fw-bold fs-7">
+                                                <span
+                                                    >{{
+                                                        label?.station?.TOPOGRAPHY || 'Topography or Bathymetry'
+                                                    }}:</span
+                                                >&nbsp;&nbsp;
+                                            </label>
+
+                                            <div class="col-lg-9">
+                                                <div
+                                                    *ngIf="
+                                                        topography_bathymetries && topography_bathymetries.length > 0
+                                                    ">
+                                                    <p-table
+                                                        #dt
+                                                        [columns]="cols"
+                                                        [value]="topography_bathymetries"
+                                                        tableStyleClass="table align-middle table-row-dashed fs-6 gy-5 mb-0">
+                                                        <ng-template pTemplate="header" let-columns>
+                                                            <tr
+                                                                class="text-start text-gray-400 fw-bold text-uppercase fs-8 gs-0">
+                                                                <th>Local topography (based on Speight 2009)</th>
+                                                                <th>Relative elevation</th>
+                                                                <th>Topographic context (based on Hammond 1954)</th>
+                                                                <th>Altitude / depth</th>
+                                                                <th>From</th>
+                                                            </tr>
+                                                        </ng-template>
+                                                        <ng-template pTemplate="body" let-data>
+                                                            <tr class="fs-7">
+                                                                <td>
+                                                                    {{ data.local_topograhy?.name }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ data.relative_elevation?.name }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ data.topographic_context?.name }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ data.altitude_depth?.name }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ data.from | date: 'dd-MM-yyyy' }}
+                                                                </td>
+                                                            </tr>
+                                                        </ng-template>
+                                                    </p-table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-6">
+                                            <label class="col-lg-3 fw-bold fs-7">
+                                                <span
+                                                    >{{
+                                                        label?.station?.POPULATION ||
+                                                            'Population in 10km / 50km (in thousands)'
+                                                    }}:</span
+                                                >&nbsp;&nbsp;
+                                            </label>
+
+                                            <div class="col-lg-9">
+                                                <div *ngIf="populations && populations.length > 0">
+                                                    <p-table
+                                                        #dt
+                                                        [columns]="cols"
+                                                        [value]="populations"
+                                                        tableStyleClass="table align-middle table-row-dashed fs-6 gy-5 mb-0">
+                                                        <ng-template pTemplate="header" let-columns>
+                                                            <tr
+                                                                class="text-start text-gray-400 fw-bold text-uppercase fs-8 gs-0">
+                                                                <th>Population in 10km (in thousands)</th>
+                                                                <th>Population in 50km (in thousands)</th>
+                                                                <th>From</th>
+                                                            </tr>
+                                                        </ng-template>
+                                                        <ng-template pTemplate="body" let-data>
+                                                            <tr class="fs-7">
+                                                                <td>
+                                                                    {{ data.population_in_10km }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ data.population_in_50km }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ data.from | date: 'dd-MM-yyyy' }}
+                                                                </td>
+                                                            </tr>
+                                                        </ng-template>
+                                                    </p-table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-6">
+                                            <label class="col-lg-3 fw-bold fs-7">
+                                                <span
+                                                    >{{
+                                                        label?.station?.LOGBOOK || 'Station / Platform Event Logbook'
+                                                    }}:</span
+                                                >&nbsp;&nbsp;
+                                            </label>
+
+                                            <div class="col-lg-9">
+                                                <div
+                                                    *ngIf="
+                                                        platform_event_logbooks && platform_event_logbooks.length > 0
+                                                    ">
+                                                    <p-table
+                                                        #dt
+                                                        [columns]="cols"
+                                                        [value]="platform_event_logbooks"
+                                                        tableStyleClass="table align-middle table-row-dashed fs-6 gy-5 mb-0">
+                                                        <ng-template pTemplate="header" let-columns>
+                                                            <tr
+                                                                class="text-start text-gray-400 fw-bold text-uppercase fs-8 gs-0">
+                                                                <th>On / From</th>
+                                                                <th>To</th>
+                                                                <th>Event</th>
+                                                                <th>Description</th>
+                                                                <th>Author</th>
+                                                                <th>Online reference</th>
+                                                            </tr>
+                                                        </ng-template>
+                                                        <ng-template pTemplate="body" let-data>
+                                                            <tr class="fs-7">
+                                                                <td>
+                                                                    {{ data.from | date: 'dd-MM-yyyy' }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ data.to }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ data.platform_event?.text }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ data.description }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ data.author }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ data.online_reference }}
+                                                                </td>
+                                                            </tr>
+                                                        </ng-template>
+                                                    </p-table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-6">
+                                            <label class="col-lg-3 fw-bold fs-7">
+                                                <span>{{ label?.station?.PHOTO_GALLERY || 'Photo Gallery' }}</span
+                                                >&nbsp;&nbsp;
+                                            </label>
+                                            <hr />
+                                            <p-carousel
+                                                [value]="photo_gallery"
+                                                [numVisible]="5"
+                                                [numScroll]="5"
+                                                [circular]="false"
+                                                [responsiveOptions]="responsiveOptions"
+                                                *ngIf="photo_gallery.length > 0">
+                                                <ng-template let-pg pTemplate="item">
+                                                    <div class="mb-3">
+                                                        <img
+                                                            src="{{ pg.photo }}"
+                                                            alt="{{ pg.name }}"
+                                                            (click)="editPhoto()" />
+                                                    </div>
+                                                </ng-template>
+                                            </p-carousel>
+                                        </div>
+                                        <p-dialog
+                                            [(visible)]="dialogPhoto"
+                                            [style]="{ width: '600px' }"
+                                            header="Photo Details"
+                                            [modal]="true"
+                                            styleClass="p-fluid">
+                                            <ng-template pTemplate="content">
+                                                <div class="card-body p-9">
+                                                    <div class="row mb-6">
+                                                        <p-galleria
+                                                            [value]="photo_gallery"
+                                                            [containerStyle]="{ 'max-width': '500px' }"
+                                                            [showThumbnails]="false"
+                                                            [showItemNavigators]="true">
+                                                            <ng-template pTemplate="item" let-pg>
+                                                                <div class="row mb-6">
+                                                                    <div class="row mb-6">
+                                                                        <img
+                                                                            [src]="pg.photo"
+                                                                            style="width: 100%; display: block" />
+                                                                    </div>
+                                                                    <div class="row mb-6">
+                                                                        <label class="col-lg-6 fw-bold fs-6">
+                                                                            <span>Date of capture:</span>&nbsp;&nbsp;
+                                                                        </label>
+                                                                        <div class="col-lg-6">
+                                                                            {{
+                                                                                pg.date_taken
+                                                                                    | date: 'dd-MM-yyy hh:mm:ss'
+                                                                            }}
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row mb-6">
+                                                                        <label class="col-lg-6 fw-bold fs-6">
+                                                                            <span>Photographer/owner:</span>&nbsp;&nbsp;
+                                                                        </label>
+                                                                        <div class="col-lg-6">
+                                                                            {{ pg.owner }}
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row mb-6">
+                                                                        <label class="col-lg-6 fw-bold fs-6">
+                                                                            <span>Direction of view:</span>&nbsp;&nbsp;
+                                                                        </label>
+                                                                        <div class="col-lg-6">
+                                                                            {{ pg.direction_of_view_name }}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </ng-template>
+                                                        </p-galleria>
+                                                    </div>
+                                                </div>
+                                            </ng-template>
+                                        </p-dialog>
+                                        <div class="row mb-6">
+                                            <label class="col-lg-3 fw-bold fs-7">
+                                                <span>{{
+                                                    label?.station?.PROGRAMS || 'Program / Network Affiliation'
+                                                }}</span
+                                                >&nbsp;&nbsp;
+                                            </label>
+                                            <hr />
+                                            <div class="row mb-6">
+                                                <div
+                                                    *ngIf="
+                                                        program_network_affiliations &&
+                                                        program_network_affiliations.length > 0
+                                                    ">
+                                                    <p-table
+                                                        #dt
+                                                        [columns]="cols"
+                                                        [value]="program_network_affiliations"
+                                                        tableStyleClass="table align-middle table-row-dashed fs-6 gy-5 mb-0">
+                                                        <ng-template pTemplate="header" let-columns>
+                                                            <tr
+                                                                class="text-start text-gray-400 fw-bold text-uppercase fs-8 gs-0">
+                                                                <th>Program / Network Affiliation</th>
+                                                                <th>Program specific ID</th>
+                                                                <th>Affiliation Status</th>
+                                                                <th>Declared Status</th>
+                                                                <th>From</th>
+                                                                <th>To</th>
+                                                            </tr>
+                                                        </ng-template>
+                                                        <ng-template pTemplate="body" let-data>
+                                                            <tr class="fs-7">
+                                                                <td>
+                                                                    {{ data.program_type_text }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ data.program_specific_identifier }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ data.affiliation_status }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ data.declared_statuses_name }}
+                                                                </td>
+                                                                <td>
+                                                                    {{
+                                                                        data.declared_statuses_from | date: 'dd-MM-yyyy'
+                                                                    }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ data.declared_statuses_to | date: 'dd-MM-yyyy' }}
+                                                                </td>
+                                                            </tr>
+                                                        </ng-template>
+                                                    </p-table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </p-accordionTab>
+                                    <p-accordionTab header="Observations / measurements">
+                                        <div *ngIf="state$ | async">
+                                            <ng-container *ngFor="let item of observationList">
+                                                <mat-accordion [togglePosition]="'before'">
+                                                    <mat-expansion-panel [class.mat-expansion-panel]="false">
+                                                        <mat-expansion-panel-header>
+                                                            <mat-panel-title>
+                                                                <label class="col-lg fw-bold fs-7">{{item.tittle}}</label>
+                                                            </mat-panel-title>
+                                                        </mat-expansion-panel-header>
+                                                        <div class="row mb-0 p-l-10 fs-7">
+                                                            <!-- variable -->
+                                                            <div class="row mb-6">
+                                                                <label class="col-lg-4">{{label?.observation?.VARIABLE_OBSERVATION || 'Variable'}} :</label>
+                                                                <div class="col-lg-4 fv-row">
+                                                                  {{item.content.observed_variable.text}}
+                                                                </div>
+                                                              </div>
+
+                                                            <!-- Geometry -->
+                                                            <div class="row mb-6">
+                                                                <label class="col-lg-4 ">{{label?.observation?.GEOMETRY_OBSERVATION || 'Geometry'}} :</label>
+                                                                <div class="col-lg-4 fv-row">
+                                                                    {{ item.content.geometry.name }}
+                                                                </div>
+                                                              </div>
+                                                            <!-- Program Network -->
+                                                            <div class="row mb-6">
+                                                                <label class="col-lg-4 ">{{label?.observation?.PROGRAM_OBSERVATION || 'Program/network affiliation'}} :</label>
+                                                                <div class="col-lg-4 fv-row">
+                                                                    <p-listbox
+                                                                    [options]="
+                                                                        programNetworksMap.get(item.content.id)
+                                                                    "
+                                                                    optionLabel="desc"
+                                                                    [style]="{ border: 'none' }">
+                                                                </p-listbox>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row mb-6">
+                                                                <label class="col-lg-4 ">Last Update :</label>
+                                                                <div class="col-lg-4 fv-row">
+                                                                  {{item.content.last_update}}
+                                                                </div>
+                                                              </div>
+
+                                                            <div class="row mb-6 fs-7">
+                                                                <mat-accordion [togglePosition]="'before'">
+                                                                    <mat-expansion-panel
+                                                                        [class.mat-expansion-panel]="false">
+                                                                        <mat-expansion-panel-header>
+                                                                            <mat-panel-title>
+                                                                                <label class="col-lg-0 fw-bold fs-7"
+                                                                                    >Deployment</label
+                                                                                >
+                                                                            </mat-panel-title>
+                                                                        </mat-expansion-panel-header>
+                                                                        <ng-container
+                                                                            *ngFor="
+                                                                                let depItem of item.content.deployments
+                                                                            ">
+                                                                            <mat-accordion>
+                                                                                <mat-expansion-panel
+                                                                                    (opened)="
+                                                                                        depItem.panelOpenState = true
+                                                                                    "
+                                                                                    (closed)="
+                                                                                        depItem.panelOpenState = false
+                                                                                    ">
+                                                                                    <mat-expansion-panel-header>
+                                                                                        <mat-panel-title>
+                                                                                            <label
+                                                                                                class="col-lg-0 fw-bold fs-7"
+                                                                                                >&nbsp;{{
+                                                                                                    depItem.tittle
+                                                                                                }}</label
+                                                                                            >
+                                                                                        </mat-panel-title>
+                                                                                    </mat-expansion-panel-header>
+                                                                                    <div class="fs-7">
+                                                                                        <!-- source observation -->
+                                                                                        <div class="row mb-0 fs-7" [style]="{'width': '100%'}">
+                                                                                            <div class="row mb-6">
+                                                                                            <label class="col-lg-4 ">{{label?.generalInfo?.SOURCE_OBSERVATION || 'Source of observation'}}:</label>
+                                                                                            <div class="col-lg-4 fv-row">
+                                                                                                {{
+                                                                                                    depItem
+                                                                                                        .source_of_observation
+                                                                                                        .name
+                                                                                                }}
+                                                                                            </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <!-- distance -->
+                                                                                        <div class="row mb-6" *ngIf="depItem.distance_from_reference_surface!=null">
+                                                                                            <label class="col-lg-4 ">{{label?.generalInfo?.DISTANCE_SUREFACE || 'Distance from reference surface (m)'}}:</label>
+                                                                                            <div class="col-lg-8 fv-row">
+                                                                                            {{depItem.distance_from_reference_surface}}
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <!-- reference_surface_type_id -->
+                                                                                        <div class="row mb-6" *ngIf="depItem.reference_surface_type!=null">
+                                                                                            <label class="col-lg-4 ">{{label?.generalInfo?.TYPE_REFERENCE_SURFACE || 'Type of reference surface'}} :</label>
+                                                                                            <div class="col-lg-8 fv-row">
+                                                                                            {{depItem.reference_surface_type.name}}
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <!-- exposure_id -->
+                                                                                        <div class="row mb-6" *ngIf="depItem.exposure!=null">
+                                                                                            <label class="col-lg-4 ">{{label?.generalInfo?.EXPOSURE_INSTRUMENT || 'Exposure of instrument'}}:</label>
+                                                                                            <div class="col-lg-8 fv-row">
+                                                                                            {{depItem.exposure.name}} ( {{depItem.exposure.description}} )
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <!-- Configuration of instrument -->
+                                                                                        <div class="row mb-6" *ngIf="depItem.configuration!=null">
+                                                                                            <label class="col-lg-4 ">{{label?.generalInfo?.CONFIGURATOIN_INSTRUMENT || 'Configuration of instrument'}}:</label>
+                                                                                            <div class="col-lg-8 fv-row">
+                                                                                            {{depItem.configuration}}
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <!-- representativeness_id -->
+                                                                                        <div class="row mb-6" *ngIf="depItem.representativeness!=null">
+                                                                                            <label class="col-lg-4 ">{{label?.generalInfo?.REPRESENTATIVENESS_OBSERVATION || 'Representativeness of observation'}} :</label>
+                                                                                            <div class="col-lg-8 fv-row">
+                                                                                            {{depItem.representativeness.name}}
+                                                                                            </div>
+                                                                                        </div>
+
+                                                                                        <!-- measurement -->
+                                                                                        <div class="row mb-6" *ngIf="depItem.measurement_leader!=undefined">
+                                                                                            <label class="col-lg-4 ">{{label?.generalInfo?.MEASUREMENT_LEADER || 'Measurement leader / principal investigator'}} :</label>
+                                                                                            <div class="col-lg-8 fv-row">
+                                                                                            {{depItem.measurement_leader.name}}
+                                                                                            </div>
+                                                                                        </div>
+
+                                                                                        <!-- organization -->
+                                                                                        <div class="row mb-6" *ngIf="depItem.organization!=null">
+                                                                                            <label class="col-lg-4 ">{{label?.generalInfo?.ORGANIZATION_GENRAL_INFORMATION || 'Organization'}} :</label>
+                                                                                            <div class="col-lg-8 fv-row">
+                                                                                            {{depItem.organization.long_name}}
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <!-- near real time -->
+                                                                                        <div class="row mb-6" *ngIf="depItem.is_near_real_time!=null">
+                                                                                            <label class="col-lg-4 ">Near Real Time :</label>
+                                                                                            <div class="col-lg-8 fv-row">
+                                                                                            {{depItem.is_near_real_time==1?'Yes':'No'}}
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <!-- near real time url -->
+                                                                                        <div class="row mb-6"  [style]="{'width': '100%'}" *ngIf="depItem.near_real_time_url!=null">
+                                                                                            <label class="col-lg-4 ">{{label?.generalInfo?.NEAR_REAL_TIME_URL || 'Near Real Time URL'}}: </label>
+                                                                                            <div class="col-lg-8 fv-row"  [style]="{'width': '100%'}">
+                                                                                            {{depItem.near_real_time_url}}
+                                                                                            </div>
+                                                                                        </div>
+
+                                                                                        <!-- data centre -->
+                                                                                        <div class="row mb-6" *ngIf="depItem.data_centre!=null">
+                                                                                            <label class="col-lg-4 ">{{label?.generalInfo?.DATA_CENTRE || 'Data centre'}}:</label>
+                                                                                            <div class="col-lg-8 fv-row">
+                                                                                            {{depItem.data_centre.value}}
+                                                                                            </div>
+                                                                                        </div>
+
+                                                                                        <!-- data url -->
+                                                                                        <div class="row mb-6" *ngIf="depItem.data_urls.length > 0">
+                                                                                            <label class="col-lg-4 ">{{label?.generalInfo?.DATA_URL || 'Data URL'}}: </label>
+                                                                                            <div class="col-lg-8 fv-row">
+                                                                                            <p-listbox [options]="depItem.data_urls" optionLabel="url" [style]="{'border': 'none'}">
+                                                                                            </p-listbox>
+                                                                                            </div>
+                                                                                        </div>
+
+                                                                                        <!-- data comunication method -->
+                                                                                        <div class="row mb-6" *ngIf="depItem.data_communication_method!=null">
+                                                                                            <label class="col-lg-4 ">{{label?.generalInfo?.DATA_COMUNICATION_METHOD || 'Data communication method'}}: </label>
+                                                                                            <div class="col-lg-8 fv-row">
+                                                                                            {{depItem.data_communication_method.name}}
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <!-- qa/qc -->
+                                                                                        <div class="row mb-6" *ngIf="depItem.qaqc_schedule!=null">
+                                                                                            <label class="col-lg-4 ">{{label?.generalInfo?.INSTRUMENT_QAQC || 'Instrument QA/QC schedule'}}:</label>
+                                                                                            <div class="col-lg-8 fv-row">
+                                                                                            {{depItem.qaqc_schedule}}
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <!-- maintenance shedule -->
+                                                                                        <div class="row mb-6" *ngIf="depItem.maintenance_schedule!=null">
+                                                                                            <label class="col-lg-4 ">{{label?.generalInfo?.MAINTENANCE_SHCEDULE || 'Maintenance schedule'}}:</label>
+                                                                                            <div class="col-lg-8 fv-row">
+                                                                                            {{depItem.maintenance_schedule}}
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <!-- certified observation -->
+                                                                                        <div class="row mb-0">
+                                                                                            <div class="row mb-6" *ngIf="depItem.is_certified_observation!=null">
+                                                                                            <label class="col-lg-4 ">{{label?.generalInfo?.CERTIFIED_OBSERVATION || 'Certified observation'}}:</label>
+                                                                                            <div class="col-lg-8 fv-row">
+                                                                                                {{depItem.is_certified_observation==1?'Yes':'No'}}
+                                                                                            </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <!-- comment -->
+                                                                                        <div class="row mb-6" *ngIf="depItem.comments!=null">
+                                                                                            <label class="col-lg-4 ">{{label?.generalInfo?.COMMENT_GENERAL_INFO || 'Comments'}} :</label>
+                                                                                            <div class="col-lg-8 fv-row">
+                                                                                            {{depItem.comments}}
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="row mb-2 fs-7">
+                                                                                            <ng-container
+                                                                                                *ngIf="
+                                                                                                    depItem.instrument !==
+                                                                                                    undefined
+                                                                                                ">
+                                                                                                <mat-accordion
+                                                                                                    [togglePosition]="
+                                                                                                        'before'
+                                                                                                    ">
+                                                                                                    <mat-expansion-panel
+                                                                                                        [class.mat-expansion-panel]="
+                                                                                                            false
+                                                                                                        ">
+                                                                                                        <mat-expansion-panel-header>
+                                                                                                            <mat-panel-title>
+                                                                                                                <label
+                                                                                                                    class="col-lg-0 fw-bold fs-7"
+                                                                                                                    >Instrument
+                                                                                                                    Characteristic</label
+                                                                                                                >
+                                                                                                            </mat-panel-title>
+                                                                                                        </mat-expansion-panel-header>
+                                                                                                        <div class="row mb-0 p-l-10 fs-7">
+                                                                                                            <!-- manufacture -->
+                                                                                                            <div class="row mb-0" *ngIf="depItem.instrument.manufacturer!=null">
+                                                                                                                <div class="row mb-6">
+                                                                                                                <label class="col-lg-4 ">{{label?.instrument?.MANUFACTURER || 'Manufacturer'}} :</label>
+                                                                                                                    <div class="col-lg-8 fv-row">
+                                                                                                                        {{depItem.instrument.manufacturer.name}}
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                            <!-- model -->
+                                                                                                            <div class="row mb-0" *ngIf="depItem.instrument.instrument_model!=null">
+                                                                                                                <div class="row mb-6">
+                                                                                                                <label class="col-lg-4 ">{{label?.instrument?.MODEL || 'Model'}} :</label>
+                                                                                                                <div class="col-lg-4 fv-row">
+                                                                                                                    {{depItem.instrument.instrument_model.name}}
+                                                                                                                </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                            <!-- serial number -->
+                                                                                                            <div class="row mb-6" *ngIf="depItem.instrument.serial_number!=null">
+                                                                                                                <label class="col-lg-4 ">{{label?.instrument?.SERIAL_NUMBER || 'Serial Number'}} :</label>
+                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                {{depItem.instrument.serial_number}}
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                            <!-- observing method -->
+                                                                                                            <div class="row mb-0" *ngIf="depItem.instrument.observing_method!=null">
+                                                                                                                <div class="row mb-6">
+                                                                                                                <label class="col-lg-4 ">{{label?.instrument?.OBSERVING_METHOD || 'Observing method'}} :</label>
+                                                                                                                <div class="col-lg-4 fv-row">
+                                                                                                                    {{depItem.instrument.observing_method.text}}
+                                                                                                                </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                            <!-- method detail -->
+                                                                                                            <div class="row mb-6" *ngIf="depItem.instrument.method_details!=null">
+                                                                                                                <label class="col-lg-4 ">{{label?.instrument?.METHOD_DETAIL || 'Method details'}} :</label>
+                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                {{depItem.instrument.method_details}}
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                            <!-- method comment -->
+                                                                                                            <div class="row mb-6" *ngIf="depItem.instrument.method_comments!=null">
+                                                                                                                <label class="col-lg-4 ">{{label?.instrument?.METHOD_COMMENT || 'Method comments'}} :</label>
+                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                {{depItem.instrument.method_comments}}
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                            <!-- coordinate -->
+                                                                                                            <div class="row mb-0">
+                                                                                                                <div class="row mb-0" *ngIf="instrumentMap.get(depItem.instrument.id+'_coordinate')!=null">
+                                                                                                                <label class="col-lg-4 ">{{label?.coordinate?.COORDINATES || 'Coordinate'}} :</label>
+                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                    <p-table [value]="instrumentMap.get(depItem.instrument.id+'_coordinate')" [scrollable]="true" scrollDirection="horizontal">
+                                                                                                                    <ng-template pTemplate="header">
+                                                                                                                        <tr>
+                                                                                                                            <th style="height: 15px">{{label?.coordinate?.LATITUDE || 'Latitude'}}</th><th style="height: 15px">{{label?.coordinate?.LONGITUDE || 'Longitude'}}</th>
+                                                                                                                            <th style="height: 15px">{{label?.coordinate?.ELEVATION || 'Elevation'}}</th><th style="height: 15px">{{label?.coordinate?.GEOPOSITION_METHOD || 'Geopositioning Method'}}</th>
+                                                                                                                            <th style="height: 15px">{{label?.coordinate?.FROM || 'From'}}</th>
+                                                                                                                        </tr>
+                                                                                                                    </ng-template>
+                                                                                                                    <ng-template pTemplate="body" let-element>
+                                                                                                                        <tr>
+                                                                                                                            <td style="width: 150px">{{element.latitude}}</td>
+                                                                                                                            <td style="width: 150px">{{element.longitude}}</td>
+                                                                                                                            <td style="width: 150px">{{element.elevation}}</td>
+                                                                                                                            <td style="width: 200px">{{element.geopositioning_method?.name}}</td>
+                                                                                                                            <td style="width: 100px">{{element.from}}</td>
+                                                                                                                        </tr>
+                                                                                                                    </ng-template>
+                                                                                                                    </p-table>
+                                                                                                                </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                            <!-- operating status -->
+                                                                                                            <div class="row mb-0" *ngIf="instrumentMap.get(depItem.instrument.id+'_operating_status')!=null">
+                                                                                                                <label class="col-lg-4 ">{{label?.status?.INSTRUMENT_STATUS || 'Instrument operating status'}} :</label>
+                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                <p-table [value]="instrumentMap.get(depItem.instrument.id+'_operating_status')" [scrollable]="true" scrollDirection="horizontal">
+                                                                                                                    <ng-template pTemplate="header">
+                                                                                                                    <tr>
+                                                                                                                        <th>{{label?.status?.STATUS || 'Status'}}</th><th>{{label?.status?.FROM || 'From'}}</th>
+                                                                                                                        <th>{{label?.status?.TO || 'To'}}</th>
+                                                                                                                    </tr>
+                                                                                                                    </ng-template>
+                                                                                                                    <ng-template pTemplate="body" let-element>
+                                                                                                                    <tr>
+                                                                                                                        <td style="width: 150px">{{element.instrument_operating_status_id.value}} </td>
+                                                                                                                        <td style="width: 150px">{{element.from}}</td>
+                                                                                                                        <td style="width: 150px">{{element.to}}</td>
+                                                                                                                    </tr>
+                                                                                                                    </ng-template>
+                                                                                                                </p-table>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                            <!-- fireware -->
+                                                                                                            <div class="row mb-6" *ngIf="depItem.instrument.firmware_version!=null">
+                                                                                                                <label class="col-lg-4 ">{{label?.instrument?.FIRMWARE_VERSION || 'Firmware version'}} :</label>
+                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                {{depItem.instrument.firmware_version}}
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                            <!-- spesification -->
+                                                                                                            <div *ngIf="depItem.instrument.instrument_specifications!=null">
+                                                                                                                <label class="col-lg-4">{{label?.instrument?.SPECIFICATION || 'Instrument specifications'}}:</label>
+                                                                                                                <!-- observable -->
+                                                                                                                <div class="row sub-form mb-2" *ngIf="depItem.instrument.instrument_specifications.observable_range!=null">
+                                                                                                                <label class="col-lg-4">{{label?.instrument?.OBSERVABLE || 'Observable range'}}:</label>
+                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                    {{depItem.instrument.instrument_specifications.observable_range}}
+                                                                                                                </div>
+                                                                                                                </div>
+                                                                                                                <!-- relative -->
+                                                                                                                <div class="row sub-form mb-2" *ngIf="depItem.instrument.instrument_specifications.relative_uncertainty!=null">
+                                                                                                                <label class="col-lg-4">{{label?.instrument?.RELATIVE || 'Relative uncertainty'}}::</label>
+                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                    {{depItem.instrument.instrument_specifications.relative_uncertainty}}
+                                                                                                                </div>
+                                                                                                                </div>
+                                                                                                                <!-- ABSOLUTE -->
+                                                                                                                <div class="row sub-form mb-2" *ngIf="depItem.instrument.instrument_specifications.absolute_uncertainty!=null">
+                                                                                                                <label class="col-lg-4">{{label?.instrument?.ABSOLUTE || 'Absolute uncertainty'}}:</label>
+                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                    {{depItem.instrument.instrument_specifications.absolute_uncertainty}}
+                                                                                                                </div>
+                                                                                                                </div>
+                                                                                                                <!-- DRIFT -->
+                                                                                                                <div class="row sub-form mb-2" *ngIf="depItem.instrument.instrument_specifications.drift_per_unit_time!=null">
+                                                                                                                <label class="col-lg-4">{{label?.instrument?.DRIFT || 'Drift per unit time'}}:</label>
+                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                    {{depItem.instrument.instrument_specifications.drift_per_unit_time}}
+                                                                                                                </div>
+                                                                                                                </div>
+                                                                                                                <!-- SPEC_URL -->
+                                                                                                                <div class="row sub-form mb-2" *ngIf="depItem.instrument.instrument_specifications.specification_url!=null">
+                                                                                                                <label class="col-lg-4">{{label?.instrument?.SPEC_URL || 'Specification URL'}}:</label>
+                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                    {{depItem.instrument.instrument_specifications.specification_url}}
+                                                                                                                </div>
+                                                                                                                </div>
+                                                                                                                <!-- UNCERTAINTY -->
+                                                                                                                <div class="row sub-form mb-2" *ngIf="depItem.instrument.instrument_specifications.uncertainty_evaluation_procedure!=null">
+                                                                                                                <label class="col-lg-4">{{label?.instrument?.UNCERTAINTY || 'Uncertainty evaluation procedure'}}:</label>
+                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                    {{depItem.instrument.instrument_specifications.uncertainty_evaluation_procedure.name}}
+                                                                                                                </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                            <!-- frequency polarization -->
+                                                                                                            <div class="row mb-6" *ngIf="instrumentMap.get(depItem.instrument.id+'_frequency_polarization')!=null">
+                                                                                                                <label class="col-lg-4 ">{{label?.frequency?.OBSERVATION || 'Observation frequency and polarization'}} :</label>
+                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                <p-table [value]="instrumentMap.get(depItem.instrument.id+'_frequency_polarization')" [scrollable]="true" scrollDirection="horizontal">
+                                                                                                                    <ng-template pTemplate="header">
+                                                                                                                    <tr>
+                                                                                                                        <th>{{label?.frequency?.USE_FREQUENCY || 'Use Of Frequency'}}</th><th>{{label?.frequency?.FREQUENCY || 'Frequency'}}</th>
+                                                                                                                        <th>{{label?.frequency?.BANDWIDTH || 'Bandwidth'}}</th><th>{{label?.frequency?.TRANSMISSION || 'Transmission Mode'}}</th>
+                                                                                                                        <th>{{label?.frequency?.POLARIZATION || 'Polarization'}}</th>
+                                                                                                                    </tr>
+                                                                                                                    </ng-template>
+                                                                                                                    <ng-template pTemplate="body" let-element>
+                                                                                                                    <tr>
+                                                                                                                        <td style="width: 150px">{{element.frequency_type?.name}}</td>
+                                                                                                                        <td style="width: 150px">{{element.frequency}} {{element.frequency_unit?.value}}</td>
+                                                                                                                        <td style="width: 150px">{{element.bandwidth}} {{element.bandwidth_unit?.value}}</td>
+                                                                                                                        <td style="width: 150px">{{element.transmission_mode?.name}}</td>
+                                                                                                                        <td style="width: 150px">{{element.polarization?.name}}</td>
+                                                                                                                    </tr>
+                                                                                                                    </ng-template>
+                                                                                                                </p-table>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                            <!-- telecomunication frequency -->
+                                                                                                            <div class="row mb-6" *ngIf="instrumentMap.get(depItem.instrument.id+'_telecomunication_frequency')!=null">
+                                                                                                                <label class="col-lg-4 ">{{label?.frequency?.TELECOMMUNICATION || 'Telecommunication frequency'}} :</label>
+                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                <p-table [value]="instrumentMap.get(depItem.instrument.id+'_telecomunication_frequency')" [scrollable]="true" scrollDirection="horizontal">
+                                                                                                                    <ng-template pTemplate="header">
+                                                                                                                    <tr>
+                                                                                                                        <th>{{label?.frequency?.USE_FREQUENCY || 'Use Of Frequency'}}</th><th>{{label?.frequency?.FREQUENCY || 'Frequency'}}</th>
+                                                                                                                        <th>{{label?.frequency?.BANDWIDTH || 'Bandwidth'}}</th>
+                                                                                                                    </tr>
+                                                                                                                    </ng-template>
+                                                                                                                    <ng-template pTemplate="body" let-element>
+                                                                                                                    <tr>
+                                                                                                                        <td style="width: 150px">{{element.frequency_type_id?.name}}</td>
+                                                                                                                        <td style="width: 150px">{{element.frequency}} {{element.frequency_unit?.value}}</td>
+                                                                                                                        <td style="width: 150px">{{element.bandwidth}} {{element.bandwidth_unit?.value}}</td>
+                                                                                                                    </tr>
+                                                                                                                    </ng-template>
+                                                                                                                </p-table>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                            <!-- comment -->
+                                                                                                            <div class="row mb-6" *ngIf="depItem.instrument.comments!=null">
+                                                                                                                <label class="col-lg-4 ">{{label?.maintenance?.COMMENT || 'Comment'}} :</label>
+                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                {{depItem.instrument.comments}}
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                            <!-- maintenance logbook -->
+                                                                                                            <div class="row mb-6" *ngIf="instrumentMap.get(depItem.instrument.id+'_maintenance')!=null">
+                                                                                                                <label class="col-lg-4 ">{{label?.maintenance?.LOGBOOK || 'Maintenance logbook'}}: </label>
+                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                <p-table [value]="instrumentMap.get(depItem.instrument.id+'_maintenance')" [scrollable]="true" scrollDirection="horizontal">
+                                                                                                                    <ng-template pTemplate="header">
+                                                                                                                    <tr>
+                                                                                                                        <th>{{label?.maintenance?.DATE || 'Date'}} </th><th>{{label?.maintenance?.PARTY || 'Maintenance Party'}}</th>
+                                                                                                                        <th>{{label?.maintenance?.INDIVIDUAL || 'Individual'}}</th><th>{{label?.maintenance?.DESC || 'Description'}}</th>
+                                                                                                                        <th>{{label?.maintenance?.AUTHOR || 'Author'}}</th><th>{{label?.maintenance?.DOC_URL || 'Documentation URL'}}</th>
+                                                                                                                    </tr>
+                                                                                                                    </ng-template>
+                                                                                                                    <ng-template pTemplate="body" let-element>
+                                                                                                                    <tr>
+                                                                                                                        <td style="width: 150px">{{element.maintenance_date}}</td>
+                                                                                                                        <td style="width: 150px">{{element.maintenance_party?.long_name}}</td>
+                                                                                                                        <td style="width: 150px">{{element.individual}}</td>
+                                                                                                                        <td style="width: 150px">{{element.description}}</td>
+                                                                                                                        <td style="width: 150px">{{element.author}}</td>
+                                                                                                                        <td style="width: 150px">{{element.documentation_url}}</td>
+                                                                                                                    </tr>
+                                                                                                                    </ng-template>
+                                                                                                                </p-table>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                            <!-- quality -->
+                                                                                                            <div class="row mb-6" *ngIf="instrumentMap.get(depItem.instrument.id+'_quality')!=null">
+                                                                                                                <label class="col-lg-4 ">{{label?.assurance?.ASSURANCE || 'Quality assurance logbook'}} :</label>
+                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                <p-table [value]="instrumentMap.get(depItem.instrument.id+'_quality')" [scrollable]="true" scrollDirection="horizontal">
+                                                                                                                    <ng-template pTemplate="header">
+                                                                                                                    <tr>
+                                                                                                                        <th>{{label?.assurance?.LOCATION || 'Location'}}</th><th>{{label?.assurance?.DATE || 'Activity Date'}}</th>
+                                                                                                                        <th>{{label?.assurance?.TYPE || 'Type Standart'}}</th><th>{{label?.assurance?.NAME || 'Standart Name'}}</th>
+                                                                                                                        <th>{{label?.assurance?.SERIAL_NUMBER || 'Standart Serial Number'}}</th><th>{{label?.assurance?.RESULT || 'Activity Result'}}</th>
+                                                                                                                        <th>{{label?.assurance?.DOC_URL || 'Documentation URL'}}</th><th>{{label?.assurance?.AUTHOR || 'Author'}}</th>
+                                                                                                                    </tr>
+                                                                                                                    </ng-template>
+                                                                                                                    <ng-template pTemplate="body" let-element>
+                                                                                                                    <tr>
+                                                                                                                        <td style="width: 150px">{{element.control_location?.name}}</td>
+                                                                                                                        <td style="width: 150px">{{element.activity_date | date: 'dd-MM-yyyy'}}</td>
+                                                                                                                        <td style="width: 150px">{{element.control_standard?.name}}</td>
+                                                                                                                        <td style="width: 150px">{{element.standard_name}}</td>
+                                                                                                                        <td style="width: 150px">{{element.standard_serial_number}}</td>
+                                                                                                                        <td style="width: 150px">{{element.instrument_control_result?.name}}</td>
+                                                                                                                        <td style="width: 150px">{{element.documentation_url}}</td>
+                                                                                                                        <td style="width: 150px">{{element.author}}</td>
+                                                                                                                    </tr>
+                                                                                                                    </ng-template>
+                                                                                                                </p-table>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </mat-expansion-panel>
+                                                                                                </mat-accordion>
+                                                                                            </ng-container>
+                                                                                        </div>
+                                                                                        <div class="row mb-0">
+                                                                                            <ng-container
+                                                                                                *ngIf="
+                                                                                                    depItem.data_generation !==
+                                                                                                    undefined
+                                                                                                ">
+                                                                                                <mat-accordion
+                                                                                                    [togglePosition]="
+                                                                                                        'before'
+                                                                                                    ">
+                                                                                                    <mat-expansion-panel
+                                                                                                        [class.mat-expansion-panel]="
+                                                                                                            false
+                                                                                                        ">
+                                                                                                        <mat-expansion-panel-header>
+                                                                                                            <mat-panel-title>
+                                                                                                                <label
+                                                                                                                    class="col-lg-0 fw-bold fs-7"
+                                                                                                                    >Data
+                                                                                                                    Generation</label
+                                                                                                                >
+                                                                                                            </mat-panel-title>
+                                                                                                        </mat-expansion-panel-header>
+                                                                                                        <div
+                                                                                                            class="row mb-1">
+                                                                                                            <ng-container
+                                                                                                                *ngFor="
+                                                                                                                    let genItem of depItem.data_generation
+                                                                                                                ">
+                                                                                                                <mat-accordion
+                                                                                                                    [togglePosition]="
+                                                                                                                        'before'
+                                                                                                                    ">
+                                                                                                                    <mat-expansion-panel
+                                                                                                                        [class.mat-expansion-panel]="
+                                                                                                                            false
+                                                                                                                        ">
+                                                                                                                        <mat-expansion-panel-header>
+                                                                                                                            <mat-panel-title>
+                                                                                                                                <label class="col-lg-0 fw-bold fs-7">{{genItem.tittle}}</label >
+                                                                                                                            </mat-panel-title>
+                                                                                                                        </mat-expansion-panel-header>
+                                                                                                                        <!-- Sampling -->
+                                                                                                                        <div *ngIf="genItem.sampling.sampling_strategy !== null ||
+                                                                                                                                    genItem.sampling.sampling_interval !== null ||
+                                                                                                                                    genItem.sampling.sampling_period !== null  ||
+                                                                                                                                    genItem.sampling.spatial_sampling_resolution !== null ||
+                                                                                                                                    genItem.sampling.sampling_procedure !== null ||
+                                                                                                                                    genItem.sampling.sampling_procedure_description !== null ||
+                                                                                                                                    genItem.sampling.sample_treatment !== null" class="fs-7" style="width: 100%">
+                                                                                                                            <b>{{label?.sampling?.SAMPLING || 'Sample'}}</b>
+                                                                                                                            <div class="row mb-4" *ngIf="genItem.sampling.sampling_strategy!=null">
+                                                                                                                                <label class="col-lg-4">{{label?.sampling?.STRATEGY || 'Sampling Strategy'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.sampling.sampling_strategy.name}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row mb-4" *ngIf="genItem.sampling.sampling_interval!=null &&genItem.sampling.sampling_interval_unit!=null ">
+                                                                                                                                <label class="col-lg-4">{{label?.sampling?.INTERVAL || 'Sampling Interval'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.sampling.sampling_interval}} {{genItem.sampling.sampling_interval_unit.value}} {{genItem.sampling.sampling_interval_unit.description}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row mb-6" *ngIf="genItem.sampling.sampling_period!=null &&genItem.sampling.sampling_period_unit.value!=null ">
+                                                                                                                                <label class="col-lg-4">{{label?.sampling?.PRIOD || 'Sampling Period'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.sampling.sampling_period}} {{genItem.sampling.sampling_period_unit.value}} {{genItem.sampling.sampling_period_unit.description}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row mb-6" *ngIf="genItem.sampling.spatial_sampling_resolution!=null">
+                                                                                                                                <label class="col-lg-4">{{label?.sampling?.RESOLUTION || 'Spatial Sampling Resolution (m)'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.sampling.spatial_sampling_resolution}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row mb-6" *ngIf="genItem.sampling.sampling_procedure!=null">
+                                                                                                                                <label class="col-lg-4">{{label?.sampling?.PROCEDURE || 'Sampling Procedure'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.sampling.sampling_procedure.value}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row mb-6" *ngIf="genItem.sampling.sampling_procedure_description!=null">
+                                                                                                                                <label class="col-lg-4">{{label?.sampling?.PROCEDURE_DESC || 'Sampling Procedure Description'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.sampling.sampling_procedure_description}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row mb-6" *ngIf="genItem.sampling.sample_treatment!=null">
+                                                                                                                                <label class="col-lg-4">{{label?.sampling?.TREATMENT || 'Sample treatment'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.sampling.sample_treatment.name}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                        </div>
+                                                                                                                        <!-- PROCESSING -->
+                                                                                                                        <div *ngIf="genItem.processing.aggregation_period !== null ||
+                                                                                                                                    genItem.processing.data_processing_method !== null ||
+                                                                                                                                    genItem.processing.software_version !== null ||
+                                                                                                                                    genItem.processing.software_repository_url !== null ||
+                                                                                                                                    genItem.processing.processing_centre !== null" class="fs-7" style="width: 100%">
+                                                                                                                            <b>{{label?.processing?.PROCESSING || 'Processing'}}</b>
+                                                                                                                            <div class="row mb-6" *ngIf="genItem.processing.aggregation_period!=null && genItem.processing.interval_unit!=null">
+                                                                                                                                <label class="col-lg-4">{{label?.processing?.PROCESSING_PRIOD || 'Aggregation Priod'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.processing.aggregation_period}} {{genItem.processing.interval_unit.value}} {{genItem.processing.interval_unit.description}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row mb-6" *ngIf="genItem.processing.data_processing_method!=null">
+                                                                                                                                <label class="col-lg-4">{{label?.processing?.PROCESSING_METHOD || 'Data Processing Method'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.processing.data_processing_method}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row mb-6" *ngIf="genItem.processing.software_version!=null">
+                                                                                                                                <label class="col-lg-4">{{label?.processing?.PROCESSING_VERSION || 'Software / Processing And Version'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.processing.software_version}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row mb-6" *ngIf="genItem.processing.software_repository_url!=null">
+                                                                                                                                <label class="col-lg-4">{{label?.processing?.PROCESSING_URL || 'Software / Sourcode Repository URL'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.processing.software_repository_url}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row mb-6" *ngIf="genItem.processing.processing_centre!=null">
+                                                                                                                                <label class="col-lg-4">{{label?.processing?.PROCESSING_ANALYSIS || 'Processing / Analysis Centre'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.processing.processing_centre.long_name}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                        </div>
+                                                                                                                        <!-- REPORTING -->
+                                                                                                                        <div *ngIf="genItem.reporting !== null" class="fs-7" style="width: 100%">
+                                                                                                                            <b>{{label?.reporting?.PROCESSING_ANALYSIS || 'Reporting'}}</b>
+                                                                                                                            <div class="row mb-6" *ngIf="genItem.reporting.schedule.is_used_for_international_reporting!=null">
+                                                                                                                                <label class="col-lg-4">Intended for international exchange:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.reporting.schedule.is_used_for_international_reporting?'Yes':'No'}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row mb-6" *ngIf="genItem.reporting.schedule.reporting_interval!=null">
+                                                                                                                                <label class="col-lg-4">Reporting interval:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                <label *ngIf="reportingTime.get(genItem.id).Weeks !=0">{{reportingTime.get(genItem.id).Weeks}} Week </label> &nbsp;
+                                                                                                                                <label *ngIf="reportingTime.get(genItem.id).Days !=0">{{reportingTime.get(genItem.id).Days}} Day </label> &nbsp;
+                                                                                                                                <label *ngIf="reportingTime.get(genItem.id).Hours !=0">{{reportingTime.get(genItem.id).Hours}} Hour </label> &nbsp;
+                                                                                                                                <label *ngIf="reportingTime.get(genItem.id).Minutes !=0">{{reportingTime.get(genItem.id).Minutes}} Minute </label>
+                                                                                                                                </div>
+                                                                                                                            </div>
+
+                                                                                                                            <div class="row mb-6">
+                                                                                                                                <label class="col-lg-4">{{label?.reporting?.SCHE_MONTH || 'Month'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.reporting.schedule.period_of_reporting.month.from}} - {{genItem.reporting.schedule.period_of_reporting.month.to}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row mb-6">
+                                                                                                                                <label class="col-lg-4">{{label?.reporting?.SCHE_DAY || 'Day'}} :</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.reporting.schedule.period_of_reporting.day.from}} - {{genItem.reporting.schedule.period_of_reporting.day.to}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row mb-6">
+                                                                                                                                <label class="col-lg-4">{{label?.reporting?.SCHE_TIME || 'UTC'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.reporting.schedule.period_of_reporting.time.from}} - {{genItem.reporting.schedule.period_of_reporting.time.to}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row mb-6" *ngIf="genItem.reporting.schedule.diurnal_base_time!=null">
+                                                                                                                                <label class="col-lg-4">{{label?.reporting?.SCHE_DIURNAL || 'Diurnal Base Time'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.reporting.schedule.diurnal_base_time}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row mb-6" *ngIf="genItem.reporting.observation_count!=null">
+                                                                                                                                <label class="col-lg-4">{{label?.reporting?.OBS || 'Number Of Observations In Reporting Period'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.reporting.observation_count}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row mb-6" *ngIf="genItem.reporting.measurement_unit!=null">
+                                                                                                                                <label class="col-lg-4">{{label?.reporting?.MEASURMENT || 'Measurement Unit'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.reporting.measurement_unit.name}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row mb-6" *ngIf="genItem.reporting.data_policy!=null">
+                                                                                                                                <label class="col-lg-4">{{label?.reporting?.POLICY || 'Data Policy'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.reporting.data_policy.name}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row mb-6" *ngIf="genItem.reporting.spatial_reporting_interval!=null">
+                                                                                                                                <label class="col-lg-4">{{label?.reporting?.INTERVAL || 'Spatial Reporting Interval (m)'}}: </label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.reporting.spatial_reporting_interval}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row mb-6" *ngIf="genItem.reporting.timeliness!=null && genItem.reporting.timeliness_unit!=null">
+                                                                                                                                <label class="col-lg-4">{{label?.reporting?.TIMELINESS || 'Timeliness'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.reporting.timeliness}} {{genItem.reporting.timeliness_unit.value}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row mb-6" *ngIf="genItem.reporting.numerical_resolution!=null">
+                                                                                                                                <label class="col-lg-4">{{label?.reporting?.RESOLUTION || 'Numerical Resolution'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.reporting.numerical_resolution}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row mb-6" *ngIf="genItem.reporting.level_of_data!=null">
+                                                                                                                                <label class="col-lg-4">{{label?.reporting?.LEVEL || 'Level Of Data'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.reporting.level_of_data.name}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row mb-6" *ngIf="genItem.reporting.data_format!=null">
+                                                                                                                                <label class="col-lg-4">{{label?.reporting?.FORMAT || 'Data Format'}}: </label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.reporting.data_format.name}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row mb-6" *ngIf="genItem.reporting.data_format_version!=null">
+                                                                                                                                <label class="col-lg-4">{{label?.reporting?.VERSION || 'Data Format Version'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.reporting.data_format_version}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row mb-6" *ngIf="genItem.reporting.reference_datum!=null">
+                                                                                                                                <label class="col-lg-4">{{label?.reporting?.DATUM || 'Reference Datum'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.reporting.reference_datum}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row mb-6" *ngIf="genItem.reporting.reference_time!=null">
+                                                                                                                                <label class="col-lg-4">{{label?.reporting?.TIME_SOURCE || 'Reference Time Source'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.reporting.reference_time.name}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                            
+                                                                                                                            <div class="row mb-6" *ngIf="genItem.reporting.is_traceable!=null">
+                                                                                                                                <label class="col-lg-4">{{label?.reporting?.OBSERVATION_STANDART || 'Is the observation traceable to a standard?'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.reporting.is_traceable==1?'Yes':'No'}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row mb-6" *ngIf="genItem.reporting.quality_flag_system!=null">
+                                                                                                                                <label class="col-lg-4">{{label?.reporting?.QUALITY_FLAGGING || 'Data Quality Flagging System'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.reporting.quality_flag_system.name}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row mb-6" *ngIf="genItem.reporting.is_primary!=null">
+                                                                                                                                <label class="col-lg-4">{{label?.reporting?.PRIMARY_OBSERVATION || 'Primary observation'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.reporting.is_primary==1?'Yes':'No'}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row mb-6" *ngIf="genItem.reporting.timestamp_meaning!=null">
+                                                                                                                                <label class="col-lg-4">{{label?.reporting?.MEANING_TIMESTAMPP || 'Meaning Of Timestamp In Data Reports'}}: </label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                {{genItem.reporting.timestamp_meaning.name}}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <!-- attribution -->
+                                                                                                                            <div *ngIf="genItem.reporting.attribution!=null">
+                                                                                                                                <label class="col-lg-4">Attribution:</label>
+                                                                                                                                <div class="row sub-form mb-2" *ngIf="genItem.reporting.attribution.title_of_work!=null">
+                                                                                                                                <label class="col-lg-4">{{label?.reporting?.TITTLE_WORK || 'Title Of Work'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                    {{genItem.reporting.attribution.title_of_work}}
+                                                                                                                                </div>
+                                                                                                                                </div>
+                                                                                                                                <div class="row sub-form mb-2" *ngIf="genItem.reporting.attribution.attribution_url!=null">
+                                                                                                                                <label class="col-lg-4">{{label?.reporting?.ATTRIBUTION_URL || 'Attribution (URL)'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                    {{genItem.reporting.attribution.attribution_url}}
+                                                                                                                                </div>
+                                                                                                                                </div>
+                                                                                                                                <div class="row sub-form mb-2" *ngIf="genItem.reporting.attribution.originator_of_work!=null">
+                                                                                                                                <label class="col-lg-4">{{label?.reporting?.ORIGINATOR || 'Originator of work'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                    {{genItem.reporting.attribution.originator_of_work}}
+                                                                                                                                </div>
+                                                                                                                                </div>
+                                                                                                                                <div class="row sub-form mb-2" *ngIf="genItem.reporting.attribution.source_work_url!=null">
+                                                                                                                                <label class="col-lg-4">{{label?.reporting?.SOURCE_URL || 'Source work is based on (URL)'}}:</label>
+                                                                                                                                <div class="col-lg-8 fv-row">
+                                                                                                                                    {{genItem.reporting.attribution.source_work_url}}
+                                                                                                                                </div>
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                        </div>
+
+                                                                                                                    </mat-expansion-panel>
+                                                                                                                </mat-accordion>
+                                                                                                            </ng-container>
+                                                                                                        </div>
+                                                                                                    </mat-expansion-panel>
+                                                                                                </mat-accordion>
+                                                                                            </ng-container>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </mat-expansion-panel>
+                                                                            </mat-accordion>
+                                                                        </ng-container>
+                                                                    </mat-expansion-panel>
+                                                                </mat-accordion>
+                                                            </div>
+                                                        </div>
+                                                    </mat-expansion-panel>
+                                                </mat-accordion>
+                                            </ng-container>
+                                            <div
+                                                *ngIf="!(observationList && observationList.length > 0)"
+                                                style="text-align: center">
+                                                There are no observations found
+                                            </div>
+                                        </div>
+                                    </p-accordionTab>
+                                    <p-accordionTab header="Station contacts">
+                                        <div *ngIf="contacts && contacts.length > 0" class="mt-5">
+                                            <p-table
+                                                #dt
+                                                [columns]="cols"
+                                                [value]="contacts"
+                                                dataKey="id"
+                                                responsiveLayout="scroll"
+                                                tableStyleClass="table align-middle table-row-dashed fw-bold fs-7 gy-5 mb-0">
+                                                <ng-template pTemplate="body" let-data let-expanded="expanded">
+                                                    <tr>
+                                                        <td style="width: 50px">
+                                                            <button
+                                                                type="button"
+                                                                pButton
+                                                                pRipple
+                                                                [pRowToggler]="data"
+                                                                class="p-button-text p-button-rounded p-button-plain"
+                                                                [icon]="
+                                                                    expanded
+                                                                        ? 'pi pi-chevron-down'
+                                                                        : 'pi pi-chevron-right'
+                                                                "></button>
+                                                        </td>
+                                                        <td>
+                                                            {{ data.name }}
+                                                        </td>
+                                                    </tr>
+                                                </ng-template>
+                                                <ng-template pTemplate="rowexpansion" let-data>
+                                                    <tr class="fs-7">
+                                                        <td>&nbsp;</td>
+                                                        <td>
+                                                            <div class="card-body">
+                                                                <div class="row">
+                                                                    <label class="col-lg-4 fw-bold">Name</label>
+                                                                    <div class="col-lg-8">{{ data.name }}</div>
+                                                                </div>
+                                                                <br />
+                                                                <div class="row">
+                                                                    <label class="col-lg-4 fw-bold">No HP</label>
+                                                                    <div class="col-lg-8">{{ data.phone }}</div>
+                                                                </div>
+                                                                <br />
+                                                                <div class="row">
+                                                                    <label class="col-lg-4 fw-bold">Email</label>
+                                                                    <div class="col-lg-8">{{ data.email }}</div>
+                                                                </div>
+                                                                <br />
+                                                                <div class="row">
+                                                                    <label class="col-lg-4 fw-bold"
+                                                                        >Email Institusi</label
+                                                                    >
+                                                                    <div class="col-lg-8">
+                                                                        {{ data.email_organization }}
+                                                                    </div>
+                                                                </div>
+                                                                <br />
+                                                                <div class="row">
+                                                                    <label class="col-lg-4 fw-bold">Institution</label>
+                                                                    <div class="col-lg-8">
+                                                                        {{ data.organization?.long_name }}
+                                                                    </div>
+                                                                </div>
+                                                                <br />
+                                                                <div class="row">
+                                                                    <label class="col-lg-4 fw-bold">Category</label>
+                                                                    <div class="col-lg-8">
+                                                                        {{ data.organization?.category }}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </ng-template>
+                                            </p-table>
+                                        </div>
+
+                                        <div *ngIf="!(contacts && contacts.length > 0)" style="text-align: center">
+                                            There are no contacts found
+                                        </div>
+                                    </p-accordionTab>
+                                    <p-accordionTab header="Bibliographic references">
+                                        <div
+                                            *ngIf="bibliographic_references && bibliographic_references.length > 0"
+                                            class="mt-5">
+                                            <p-table
+                                                #dt
+                                                [columns]="cols"
+                                                [value]="bibliographic_references"
+                                                tableStyleClass="table align-middle table-row-dashed gy-5 mb-0">
+                                                <ng-template pTemplate="header" let-columns>
+                                                    <tr
+                                                        class="text-start text-gray-400 text-uppercase fw-bold fs-8 gs-0">
+                                                        <th class="min-w-125px fs-7">Bibliography</th>
+                                                    </tr>
+                                                </ng-template>
+                                                <ng-template pTemplate="body" let-data>
+                                                    <tr class="fs-7">
+                                                        <td>
+                                                            {{ data.text }}
+                                                        </td>
+                                                    </tr>
+                                                </ng-template>
+                                            </p-table>
+                                        </div>
+
+                                        <div
+                                            *ngIf="!(bibliographic_references && bibliographic_references.length > 0)"
+                                            style="text-align: center">
+                                            There are no bibliography found
+                                        </div>
+                                    </p-accordionTab>
+                                    <p-accordionTab header="Documents">
+                                        <div *ngIf="documents && documents.length > 0" class="mt-5">
+                                            <p-table
+                                                #dt
+                                                [columns]="cols"
+                                                [value]="documents"
+                                                tableStyleClass="table align-middle table-row-dashed fs-8 gy-5 mb-0">
+                                                <ng-template pTemplate="header" let-columns>
+                                                    <tr
+                                                        class="text-start text-gray-400 fw-bold text-uppercase fs-8 gs-0">
+                                                        <th class="min-w-125px">Title</th>
+                                                        <th class="min-w-125px">Author</th>
+                                                        <th class="min-w-125px">Description</th>
+                                                        <th class="min-w-125px">Date</th>
+                                                    </tr>
+                                                </ng-template>
+                                                <ng-template pTemplate="body" let-data>
+                                                    <tr class="fs-7">
+                                                        <td>
+                                                            {{ data.custom_properties?.title }}
+                                                        </td>
+                                                        <td>
+                                                            {{ data.custom_properties?.author }}
+                                                        </td>
+                                                        <td>
+                                                            {{ data.custom_properties?.description }}
+                                                        </td>
+                                                        <td>
+                                                            {{ data.custom_properties?.date | date: 'dd-MM-yyyy' }}
+                                                        </td>
+                                                    </tr>
+                                                </ng-template>
+                                            </p-table>
+                                        </div>
+
+                                        <div *ngIf="!(documents && documents.length > 0)" style="text-align: center">
+                                            There are no documents found
+                                        </div>
+                                    </p-accordionTab>
+                                </p-accordion>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--end::Row-->
+        </div>
+        <!--end::Container-->
+    </div>
+</div>

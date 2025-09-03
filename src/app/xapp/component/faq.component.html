@@ -1,0 +1,164 @@
+<ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+<p-toast></p-toast>
+<div class="mb-0" style="background-color: #eaeaea" *ngIf="state$ | async">
+    <!--begin::Wrapper-->
+    <div class="pt-0">
+        <!--begin::Container-->
+        <div class="container">
+            <!--begin::Row-->
+            <div class="row">
+                <!--begin::Col-->
+                <div class="col-lg-3">
+                    <div
+                        style="
+                            background-color: white;
+                            margin-top: 10px;
+                            border-radius: 5px;
+                            padding: 5px;
+                            height: 100%;
+                        ">
+                        <div style="margin: 15px">&nbsp;</div>
+                    </div>
+                    <!--end::Block-->
+                </div>
+                <!--end::Col-->
+                <div class="col-lg-9">
+                    <div style="margin-top: 10px; border-radius: 5px">
+                        <div class="card mb-5 mb-xl-10">
+                            <div class="card-body border-top p-9">
+
+                                <h1>FAQ</h1>
+                                <h3>Frequently Asked Questions</h3>
+
+                                <p-accordion [multiple]="true">
+                                    <p-accordionTab header="API: Create a simple WIGOS Metadata Representation in XML ?">
+                                        <div>
+                                            Please look at the following blog post: XML Station representation in OSCAR/Surface
+                                        </div>
+                                    </p-accordionTab>
+                                    <p-accordionTab header="API: How can I extract lists of stations from OSCAR/Surface ?">
+                                        <div>
+                                            The following REST API endpoint can be used to return a filtered set of stations as a JSON object:
+
+                                            https://oscar.wmo.int/surface/rest/api/search/station?[facilityType=facilityType][&stationClass=stationClass][&programAffiliation=programAffiliation][&wmoRegion=wmoRegion][&territoryName=territoryName][&organization=organization][&variable=variable][&climateZone=climateZone][&latitudeMin=latitudeMin][&latitudeMax=latitudeMax][&longitudeMin=longitudeMin][&longitudeMax=longitudeMax][&elevationMin=elevationMin][&elevationMax=elevationMax][&operatingStatus]
+                                        </div>
+                                    </p-accordionTab>
+                                    <p-accordionTab header="COMMOM: When are changes in the WMDR code lists going to be implemented ?">
+                                        <div>
+                                            <b>Upcoming changes</b> <br />
+                                            <br />
+                                            30.06.2022
+                                            <br />
+                                            <li>inclusion of new programs from FT2022-1</li>
+                                            <li>inclusion of new variables from FT2022-1</li><br />
+                                            <b>Recent changes</b><br />
+                                            <br />
+                                            7.2.2022:
+    
+                                            <li>Inclusion of new atmosphere and ocean variables </li>
+                                            <li>Removal and inclusion of sample treatment values to match the new WMDR table SampleTreatment</li><br />
+    
+                                            24.1.2022:
+    
+                                            <li>Removal of the following variables:</li>
+                                                - "Cloud ice (total column)"<br />
+                                                - "Cloud liquid water (CLW, total column)"<br />
+                                                - "N2, Ar, O2"
+    
+                                        </div>
+                                    </p-accordionTab>
+                                    <p-accordionTab header="COMMON: What are the general conditions for use of this application ?">
+                                        <div>
+                                            OSCAR/Surface and GAWSIS General Terms and Conditions
+                                            V1.0 2019-01-31
+                                        </div>
+                                    </p-accordionTab>
+                                    <p-accordionTab header="COMMON: FAQs are divided into 'OSCAR', 'GAWSIS' and 'COMMON', why ?">
+                                        <div>
+                                            The applications GAWSIS and OSCAR  share the same FAQs. Questions relevant for both applications start with "COMMON", specific questions start with the respective application name ("GAWSIS" or "OSCAR")
+                                        </div>
+                                    </p-accordionTab>
+                                    <p-accordionTab header="COMMON: How can I change my user profile (e-mail, password, telephone number)?">
+                                        <div>
+                                            In order to change your password please follow the link https://www.myaccount.eiam.admin.ch
+    
+                                            On the Webpage click on "CH-Login" and Login.
+    
+    
+                                            Under the tab "Access data" your email, password and phone number can be updated.
+    
+                                            It is also possible to remove your phone number.
+    
+                                            Please be aware that changing your email address using the link above should only be done after having logged-in to GAWSIS or OSCAR at least once. After updating your e-mail address, make sure to also change it in GAWSIS or OSCAR accordingly. To do so log into the application, go to the Management console and find your name under the "my contacts" tab.
+    
+                                            If you encounter problems or have locked yourself out, please contact us via the "support" form.
+                                        </div>
+                                    </p-accordionTab>
+                                    <p-accordionTab header="COMMON: How can I change the name of an existing station ?">
+                                        <div>
+                                            The name of an existing station can be changed by administrators, National Focal Points and Metadata Editors. However, in most cases, the old names should be retained as station aliases to guarantee traceability.
+    
+                                            If you identify an incorrect name and do not have the above mentioned roles please use the feedback form (https://oscar.wmo.int/surface//index.html#/feedback) to ask for the correction.
+    
+                                            Please note that the WMDR XML uses the element {{'<'}}gml:name{{'>'}} for both the station name and the station alias(es). However the first element in the list is the station name and the following, if any, are the station aliases. The same order is expected when submitting a WMDR XML.
+                                        </div>
+                                    </p-accordionTab>
+                                    <p-accordionTab header="COMMON: How can I test the application ?">
+                                        <div>
+                                            Both GAWSIS and OSCAR have a Test environment available for users willing to learn how the applications work.
+    
+                                            The test applications can be reached at the following URLs:
+                                            • https://gawsisdepl.meteoswiss.ch/GAWSIS    
+                                            • https://oscardepl.wmo.int/surface
+                                            
+                                            Important information on the use of the test environment
+                                            • the database of the test environment is replaced with a copy of the productive database weekly (every Monday). As a consequence, all information saved in the test environemnt are regularly overwritten.
+    
+    
+                                            • the test environment is also used internally for the deployment process of new releases. Your can check the version of the application in the "about" section.
+    
+    
+                                            • there is no easy and fast way to migrate the information you save on the test environment to the productive environment.
+    
+                                            • How to login:
+    
+                                            Login credentials for the test envirnoment are not the same as the productive environment.
+    
+                                            If you are already listed as contact in the productive application you can register for the test environment following the same procedure indicated in the corresponding FAQ (COMMON: I would like to add/edit information in the application. How do I get login credentials?), but starting the registration clicking on the "login" button on the test application.
+    
+                                            If you are not yet listed as a contact in the productive application please contact us first(https://oscar.wmo.int/surface//index.html#/feedback)
+    
+                                            How to distinguish the test from the productive application
+                                            The only indication availalble, other than the URL, to remind you which system you are using is the red banner on the test application homepage "Note: This is a test environment, use OSCAR for the operational environment". Please be always aware of which system you are using.
+                                        </div>
+                                    </p-accordionTab>
+                                    <p-accordionTab header="COMMON: How do I get a list of nominated National Focal Points or Program Focal Points ?">
+                                        <div>
+                                            Go to the "Contact search" tab (https://oscar.wmo.int/surface//index.html#/search/contact) and expand the "search" section.
+    
+                                            Select the desired entry in the dropdown "User role / program function" and click on "Search" to get the corresponding list of nominated users. To refine the list of results you can apply additional filters to your search.
+                                        </div>
+                                    </p-accordionTab>
+                                    <p-accordionTab header="COMMON: I wasn't able to complete the registration process successfully: I entered my name and email in the system but I didn't receive a username and/or password. How can I complete the registration ?">
+                                        <div>
+                                            On the registration workflow during the performance of the six steps under point 4 of the question "How do I get login credentials?" there is the possibility that the session time-out or the user clicks on the "quit" button. If the user name and email have been already stored in the system it is not possible to restart the registration procedure. However you are able to complete the registration by clicking on the login webpage "Welcome to the user administration des CH-LOGIN" on the links:
+    
+                                            - "Forgot your user ID?"
+    
+                                            - "Password forgotten or account blocked?"
+    
+                                            to first recover your username and then set a (new) password.
+                                        </div>
+                                    </p-accordionTab>
+                                </p-accordion>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               
+                <!--end::Row-->
+            </div>
+            <!--end::Container-->
+        </div>
+    </div>
+</div>

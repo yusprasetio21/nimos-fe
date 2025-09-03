@@ -1,0 +1,208 @@
+{
+    "id": null,
+    "name": "Testing 123",
+    "identifier": "3123",
+    "station_aliases": [
+      {
+        "id": "_0",
+        "name": "brwefwef"
+      }
+    ],
+    "date_established": "2022-10-31T17:00:00.000Z",
+    "station_type_id": 4,
+    "station_local_type_id": 2,
+    "usage_type_id": 2,
+    "station_usage": [
+      {
+        "id": "_1",
+        "station_usage_id": 3,
+        "station_usage_name": "Stasiun Meteorologi Malikussaleh",
+        "station_usage": {
+          "id": 3,
+          "name": "Stasiun Meteorologi Malikussaleh"
+        }
+      }
+    ],
+    "station_coordinator": [
+      4
+    ],
+    "country_territories": [
+      {
+        "id": "_2",
+        "country_id": "100",
+        "country_name": "Indonesia",
+        "from": "2022-10-31T17:00:00.000Z"
+      }
+    ],
+    "wmo_region_type_id": "5",
+    "coordinates": [
+      {
+        "id": "_3",
+        "latitude": "-80.2",
+        "longitude": "85.4",
+        "station_elevation": "55",
+        "geopositioning_method": "2 ARGOS Kalman",
+        "geopositioning_method_id": "2",
+        "geopositioning_method_name": "ARGOS Kalman",
+        "from": "2022-10-31T17:00:00.000Z"
+      }
+    ],
+    "timezones": [
+      {
+        "id": "_4",
+        "timezone": "1  +10:30",
+        "timezone_id": "1",
+        "timezone_name": "+10:30",
+        "from": "2022-10-31T17:00:00.000Z"
+      }
+    ],
+    "supervising_organizations": [
+      {
+        "id": "_5",
+        "organization": "2   Kementerian Koordinator Bidang Perekonomian",
+        "organization_name": "Kementerian Koordinator Bidang Perekonomian",
+        "organization_id": "2",
+        "from": "2022-10-31T17:00:00.000Z"
+      }
+    ],
+    "station_url": null,
+    "other_url": null,
+    "site_descriptions": [
+      {
+        "id": "_6",
+        "value": "evgwegwegwe",
+        "from": "2022-10-31T17:00:00.000Z"
+      }
+    ],
+    "climate_zones": [
+      {
+        "id": "_7",
+        "climate_zone": "2 Equatorial - Monsoon",
+        "climate_zone_id": "2",
+        "climate_zone_name": "Equatorial - Monsoon",
+        "from": "2022-10-31T17:00:00.000Z"
+      }
+    ],
+    "predominant_surface_covers": [
+      {
+        "id": "_8",
+        "surface_cover_classification": "2 Surface cover types (IGBP)",
+        "surface_cover_classification_id": "2",
+        "surface_cover_classification_name": "Surface cover types (IGBP)",
+        "surface_cover": "106  Barren or sparsely vegetated",
+        "surface_cover_id": "106",
+        "surface_cover_name": "Barren or sparsely vegetated",
+        "from": "2022-10-31T17:00:00.000Z"
+      }
+    ],
+    "surface_roughnesses": [
+      {
+        "id": "_9",
+        "surface_roughness": "2 Closed (Regular large obstacle COVER (suburb, forest))",
+        "surface_roughness_id": "2",
+        "surface_roughness_name": "Closed (Regular large obstacle COVER (suburb, forest))",
+        "from": "2022-10-31T17:00:00.000Z"
+      }
+    ],
+    "topography_bathymetries": [
+      {
+        "id": "_10",
+        "local_topography": "3 A hilltop",
+        "local_topography_id": "3",
+        "local_topography_name": "A hilltop",
+        "relative_elevation": "3 at Low",
+        "relative_elevation_id": "3",
+        "relative_elevation_name": "at Low",
+        "topographic_context": "1 within basins",
+        "topographic_context_id": "1",
+        "topographic_context_name": "within basins",
+        "altitude_depth": "1 inapplicable",
+        "altitude_depth_id": "1",
+        "altitude_depth_name": "inapplicable",
+        "from": "2022-10-31T17:00:00.000Z"
+      }
+    ],
+    "populations": [
+      {
+        "id": "_11",
+        "population_in_10km": "2312",
+        "population_in_50km": "24125",
+        "from": "2022-10-31T17:00:00.000Z"
+      }
+    ],
+    "platform_event_logbooks": [
+      {
+        "id": "_12",
+        "from": "2022-10-31T17:00:00.000Z",
+        "to": null,
+        "platform_event": {
+          "id": 1,
+          "label": "(inapplicable)",
+          "children": []
+        },
+        "platform_event_id": 1,
+        "platform_event_name": "(inapplicable)",
+        "description": "wgvwegwe",
+        "author": "wegwegwe",
+        "online_reference": "https://local.com"
+      }
+    ],
+    "photo_gallery": [],
+    "provinsi": 51,
+    "kabupaten": 5108,
+    "kecamatan": 510804,
+    "kelurahan": 5108042004,
+    "alamat": "qegqqwdqwf",
+    "program_network_affiliations": [
+      {
+        "id": "_14",
+        "program_type": {
+          "id": 400,
+          "label": "Centennial Observing Stations",
+          "children": [],
+          "country_name": "Indonesia",
+          "country_id": 100,
+          "definition": "Long-term meteorological observations are unique sources of past information about atmospheric parameters, thus are references for climate variability and change assessments. To highlight this importance, WMO has a mechanism to recognize centennial observing stations. By so doing, the Organization promotes sustainable observational standards and best practices that facilitate the generation of high-quality time series data.",
+          "state": null
+        },
+        "program_type_id": 400,
+        "program_type_name": "Centennial Observing Stations",
+        "program_specific_identifier": null,
+        "declared_statuses": [
+          {
+            "id": "_13",
+            "declared_status": "4 Partly operational",
+            "declared_status_id": "4",
+            "declared_status_name": "Partly operational",
+            "from": "2022-10-31",
+            "to": null
+          }
+        ]
+      },
+      {
+        "id": "_221",
+        "program_type": {
+          "id": 401,
+          "label": "Centennial Observing Stations 2",
+          "children": [],
+          "country_name": "Indonesia",
+          "country_id": 100,
+          "definition": "Long-term meteorological observations are unique sources of past information about atmospheric parameters, thus are references for climate variability and change assessments. To highlight this importance, WMO has a mechanism to recognize centennial observing stations. By so doing, the Organization promotes sustainable observational standards and best practices that facilitate the generation of high-quality time series data.",
+          "state": null
+        },
+        "program_type_id": 401,
+        "program_type_name": "Centennial Observing Stations 2",
+        "program_specific_identifier": null,
+        "declared_statuses": [
+          {
+            "id": "_13",
+            "declared_status": "4 Partly operational",
+            "declared_status_id": "4",
+            "declared_status_name": "Partly operational",
+            "from": "2022-10-31",
+            "to": null
+          }
+        ]
+      }
+    ]
+  }

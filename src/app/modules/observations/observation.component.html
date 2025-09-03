@@ -1,0 +1,839 @@
+<p-toast></p-toast>
+<p-confirmDialog [style]="{width: '50vw'}" [baseZIndex]="10000"></p-confirmDialog>
+<ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+
+<div id="kt_app_content" class="app-content flex-column-fluid" *ngIf="state$ | async">
+  <div class="card card-flush">
+        <div class="col-xl-12">
+            <div class="card-body pt-6">
+                <div class="tab-content" *ngIf="!station_id">
+                  Please select station first in Station Management Menu. <br />
+                  You will be redirect to Station Management Menu in 3 second.
+                </div>
+                <div class="tab-content" *ngIf="station_id">
+                  <div class="full-height">
+                    <h3>.:: {{ station_name }} [{{ station_identifier }}]</h3>
+                    <div class="footer-container">
+                      <div class="div-right">
+                  <!-- <p-button label="{{lang=='id'?'Simpan':'Save'}}" (click)="save()" icon="pi pi-save" styleClass="p-button-sm"></p-button> -->
+                         <button type="button" class="btn btn-primary" (click)="save()">
+                          <span class="svg-icon svg-icon-3">
+                  <svg style="color: white" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-save" viewBox="0 0 16 16"> <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z" fill="white"></path> </svg>
+                          </span>
+                          {{lang=='id'?'Simpan':'Save'}}
+                        </button>
+                      </div>
+                      <div class="div-left">
+                  <!-- <p-button label="{{lang=='id'?'Tambah Pengamatan':'Add Observation'}}" (click)="obserDialog()" icon="pi pi-plus" styleClass="p-button-sm"></p-button> -->
+                        <button type="button" class="btn btn-primary" (click)="obserDialog()">
+                          <span class="svg-icon svg-icon-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16"> <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/> </svg>
+                          </span>
+                          {{lang=='id'?'Tambah Pengamatan':'Add Observation'}}
+                        </button>
+                      </div>
+                    </div>
+                    <div class="card-body border-top p-5">
+                      <div *ngIf="state$ | async">
+                        <ng-container *ngFor="let item of observationList">
+                          <mat-accordion [togglePosition]="'before'">
+                            <mat-expansion-panel [class.mat-expansion-panel]="false">
+                              <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                  <label class="col-lg"><b>{{item.tittle}}</b></label>
+                                </mat-panel-title>
+                              </mat-expansion-panel-header>
+                              <!--This is content -->
+                              <div class="row mb-0 p-l-10">
+                                <ul class="footer p-l-3">
+                                  <div class="row mb-6">
+                                    <ul class="footer">
+                                      <!-- <p-button label="{{lang == 'id'?'Memperbarui':'Update'}}" (click)="updateObservation(item.content)" icon="pi pi-file" styleClass="p-button-sm"></p-button> -->
+                                      <button type="button" class="btn btn-primary" (click)="updateObservation(item.content)">
+                                        <span class="svg-icon svg-icon-3">
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16"> <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/> </svg>
+                                        </span>
+                                        {{lang == 'id'?'Memperbarui':'Update'}}
+                                      </button>
+                                      &nbsp;
+                                      <button type="button" class="btn btn-danger" (click)="deleteObservation(item.content)">
+                                        <span class="svg-icon svg-icon-3">
+                                          <svg xmlns="http://www.w3.org/2000/svg" 
+                                          width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16"> <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/> <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/> </svg>
+                                        </span>
+                                        {{lang == 'id'?'Hapus':'Delete'}}</button>
+                                      <!-- <p-button label="{{lang == 'id'?'Hapus':'Delete'}}" (click)="deleteObservation(item.content)" icon="pi pi-trash" style="background-color: red;"></p-button> -->
+                                    </ul>
+                                  </div>
+                                </ul>
+                    
+                                <div class="row mb-6 fs-7">
+                                  <label class="col-lg-4">{{label?.observation?.VARIABLE_OBSERVATION || 'Variable'}} :</label>
+                                  <div class="col-lg-4 fv-row">
+                                    {{item.content.variable}}
+                                  </div>
+                                </div>
+                      
+                                <div class="row mb-6 fs-7">
+                                  <label class="col-lg-4 ">{{label?.observation?.GEOMETRY_OBSERVATION || 'Geometry'}} :</label>
+                                  <div class="col-lg-4 fv-row">
+                                    {{item.content.geometryName}}
+                                  </div>
+                                </div>
+                      
+                                <div class="row mb-6 fs-7">
+                                  <label class="col-lg-4 ">{{label?.observation?.PROGRAM_OBSERVATION || 'Program/network affiliation'}} :</label>
+                                  <div class="col-lg-4 fv-row">
+                                    <p-listbox [options]="programNetworksMap.get(item.content.id)" optionLabel="desc" [style]="{'border': 'none'}">
+                                    </p-listbox>
+                                  </div>
+                                </div>
+                    
+                                <div class="row mb-6 fs-7" *ngIf="item.content.last_update != null && item.content.last_update != ''">
+                                  <label class="col-lg-4 ">Last Update :</label>
+                                  <div class="col-lg-4 fv-row">
+                                    {{item.content.last_update}}
+                                  </div>
+                                </div>
+                    
+                                <!-- this is deployment -->
+                                <div class="row mb-6 ">
+                                  <div class="card-body border-top">
+                                    <mat-accordion [togglePosition]="'before'">
+                                      <mat-expansion-panel  [class.mat-expansion-panel]="false">
+                                        <!-- <mat-expansion-panel-header (click)="showDeployment(item)"> -->
+                                        <mat-expansion-panel-header>
+                                          <mat-panel-title>
+                                            <label class="col-lg-0 "><b>Deployment</b></label>
+                                          </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <!-- ULANG DEPLOYMAP DAN AKHIRNYA BAKAN DAPAT CONTENT -->
+                                        <div class="row mb-0 p-l-10">
+                                          <div class="row mb-2">
+                                            <!-- <p-button label="{{lang == 'id'?'Tambah Penyebaran':'Add Deployment'}}" (click)="deploymentDialog(item.content.id)" icon="pi pi-plush" styleClass="p-button-sm"></p-button> -->
+                                            <button type="button" class="btn btn-primary" (click)="deploymentDialog(item.content.id)" style="width:auto">
+                                              <span class="svg-icon svg-icon-3">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16"> <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/> </svg>
+                                              </span>
+                                              {{lang == 'id'?'Tambah Penyebaran':'Add Deployment'}}
+                                            </button>
+                                          </div>
+                                          <div *ngIf="state$ | async">
+                                            <!-- <ng-container *ngFor="let depItem of deployMap.get(item.content.id+'_'+item.content.geometry)"> -->
+                                            <ng-container *ngFor="let depItem of deployMap.get(item.content.id)" [style]="{'width': '100%'}">
+                                              <mat-accordion>
+                                                <mat-expansion-panel
+                                                  (opened)="depItem.panelOpenState = true"
+                                                  (closed)="depItem.panelOpenState = false">
+                                                  <mat-expansion-panel-header>
+                                                    <mat-panel-title>
+                                                      <label class="col-lg-0 "><b> &nbsp;{{depItem.content.tittle}}</b></label>
+                                                    </mat-panel-title>
+                                                    <div class="footer-container">
+                                                      <div class="div-right">
+                                                        <ul class="footer">
+                                                          <mat-panel-description>
+                                                            <a (click)="updateDeployment(depItem.content,item.content.id)"
+                                                              class="btn btn-icon btn-active-light-primary w-30px h-30px">
+                                                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" 
+                                                              class="bi bi-pencil-fill" viewBox="0 0 16 16"> <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/> </svg>
+                                                            </a>
+                                                            &nbsp;
+                                                            <a (click)="deleteDeployment(depItem.content,item.content.id)"
+                                                              class="btn btn-icon btn-active-light-primary w-30px h-30px">
+                                                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                                                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                                              </svg>
+                                                            </a>
+                                                          </mat-panel-description>
+                                                        </ul>
+                                                      </div>
+                                                    </div>
+                                                  </mat-expansion-panel-header>
+                                                  <div class="row mb-0" [style]="{'width': '100%'}">
+                                                    <div class="row mb-6 fs-7">
+                                                      <label class="col-lg-4  ">{{label?.generalInfo?.SOURCE_OBSERVATION || 'Source of observation'}}:</label>
+                                                      <div class="col-lg-4 fv-row">
+                                                        {{depItem.content.source_obs_desc}}
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                  <!-- distance -->
+                                                  <div class="row mb-6 fs-7" *ngIf="depItem.content.distance_from_reference_surface!=undefined">
+                                                    <label class="col-lg-4 ">{{label?.generalInfo?.DISTANCE_SUREFACE || 'Distance from reference surface (m)'}}:</label>
+                                                    <div class="col-lg-8 fv-row">
+                                                      {{depItem.content.distance_from_reference_surface}}
+                                                    </div>
+                                                  </div>
+                                                  <!-- reference_surface_type_id -->
+                                                  <div class="row mb-6 fs-7" *ngIf="depItem.content.reference_surface_type_desc!=undefined">
+                                                    <label class="col-lg-4 ">{{label?.generalInfo?.TYPE_REFERENCE_SURFACE || 'Type of reference surface'}} :</label>
+                                                    <div class="col-lg-8 fv-row">
+                                                      {{depItem.content.reference_surface_type_desc}}
+                                                    </div>
+                                                  </div>
+                                                  <!-- exposure_id -->
+                                                  <div class="row mb-6 fs-7" *ngIf="depItem.content.exposure_desc!=undefined">
+                                                    <label class="col-lg-4 ">{{label?.generalInfo?.EXPOSURE_INSTRUMENT || 'Exposure of instrument'}}:</label>
+                                                    <div class="col-lg-8 fv-row">
+                                                      {{depItem.content.exposure_desc}}
+                                                    </div>
+                                                  </div>
+                                                  <!-- Configuration of instrument -->
+                                                  <div class="row mb-6 fs-7" *ngIf="depItem.content.configuration!=undefined">
+                                                    <label class="col-lg-4 ">{{label?.generalInfo?.CONFIGURATOIN_INSTRUMENT || 'Configuration of instrument'}}:</label>
+                                                    <div class="col-lg-8 fv-row">
+                                                      {{depItem.content.configuration}}
+                                                    </div>
+                                                  </div>
+                                                  <!-- representativeness_id -->
+                                                  <div class="row mb-6 fs-7" *ngIf="depItem.content.representativeness_of_obs_desc!=undefined">
+                                                    <label class="col-lg-4 ">{{label?.generalInfo?.REPRESENTATIVENESS_OBSERVATION || 'Representativeness of observation'}} :</label>
+                                                    <div class="col-lg-8 fv-row">
+                                                      {{depItem.content.representativeness_of_obs_desc}}
+                                                    </div>
+                                                  </div>
+                                                  <!-- measurement -->
+                                                  <div class="row mb-6 fs-7" *ngIf="depItem.content.measurement_leader_desc!=undefined">
+                                                    <label class="col-lg-4 ">{{label?.generalInfo?.MEASUREMENT_LEADER || 'Measurement leader / principal investigator'}} :</label>
+                                                    <div class="col-lg-8 fv-row">
+                                                      {{depItem.content.measurement_leader_desc}}
+                                                    </div>
+                                                  </div>
+                                                  <!-- organization -->
+                                                  <div class="row mb-6 fs-7" *ngIf="depItem.content.organization_desc!=undefined">
+                                                    <label class="col-lg-4 ">{{label?.generalInfo?.ORGANIZATION_GENRAL_INFORMATION || 'Organization'}} :</label>
+                                                    <div class="col-lg-8 fv-row">
+                                                      {{depItem.content.organization_desc}}
+                                                    </div>
+                                                  </div>
+                                                  <!-- near real time -->
+                                                  <div class="row mb-6 fs-7" *ngIf="depItem.content.is_near_real_time!=undefined">
+                                                    <label class="col-lg-4 ">Near Real Time :</label>
+                                                    <div class="col-lg-8 fv-row">
+                                                      {{depItem.content.is_near_real_time==1?'Yes':'No'}}
+                                                    </div>
+                                                  </div>
+                                                  <!-- near real time url -->
+                                                  <div class="row mb-6 fs-7"  [style]="{'width': '100%'}" *ngIf="depItem.content.near_real_time_url!=undefined">
+                                                    <label class="col-lg-4 ">{{label?.generalInfo?.NEAR_REAL_TIME_URL || 'Near Real Time URL'}}: </label>
+                                                    <div class="col-lg-8 fv-row"  [style]="{'width': '100%'}">
+                                                      {{depItem.content.near_real_time_url}}
+                                                    </div>
+                                                  </div>
+                                                  <!-- data centre -->
+                                                  <div class="row mb-6 fs-7" *ngIf="depItem.content.data_centre_desc!=undefined">
+                                                    <label class="col-lg-4 ">{{label?.generalInfo?.DATA_CENTRE || 'Data centre'}}:</label>
+                                                    <div class="col-lg-8 fv-row">
+                                                      {{depItem.content.data_centre_desc}}
+                                                    </div>
+                                                  </div>
+                                                  <!-- data url -->
+                                                  <div class="row mb-6 fs-7" *ngIf="depItem.content.data_urls.length > 0">
+                                                    <label class="col-lg-4 ">{{label?.generalInfo?.DATA_URL || 'Data URL'}}: </label>
+                                                    <div class="col-lg-8 fv-row">
+                                                      <p-listbox [options]="depItem.content.data_urls" optionLabel="url" [style]="{'border': 'none'}">
+                                                      </p-listbox>
+                                                    </div>
+                                                  </div>
+                                                  <!-- data comunication method -->
+                                                  <div class="row mb-6 fs-7" *ngIf="depItem.content.data_communicatino_method_desc!=undefined">
+                                                    <label class="col-lg-4 ">{{label?.generalInfo?.DATA_COMUNICATION_METHOD || 'Data communication method'}}: </label>
+                                                    <div class="col-lg-8 fv-row">
+                                                      {{depItem.content.data_communicatino_method_desc}}
+                                                    </div>
+                                                  </div>
+                                                  <!-- qa/qc -->
+                                                  <div class="row mb-6 fs-7" *ngIf="depItem.content.qaqc_schedule!=undefined">
+                                                    <label class="col-lg-4 ">{{label?.generalInfo?.INSTRUMENT_QAQC || 'Instrument QA/QC schedule'}}:</label>
+                                                    <div class="col-lg-8 fv-row">
+                                                      {{depItem.content.qaqc_schedule}}
+                                                    </div>
+                                                  </div>
+                                                  <!-- maintenance shedule -->
+                                                  <div class="row mb-6 fs-7" *ngIf="depItem.content.maintenance_schedule!=undefined">
+                                                    <label class="col-lg-4 ">{{label?.generalInfo?.MAINTENANCE_SHCEDULE || 'Maintenance schedule'}}:</label>
+                                                    <div class="col-lg-8 fv-row">
+                                                      {{depItem.content.maintenance_schedule}}
+                                                    </div>
+                                                  </div>
+                                                  <!-- certified observation -->
+                                                  <div class="row mb-6 fs-7" *ngIf="depItem.content.is_certified_observation!=undefined">
+                                                    <label class="col-lg-4 ">{{label?.generalInfo?.CERTIFIED_OBSERVATION || 'Certified observation'}}:</label>
+                                                    <div class="col-lg-8 fv-row">
+                                                      {{depItem.content.is_certified_observation==1?'Yes':'No'}}
+                                                    </div>
+                                                  </div>
+                                                  <!-- comment -->
+                                                  <div class="row mb-6 fs-7" *ngIf="depItem.content.comments!=undefined">
+                                                    <label class="col-lg-4 ">{{label?.generalInfo?.COMMENT_GENERAL_INFO || 'Comments'}} :</label>
+                                                    <div class="col-lg-8 fv-row">
+                                                      {{depItem.content.comments}}
+                                                    </div>
+                                                  </div>
+                  
+                                                  <!-- Instrument Characteristic -->
+                                                  <div class="row mb-2 ">
+                                                    <ng-container  *ngIf="depItem.content.instrument != undefined" [style]="{'width': '100%'}">
+                                                      <mat-accordion [togglePosition]="'before'">
+                                                        <mat-expansion-panel  [class.mat-expansion-panel]="false">
+                                                          <mat-expansion-panel-header>
+                                                            <mat-panel-title>
+                                                              <label class="col-lg-0 "><b>Instrument Characteristic</b></label>
+                                                            </mat-panel-title>
+                                                          </mat-expansion-panel-header>
+                                                          <div class="row mb-0 p-l-10">
+                                                            <!-- manufacture -->
+                                                            <div class="row mb-0 fs-7" *ngIf="depItem.content.instrument.manufacturer_desc!=null">
+                                                              <div class="row mb-6">
+                                                                <label class="col-lg-4 ">{{label?.instrument?.MANUFACTURER || 'Manufacturer'}} :</label>
+                                                                <div class="col-lg-8 fv-row">
+                                                                  {{depItem.content.instrument.manufacturer_desc}}
+                                                                </div>
+                                                              </div>
+                                                            </div>
+                                                            <!-- model -->
+                                                            <div class="row mb-0 fs-7" *ngIf="depItem.content.instrument.instrument_model_desc!=null">
+                                                              <div class="row mb-6">
+                                                                <label class="col-lg-4 ">{{label?.instrument?.MODEL || 'Model'}} :</label>
+                                                                <div class="col-lg-4 fv-row">
+                                                                  {{depItem.content.instrument.instrument_model_desc}}
+                                                                </div>
+                                                              </div>
+                                                            </div>
+                                                            <!-- serial number -->
+                                                            <div class="row mb-6 fs-7" *ngIf="depItem.content.instrument.serial_number!=null">
+                                                              <label class="col-lg-4 ">{{label?.instrument?.SERIAL_NUMBER || 'Serial Number'}} :</label>
+                                                              <div class="col-lg-8 fv-row">
+                                                                {{depItem.content.instrument.serial_number}}
+                                                              </div>
+                                                            </div>
+                                                            <!-- observing method -->
+                                                            <div class="row mb-0 fs-7" *ngIf="depItem.content.instrument.observing_method_desc!=null">
+                                                              <div class="row mb-6">
+                                                                <label class="col-lg-4 ">{{label?.instrument?.OBSERVING_METHOD || 'Observing method'}} :</label>
+                                                                <div class="col-lg-4 fv-row">
+                                                                  {{depItem.content.instrument.observing_method_desc}}
+                                                                </div>
+                                                              </div>
+                                                            </div>
+                                                            <!-- method detail -->
+                                                            <div class="row mb-6 fs-7" *ngIf="depItem.content.instrument.method_details!=null">
+                                                              <label class="col-lg-4 ">{{label?.instrument?.METHOD_DETAIL || 'Method details'}} :</label>
+                                                              <div class="col-lg-8 fv-row">
+                                                                {{depItem.content.instrument.method_details}}
+                                                              </div>
+                                                            </div>
+                                                            <!-- method comment -->
+                                                            <div class="row mb-6 fs-7" *ngIf="depItem.content.instrument.method_comments!=null">
+                                                              <label class="col-lg-4 ">{{label?.instrument?.METHOD_COMMENT || 'Method comments'}} :</label>
+                                                              <div class="col-lg-8 fv-row">
+                                                                {{depItem.content.instrument.method_comments}}
+                                                              </div>
+                                                            </div>
+                                                            <!-- coordinate -->
+                                                            <div class="row mb-0">
+                                                              <div class="row mb-0 fs-7" *ngIf="instrumentMap.get(depItem.content.instrument.id+'_coordinate')!=null">
+                                                                <label class="col-lg-4 ">{{label?.coordinate?.COORDINATES || 'Coordinate'}} :</label>
+                                                                <div class="col-lg-8 fv-row">
+                                                                  <p-table [value]="instrumentMap.get(depItem.content.instrument.id+'_coordinate')" [scrollable]="true" scrollDirection="horizontal">
+                                                                    <ng-template pTemplate="header">
+                                                                      <tr>
+                                                                          <th style="height: 15px">{{label?.coordinate?.LATITUDE || 'Latitude'}}</th><th style="height: 15px">{{label?.coordinate?.LONGITUDE || 'Longitude'}}</th>
+                                                                          <th style="height: 15px">{{label?.coordinate?.ELEVATION || 'Elevation'}}</th><th style="height: 15px">{{label?.coordinate?.GEOPOSITION_METHOD || 'Geopositioning Method'}}</th>
+                                                                          <th style="height: 15px">{{label?.coordinate?.FROM || 'From'}}</th>
+                                                                      </tr>
+                                                                    </ng-template>
+                                                                    <ng-template pTemplate="body" let-element>
+                                                                      <tr>
+                                                                          <td style="width: 150px">{{element.latitude}}</td>
+                                                                          <td style="width: 150px">{{element.longitude}}</td>
+                                                                          <td style="width: 150px">{{element.station_elevation}}</td>
+                                                                          <td style="width: 200px">{{element.geopositioning_name}}</td>
+                                                                          <td style="width: 100px">{{element.from}}</td>
+                                                                      </tr>
+                                                                    </ng-template>
+                                                                  </p-table>
+                                                                </div>
+                                                              </div>
+                                                            </div>
+                                                            <!-- operating status -->
+                                                            <div class="row mb-0" *ngIf="instrumentMap.get(depItem.content.instrument.id+'_operating_status')!=null">
+                                                              <label class="col-lg-4 ">{{label?.status?.INSTRUMENT_STATUS || 'Instrument operating status'}} :</label>
+                                                              <div class="col-lg-8 fv-row">
+                                                                <p-table [value]="instrumentMap.get(depItem.content.instrument.id+'_operating_status')" [scrollable]="true" scrollDirection="horizontal">
+                                                                  <ng-template pTemplate="header">
+                                                                    <tr>
+                                                                      <th>{{label?.status?.STATUS || 'Status'}}</th><th>{{label?.status?.FROM || 'From'}}</th>
+                                                                      <th>{{label?.status?.TO || 'To'}}</th>
+                                                                    </tr>
+                                                                  </ng-template>
+                                                                  <ng-template pTemplate="body" let-element>
+                                                                    <tr>
+                                                                        <td style="width: 150px">{{element.instrument_operating_status_desc}}</td>
+                                                                        <td style="width: 150px">{{element.from}}</td>
+                                                                        <td style="width: 150px">{{element.to}}</td>
+                                                                    </tr>
+                                                                  </ng-template>
+                                                                </p-table>
+                                                              </div>
+                                                            </div>
+                                                            <!-- fireware -->
+                                                            <div class="row mb-6" *ngIf="depItem.content.instrument.firmware_version!=null">
+                                                              <label class="col-lg-4 ">{{label?.instrument?.FIRMWARE_VERSION || 'Firmware version'}} :</label>
+                                                              <div class="col-lg-8 fv-row">
+                                                                {{depItem.content.instrument.firmware_version}}
+                                                              </div>
+                                                            </div>
+                                                            <!-- spesification -->
+                                                            <div *ngIf="depItem.content.instrument.instrument_specifications!=null">
+                                                              <label class="col-lg-4">{{label?.instrument?.SPECIFICATION || 'Instrument specifications'}}:</label>
+                                                              <!-- observable -->
+                                                              <div class="row sub-form mb-2" *ngIf="depItem.content.instrument.instrument_specifications.observable_range!=null">
+                                                                <label class="col-lg-4">{{label?.instrument?.OBSERVABLE || 'Observable range'}}:</label>
+                                                                <div class="col-lg-8 fv-row">
+                                                                  {{depItem.content.instrument.instrument_specifications.observable_range}}
+                                                                </div>
+                                                              </div>
+                                                              <!-- relative -->
+                                                              <div class="row sub-form mb-2" *ngIf="depItem.content.instrument.instrument_specifications.relative_uncertainty!=null">
+                                                                <label class="col-lg-4">{{label?.instrument?.RELATIVE || 'Relative uncertainty'}}::</label>
+                                                                <div class="col-lg-8 fv-row">
+                                                                  {{depItem.content.instrument.instrument_specifications.relative_uncertainty}}
+                                                                </div>
+                                                              </div>
+                                                              <!-- ABSOLUTE -->
+                                                              <div class="row sub-form mb-2" *ngIf="depItem.content.instrument.instrument_specifications.absolute_uncertainty!=null">
+                                                                <label class="col-lg-4">{{label?.instrument?.ABSOLUTE || 'Absolute uncertainty'}}:</label>
+                                                                <div class="col-lg-8 fv-row">
+                                                                  {{depItem.content.instrument.instrument_specifications.absolute_uncertainty}}
+                                                                </div>
+                                                              </div>
+                                                              <!-- DRIFT -->
+                                                              <div class="row sub-form mb-2" *ngIf="depItem.content.instrument.instrument_specifications.drift_per_unit_time!=null">
+                                                                <label class="col-lg-4">{{label?.instrument?.DRIFT || 'Drift per unit time'}}:</label>
+                                                                <div class="col-lg-8 fv-row">
+                                                                  {{depItem.content.instrument.instrument_specifications.drift_per_unit_time}}
+                                                                </div>
+                                                              </div>
+                                                              <!-- SPEC_URL -->
+                                                              <div class="row sub-form mb-2" *ngIf="depItem.content.instrument.instrument_specifications.specification_url!=null">
+                                                                <label class="col-lg-4">{{label?.instrument?.SPEC_URL || 'Specification URL'}}:</label>
+                                                                <div class="col-lg-8 fv-row">
+                                                                  {{depItem.content.instrument.instrument_specifications.specification_url}}
+                                                                </div>
+                                                              </div>
+                                                              <!-- UNCERTAINTY -->
+                                                              <div class="row sub-form mb-2" *ngIf="depItem.content.instrument.instrument_specifications.uncertainty_evaluation_procedure_desc!=null">
+                                                                <label class="col-lg-4">{{label?.instrument?.UNCERTAINTY || 'Uncertainty evaluation procedure'}}:</label>
+                                                                <div class="col-lg-8 fv-row">
+                                                                  {{depItem.content.instrument.uncertainty_evaluation_procedure_desc}}
+                                                                </div>
+                                                              </div>
+                                                            </div>
+                                                            <!-- frequency polarization -->
+                                                            <div class="row mb-6" *ngIf="instrumentMap.get(depItem.content.instrument.id+'_frequency_polarization')!=null">
+                                                              <label class="col-lg-4 ">{{label?.frequency?.OBSERVATION || 'Observation frequency and polarization'}} :</label>
+                                                              <div class="col-lg-8 fv-row">
+                                                                <p-table [value]="instrumentMap.get(depItem.content.instrument.id+'_frequency_polarization')" [scrollable]="true" scrollDirection="horizontal">
+                                                                  <ng-template pTemplate="header">
+                                                                    <tr>
+                                                                      <th>{{label?.frequency?.USE_FREQUENCY || 'Use Of Frequency'}}</th><th>{{label?.frequency?.FREQUENCY || 'Frequency'}}</th>
+                                                                      <th>{{label?.frequency?.BANDWIDTH || 'Bandwidth'}}</th><th>{{label?.frequency?.TRANSMISSION || 'Transmission Mode'}}</th>
+                                                                      <th>{{label?.frequency?.POLARIZATION || 'Polarization'}}</th>
+                                                                    </tr>
+                                                                  </ng-template>
+                                                                  <ng-template pTemplate="body" let-element>
+                                                                    <tr>
+                                                                      <td style="width: 150px">{{element.frequency_type_desc}}</td>
+                                                                      <td style="width: 150px">{{element.frequency}} {{element.frequency_unit_desc}}</td>
+                                                                      <td style="width: 150px">{{element.bandwidth}} {{element.bandwidth_unit_desc}}</td>
+                                                                      <td style="width: 150px">{{element.transmission_desc}}</td>
+                                                                      <td style="width: 150px">{{element.polarization_desc}}</td>
+                                                                    </tr>
+                                                                  </ng-template>
+                                                                </p-table>
+                                                              </div>
+                                                            </div>
+                                                            <!-- telecomunication frequency -->
+                                                            <div class="row mb-6" *ngIf="instrumentMap.get(depItem.content.instrument.id+'_telecomunication_frequency')!=null">
+                                                              <label class="col-lg-4 ">{{label?.frequency?.TELECOMMUNICATION || 'Telecommunication frequency'}} :</label>
+                                                              <div class="col-lg-8 fv-row">
+                                                                <p-table [value]="instrumentMap.get(depItem.content.instrument.id+'_telecomunication_frequency')" [scrollable]="true" scrollDirection="horizontal">
+                                                                  <ng-template pTemplate="header">
+                                                                    <tr>
+                                                                      <th>{{label?.frequency?.USE_FREQUENCY || 'Use Of Frequency'}}</th><th>{{label?.frequency?.FREQUENCY || 'Frequency'}}</th>
+                                                                      <th>{{label?.frequency?.BANDWIDTH || 'Bandwidth'}}</th>
+                                                                    </tr>
+                                                                  </ng-template>
+                                                                  <ng-template pTemplate="body" let-element>
+                                                                    <tr>
+                                                                      <td style="width: 150px">{{element.frequency_type_desc}}</td>
+                                                                      <td style="width: 150px">{{element.frequency}} {{element.frequency_unit_desc}}</td>
+                                                                      <td style="width: 150px">{{element.bandwidth}} {{element.bandwidth_unit_desc}}</td>
+                                                                    </tr>
+                                                                  </ng-template>
+                                                                </p-table>
+                                                              </div>
+                                                            </div>
+                                                            <!-- comment -->
+                                                            <div class="row mb-6" *ngIf="depItem.content.instrument.comments!=null">
+                                                              <label class="col-lg-4 ">{{label?.maintenance?.COMMENT || 'Comment'}} :</label>
+                                                              <div class="col-lg-8 fv-row">
+                                                                {{depItem.content.instrument.comments}}
+                                                              </div>
+                                                            </div>
+                                                            <!-- maintenance logbook -->
+                                                            <div class="row mb-6" *ngIf="instrumentMap.get(depItem.content.instrument.id+'_maintenance')!=null">
+                                                              <label class="col-lg-4 ">{{label?.maintenance?.LOGBOOK || 'Maintenance logbook'}}: </label>
+                                                              <div class="col-lg-8 fv-row">
+                                                                <p-table [value]="instrumentMap.get(depItem.content.instrument.id+'_maintenance')" [scrollable]="true" scrollDirection="horizontal">
+                                                                  <ng-template pTemplate="header">
+                                                                    <tr>
+                                                                      <th>{{label?.maintenance?.DATE || 'Date'}} </th><th>{{label?.maintenance?.PARTY || 'Maintenance Party'}}</th>
+                                                                      <th>{{label?.maintenance?.INDIVIDUAL || 'Individual'}}</th><th>{{label?.maintenance?.DESC || 'Description'}}</th>
+                                                                      <th>{{label?.maintenance?.AUTHOR || 'Author'}}</th><th>{{label?.maintenance?.DOC_URL || 'Documentation URL'}}</th>
+                                                                    </tr>
+                                                                  </ng-template>
+                                                                  <ng-template pTemplate="body" let-element>
+                                                                    <tr>
+                                                                      <td style="width: 150px">{{element.maintenance_date | date: 'dd-MM-yyyy'}}</td>
+                                                                      <td style="width: 150px">{{element.maintenance_party_desc}}</td>
+                                                                      <td style="width: 150px">{{element.individual}}</td>
+                                                                      <td style="width: 150px">{{element.description}}</td>
+                                                                      <td style="width: 150px">{{element.author}}</td>
+                                                                      <td style="width: 150px">{{element.documentation_url}}</td>
+                                                                    </tr>
+                                                                  </ng-template>
+                                                                </p-table>
+                                                              </div>
+                                                            </div>
+                                                            <!-- quality -->
+                                                            <div class="row mb-6" *ngIf="instrumentMap.get(depItem.content.instrument.id+'_quality')!=null">
+                                                              <label class="col-lg-4 ">{{label?.assurance?.ASSURANCE || 'Quality assurance logbook'}} :</label>
+                                                              <div class="col-lg-8 fv-row">
+                                                                <p-table [value]="instrumentMap.get(depItem.content.instrument.id+'_quality')" [scrollable]="true" scrollDirection="horizontal">
+                                                                  <ng-template pTemplate="header">
+                                                                    <tr>
+                                                                      <th>{{label?.assurance?.LOCATION || 'Location'}}</th><th>{{label?.assurance?.DATE || 'Activity Date'}}</th>
+                                                                      <th>{{label?.assurance?.TYPE || 'Type Standart'}}</th><th>{{label?.assurance?.NAME || 'Standart Name'}}</th>
+                                                                      <th>{{label?.assurance?.SERIAL_NUMBER || 'Standart Serial Number'}}</th><th>{{label?.assurance?.RESULT || 'Activity Result'}}</th>
+                                                                      <th>{{label?.assurance?.DOC_URL || 'Documentation URL'}}</th><th>{{label?.assurance?.AUTHOR || 'Author'}}</th>
+                                                                    </tr>
+                                                                  </ng-template>
+                                                                  <ng-template pTemplate="body" let-element>
+                                                                    <tr>
+                                                                      <td style="width: 150px">{{element.location_desc}}</td>
+                                                                      <td style="width: 150px">{{element.activity_date | date: 'dd-MM-yyyy'}}</td>
+                                                                      <td style="width: 150px">{{element.standart_desc}}</td>
+                                                                      <td style="width: 150px">{{element.standard_name}}</td>
+                                                                      <td style="width: 150px">{{element.standard_serial_number}}</td>
+                                                                      <td style="width: 150px">{{element.activity_desc}}</td>
+                                                                      <td style="width: 150px">{{element.documentation_url}}</td>
+                                                                      <td style="width: 150px">{{element.author}}</td>
+                                                                    </tr>
+                                                                  </ng-template>
+                                                                </p-table>
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                        </mat-expansion-panel>
+                                                      </mat-accordion>
+                                                    </ng-container>
+                                                  </div>
+                                                  
+                                                  <!-- Data Generation -->
+                                                  <div class="row mb-0">
+                                                    <ng-container  *ngIf="depItem.content.data_generation != undefined">
+                                                      <mat-accordion [togglePosition]="'before'">
+                                                        <mat-expansion-panel  [class.mat-expansion-panel]="false">
+                                                          <mat-expansion-panel-header>
+                                                            <mat-panel-title>
+                                                              <label class="col-lg-0 "><b>Data Generation</b></label>
+                                                            </mat-panel-title>
+                                                          </mat-expansion-panel-header>
+                                                          <!-- Data Generation -->
+                                                          <div class="row mb-1">
+                                                            <ng-container  *ngFor="let genItem of depItem.content.data_generation">
+                                                              <mat-accordion [togglePosition]="'before'">
+                                                                <mat-expansion-panel  [class.mat-expansion-panel]="false">
+                                                                  <mat-expansion-panel-header>
+                                                                    <mat-panel-title>
+                                                                      <label class="col-lg-0 "><b>{{genItem.tittle}}</b></label>
+                                                                    </mat-panel-title>
+                                                                  </mat-expansion-panel-header>
+                                                                    <!-- Sampling -->
+                                                                    <div class="row mb-4" *ngIf="genItem.sampling!=null">
+                                                                      <hr>
+                                                                      <b>{{label?.sampling?.SAMPLING || 'Sample'}}</b>
+                                                                      <div class="row mb-6" *ngIf="genItem.sampling.sampling_strategy_desc!=null">
+                                                                        <label class="col-lg-4">{{label?.sampling?.STRATEGY || 'Sampling Strategy'}}:</label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.sampling.sampling_strategy_desc}}
+                                                                        </div>
+                                                                      </div>
+                                                                      <div class="row mb-6" *ngIf="genItem.sampling.sampling_interval!=null &&genItem.sampling.interval_unit_desc!=null ">
+                                                                        <label class="col-lg-4">{{label?.sampling?.INTERVAL || 'Sampling Interval'}}:</label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.sampling.sampling_interval}} {{genItem.sampling.interval_unit_desc}}
+                                                                        </div>
+                                                                      </div>
+                                                                      <div class="row mb-6" *ngIf="genItem.sampling.sampling_period!=null &&genItem.sampling.priod_unit_desc!=null ">
+                                                                        <label class="col-lg-4">{{label?.sampling?.PRIOD || 'Sampling Period'}}:</label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.sampling.sampling_period}} {{genItem.sampling.priod_unit_desc}}
+                                                                        </div>
+                                                                      </div>
+                                                                      <div class="row mb-6" *ngIf="genItem.sampling.spatial_sampling_resolution!=null">
+                                                                        <label class="col-lg-4">{{label?.sampling?.RESOLUTION || 'Spatial Sampling Resolution (m)'}}:</label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.sampling.spatial_sampling_resolution}}
+                                                                        </div>
+                                                                      </div>
+                                                                      <div class="row mb-6" *ngIf="genItem.sampling.sampling_procedure_desc!=null">
+                                                                        <label class="col-lg-4">{{label?.sampling?.PROCEDURE || 'Sampling Procedure'}}:</label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.sampling.sampling_procedure_desc}}
+                                                                        </div>
+                                                                      </div>
+                                                                      <div class="row mb-6" *ngIf="genItem.sampling.sampling_procedure_description!=null">
+                                                                        <label class="col-lg-4">{{label?.sampling?.PROCEDURE_DESC || 'Sampling Procedure Description'}}:</label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.sampling.sampling_procedure_description}}
+                                                                        </div>
+                                                                      </div>
+                                                                      <div class="row mb-6" *ngIf="genItem.sampling.sample_treatment_desc!=null">
+                                                                        <label class="col-lg-4">{{label?.sampling?.TREATMENT || 'Sample treatment'}}:</label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.sampling.sample_treatment_desc}}
+                                                                        </div>
+                                                                      </div>
+                                                                    </div>
+                                                                    <!-- Processing -->
+                                                                    <div *ngIf="genItem.processing!=null">
+                                                                      <hr>
+                                                                      <b>{{label?.processing?.PROCESSING || 'Processing'}}</b>
+                                                                      <div class="row mb-6" *ngIf="genItem.processing.aggregation_priod!=null && genItem.processing.interval_unit_desc!=null">
+                                                                        <label class="col-lg-4">{{label?.processing?.PROCESSING_PRIOD || 'Aggregation Priod'}}:</label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.processing.aggregation_priod}} {{genItem.processing.interval_unit_desc}}
+                                                                        </div>
+                                                                      </div>
+                                                                      <div class="row mb-6" *ngIf="genItem.processing.data_processing_method!=null">
+                                                                        <label class="col-lg-4">{{label?.processing?.PROCESSING_METHOD || 'Data Processing Method'}}:</label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.processing.data_processing_method}}
+                                                                        </div>
+                                                                      </div>
+                                                                      <div class="row mb-6" *ngIf="genItem.processing.software_version!=null">
+                                                                        <label class="col-lg-4">{{label?.processing?.PROCESSING_VERSION || 'Software / Processing And Version'}}:</label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.processing.software_version}}
+                                                                        </div>
+                                                                      </div>
+                                                                      <div class="row mb-6" *ngIf="genItem.processing.software_repository_url!=null">
+                                                                        <label class="col-lg-4">{{label?.processing?.PROCESSING_URL || 'Software / Sourcode Repository URL'}}:</label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.processing.software_repository_url}}
+                                                                        </div>
+                                                                      </div>
+                                                                      <div class="row mb-6" *ngIf="genItem.processing.processing_centre_desc!=null">
+                                                                        <label class="col-lg-4">{{label?.processing?.PROCESSING_ANALYSIS || 'Processing / Analysis Centre'}}:</label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.processing.processing_centre_desc}}
+                                                                        </div>
+                                                                      </div>
+                                                                    </div>
+                                                                    <!-- Reporting -->
+                                                                    <div *ngIf="genItem.reporting!=null">
+                                                                      <hr>
+                                                                      <b>{{label?.reporting?.PROCESSING_ANALYSIS || 'Reporting'}}</b>
+                                                                      <div class="row mb-6" *ngIf="genItem.reporting.schedule.is_used_for_international_reporting!=null">
+                                                                        <label class="col-lg-4">Intended for international exchange:</label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.reporting.schedule.is_used_for_international_reporting==1?'Yes':'No'}}
+                                                                        </div>
+                                                                      </div>
+                                                                      <div class="row mb-6" *ngIf="genItem.reporting.schedule.reporting_interval!=null">
+                                                                        <label class="col-lg-4">Reporting interval:</label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          <label *ngIf="reportingTime.get(genItem.id).Weeks != undefined && reportingTime.get(genItem.id).Weeks !=0">{{reportingTime.get(genItem.id).Weeks}} Week </label> &nbsp;
+                                                                          <label *ngIf="reportingTime.get(genItem.id).Days != undefined &&reportingTime.get(genItem.id).Days !=0">{{reportingTime.get(genItem.id).Days}} Day </label> &nbsp;
+                                                                          <label *ngIf="reportingTime.get(genItem.id).Hours != undefined &&reportingTime.get(genItem.id).Hours !=0">{{reportingTime.get(genItem.id).Hours}} Hour </label> &nbsp;
+                                                                          <label *ngIf="reportingTime.get(genItem.id).Minutes != undefined &&reportingTime.get(genItem.id).Minutes !=0">{{reportingTime.get(genItem.id).Minutes}} Minute </label>
+                                                                        </div>
+                                                                      </div>
+                                                                      <div class="row mb-6">
+                                                                        <label class="col-lg-4">{{label?.reporting?.SCHE_MONTH || 'Month'}}:</label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.reporting.schedule.period_of_reporting.month.from}} - {{genItem.reporting.schedule.period_of_reporting.month.to}}
+                                                                        </div>
+                                                                      </div>
+                                                                      <div class="row mb-6">
+                                                                        <label class="col-lg-4">{{label?.reporting?.SCHE_DAY || 'Day'}} :</label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.reporting.schedule.period_of_reporting.day.from}} - {{genItem.reporting.schedule.period_of_reporting.day.to}}
+                                                                        </div>
+                                                                      </div>
+                                                                      <div class="row mb-6">
+                                                                        <label class="col-lg-4">{{label?.reporting?.SCHE_TIME || 'UTC'}}:</label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.reporting.schedule.period_of_reporting.time.from}} - {{genItem.reporting.schedule.period_of_reporting.time.to}}
+                                                                        </div>
+                                                                      </div>
+                                                                      <div class="row mb-6" *ngIf="genItem.reporting.schedule.diurnal_base_time!=null">
+                                                                        <label class="col-lg-4">{{label?.reporting?.SCHE_DIURNAL || 'Diurnal Base Time'}}:</label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.reporting.schedule.diurnal_base_time}}
+                                                                        </div>
+                                                                      </div>
+                                                                      <div class="row mb-6" *ngIf="genItem.reporting.observation_count!=null">
+                                                                        <label class="col-lg-4">{{label?.reporting?.OBS || 'Number Of Observations In Reporting Period'}}:</label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.reporting.observation_count}}
+                                                                        </div>
+                                                                      </div>
+                                                                      <div class="row mb-6" *ngIf="genItem.reporting.measurement_unit_desc!=null">
+                                                                        <label class="col-lg-4">{{label?.reporting?.MEASURMENT || 'Measurement Unit'}}:</label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.reporting.measurement_unit_desc}}
+                                                                        </div>
+                                                                      </div>
+                                                                      <div class="row mb-6" *ngIf="genItem.reporting.data_policy_desc!=null">
+                                                                        <label class="col-lg-4">{{label?.reporting?.POLICY || 'Data Policy'}}:</label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.reporting.data_policy_desc}}
+                                                                        </div>
+                                                                      </div>
+                                                                      <div class="row mb-6" *ngIf="genItem.reporting.spatial_reporting_interval!=null">
+                                                                        <label class="col-lg-4">{{label?.reporting?.INTERVAL || 'Spatial Reporting Interval (m)'}}: </label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.reporting.spatial_reporting_interval}}
+                                                                        </div>
+                                                                      </div>
+                                                                      <div class="row mb-6" *ngIf="genItem.reporting.timeliness_desc!=null">
+                                                                        <label class="col-lg-4">{{label?.reporting?.TIMELINESS || 'Timeliness'}}:</label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.reporting.timeliness_desc}}
+                                                                        </div>
+                                                                      </div>
+                                                                      <div class="row mb-6" *ngIf="genItem.reporting.numerical_resolution!=null">
+                                                                        <label class="col-lg-4">{{label?.reporting?.RESOLUTION || 'Numerical Resolution'}}:</label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.reporting.numerical_resolution}}
+                                                                        </div>
+                                                                      </div>
+                                                                      <div class="row mb-6" *ngIf="genItem.reporting.level_of_data_desc!=null">
+                                                                        <label class="col-lg-4">{{label?.reporting?.LEVEL || 'Level Of Data'}}:</label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.reporting.level_of_data_desc}}
+                                                                        </div>
+                                                                      </div>
+                                                                      <div class="row mb-6" *ngIf="genItem.reporting.data_format_desc!=null">
+                                                                        <label class="col-lg-4">{{label?.reporting?.FORMAT || 'Data Format'}}: </label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.reporting.data_format_desc}}
+                                                                        </div>
+                                                                      </div>
+                                                                      <div class="row mb-6" *ngIf="genItem.reporting.data_format_version!=null">
+                                                                        <label class="col-lg-4">{{label?.reporting?.VERSION || 'Data Format Version'}}:</label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.reporting.data_format_version}}
+                                                                        </div>
+                                                                      </div>
+                                                                      <div class="row mb-6" *ngIf="genItem.reporting.reference_datum!=null">
+                                                                        <label class="col-lg-4">{{label?.reporting?.DATUM || 'Reference Datum'}}:</label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.reporting.reference_datum}}
+                                                                        </div>
+                                                                      </div>
+                                                                      <div class="row mb-6" *ngIf="genItem.reporting.reference_time_desc!=null">
+                                                                        <label class="col-lg-4">{{label?.reporting?.TIME_SOURCE || 'Reference Time Source'}}:</label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.reporting.reference_time_desc}}
+                                                                        </div>
+                                                                      </div>
+                                                    
+                                                                      <div class="row mb-6" *ngIf="genItem.reporting.is_traceable!=null">
+                                                                        <label class="col-lg-4">{{label?.reporting?.OBSERVATION_STANDART || 'Is the observation traceable to a standard?'}}:</label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.reporting.is_traceable==1?'Yes':'No'}}
+                                                                        </div>
+                                                                      </div>
+                                                                      <div class="row mb-6" *ngIf="genItem.reporting.quality_flag_system_desc!=null">
+                                                                        <label class="col-lg-4">{{label?.reporting?.QUALITY_FLAGGING || 'Data Quality Flagging System'}}:</label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.reporting.quality_flag_system_desc}}
+                                                                        </div>
+                                                                      </div>
+                                                                      <div class="row mb-6" *ngIf="genItem.reporting.is_primary!=null">
+                                                                        <label class="col-lg-4">{{label?.reporting?.PRIMARY_OBSERVATION || 'Primary observation'}}:</label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.reporting.is_primary==1?'Yes':'No'}}
+                                                                        </div>
+                                                                      </div>
+                                                                      <div class="row mb-6" *ngIf="genItem.reporting.timestamp_meaning_desc!=null">
+                                                                        <label class="col-lg-4">{{label?.reporting?.MEANING_TIMESTAMPP || 'Meaning Of Timestamp In Data Reports'}}: </label>
+                                                                        <div class="col-lg-8 fv-row">
+                                                                          {{genItem.reporting.timestamp_meaning_desc}}
+                                                                        </div>
+                                                                      </div>
+                                                                      <!-- attribution -->
+                                                                      <div *ngIf="genItem.reporting.attribution!=null">
+                                                                        <label class="col-lg-4">Attribution:</label>
+                                                                        <div class="row sub-form mb-2" *ngIf="genItem.reporting.attribution.title_of_work!=null">
+                                                                          <label class="col-lg-4">{{label?.reporting?.TITTLE_WORK || 'Title Of Work'}}:</label>
+                                                                          <div class="col-lg-8 fv-row">
+                                                                            {{genItem.reporting.attribution.title_of_work}}
+                                                                          </div>
+                                                                        </div>
+                                                                        <div class="row sub-form mb-2" *ngIf="genItem.reporting.attribution.attribution_url!=null">
+                                                                          <label class="col-lg-4">{{label?.reporting?.ATTRIBUTION_URL || 'Attribution (URL)'}}:</label>
+                                                                          <div class="col-lg-8 fv-row">
+                                                                            {{genItem.reporting.attribution.attribution_url}}
+                                                                          </div>
+                                                                        </div>
+                                                                        <div class="row sub-form mb-2" *ngIf="genItem.reporting.attribution.originator_of_work!=null">
+                                                                          <label class="col-lg-4">{{label?.reporting?.ORIGINATOR || 'Originator of work'}}:</label>
+                                                                          <div class="col-lg-8 fv-row">
+                                                                            {{genItem.reporting.attribution.originator_of_work}}
+                                                                          </div>
+                                                                        </div>
+                                                                        <div class="row sub-form mb-2" *ngIf="genItem.reporting.attribution.source_work_url!=null">
+                                                                          <label class="col-lg-4">{{label?.reporting?.SOURCE_URL || 'Source work is based on (URL)'}}:</label>
+                                                                          <div class="col-lg-8 fv-row">
+                                                                            {{genItem.reporting.attribution.source_work_url}}
+                                                                          </div>
+                                                                        </div>
+                                                                      </div>
+                                                                    </div>
+                                                                </mat-expansion-panel>
+                                                              </mat-accordion>
+                                                            </ng-container>
+                                                          </div>
+                                                        </mat-expansion-panel>
+                                                      </mat-accordion>
+                                                    </ng-container>
+                                                  </div>
+                                                </mat-expansion-panel>
+                                              </mat-accordion>
+                                            </ng-container>
+                                          </div>
+                                        </div>
+                                      </mat-expansion-panel>
+                                    </mat-accordion>
+                                  </div>
+                                </div>
+                              </div>
+                            </mat-expansion-panel>
+                          </mat-accordion>
+                        </ng-container>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+  </div>
+</div>

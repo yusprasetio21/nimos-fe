@@ -1,0 +1,63 @@
+<ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+<p-toast></p-toast>
+<div class="mb-0" style="background-color: #eaeaea" *ngIf="state$ | async">
+    <!--begin::Wrapper-->
+    <div class="pt-0">
+        <!--begin::Container-->
+        <div class="container">
+            <!--begin::Row-->
+            <div class="row">
+                <!--begin::Col-->
+                <div class="col-lg-3">
+                    <div
+                        style="
+                            background-color: white;
+                            margin-top: 10px;
+                            border-radius: 5px;
+                            padding: 5px;
+                            height: 100%;
+                        ">
+                        <div style="margin: 15px">&nbsp;</div>
+                    </div>
+                    <!--end::Block-->
+                </div>
+                <!--end::Col-->
+                <!--begin::Col-->
+                <div class="col-lg-9">
+                    <div
+                        style="
+                            background-color: white;
+                            margin-top: 10px;
+                            border-radius: 5px;
+                            padding: 5px;
+                            height: 100%;
+                        ">
+                        <h2 style="margin: 15px">News</h2>
+                        <div>
+                            <div *ngFor="let item of news">
+                                <div class="row g-0 mx-6 fw-bold fs-5">
+                                    {{ item.title }}
+                                </div>
+                                <div class="row g-0 mx-6 mb-4">
+                                    {{ item.created_at | date: 'dd-MM-yyyy' }}
+                                </div>
+                                <div class="row g-0 mx-6 mb-4">
+                                    <div class="col-lg-10" [innerHTML]="item.news"></div>
+                                </div>
+                                <div class="row g-0 mx-6 mb-4">
+                                    <hr />
+                                </div>
+                            </div>
+                            <p-paginator
+                                [rows]="10"
+                                [totalRecords]="totalRecords"
+                                (onPageChange)="paginate($event)"></p-paginator>
+                        </div>
+                    </div>
+                </div>
+                <!--end::Row-->
+            </div>
+            <!--end::Container-->
+        </div>
+    </div>
+</div>

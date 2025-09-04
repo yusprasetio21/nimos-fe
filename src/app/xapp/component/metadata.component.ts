@@ -149,7 +149,7 @@ export class MetadataComponent extends MoreComponent implements OnInit, AfterVie
             this.map = L.map('map', {
                 //center: latLng(-0.789275, 113.921327)
                 center: [-0.789275, 113.921327],
-                zoom: 5
+                zoom: 10
             });
             const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 18,
@@ -204,151 +204,157 @@ export class MetadataComponent extends MoreComponent implements OnInit, AfterVie
     }
 
     getStation(id: number) {
-        this.spinnerService.show();
-        this.http.get(`${environment.app.apiUrl}/api/stations/${id}`).subscribe({
-            next: response => {
-                console.log('response: ' + JSON.stringify(response));
+    this.spinnerService.show();
+    this.http.get(`${environment.app.apiUrl}/api/stations/${id}`).subscribe({
+        next: response => {
+            console.log('response: ' + JSON.stringify(response));
 
-                const data = response as any;
-                this.station_id = data.id;
-                this.station_name = data.name;
-                this.date_established = data.date_established;
-                this.date_closed = data.date_closed;
-                this.wigos_id = data.wigos_id;
-                this.station_url = data.station_url;
-                this.other_url = data.other_url;
-                this.station_local_type = data.station_local_type?.name;
-                this.usage_type = data.usage_type?.name;
-                this.wmo_region_type = data.wmo_region_type;
-                this.station_type_id = data.station_type_id;
-                this.identifier = data.identifier;
-                this.province_id = data.province_id;
-                this.station_type = data.station_type.name;
-                this.station_coordinator = data.station_coordinator?.name;
+            const data = response as any;
+            this.station_id = data.id;
+            this.station_name = data.name;
+            this.date_established = data.date_established;
+            this.date_closed = data.date_closed;
+            this.wigos_id = data.wigos_id;
+            this.station_url = data.station_url;
+            this.other_url = data.other_url;
+            
+            // PERBAIKAN: Gunakan optional chaining untuk menghindari null reference
+            this.station_local_type = data.station_local_type?.name;
+            this.usage_type = data.usage_type?.name;
+            this.wmo_region_type = data.wmo_region_type;
+            this.station_type_id = data.station_type_id;
+            this.identifier = data.identifier;
+            this.province_id = data.province_id;
+            
+            // INI KEMUNGKINAN SUMBER ERROR - line 226
+            this.station_type = data.station_type?.name; // Gunakan optional chaining
+            this.station_coordinator = data.station_coordinator?.name;
 
-                this.station_aliases = data.station_aliases;
-                this.station_usage = data.station_usage;
-                this.coordinates = data.coordinates;
-                this.country_territories = data.country_territories;
-                this.timezones = data.timezones;
-                this.supervising_organizations = data.supervising_organizations;
-                this.site_descriptions = data.site_descriptions;
-                this.climate_zones = data.climate_zones;
-                this.predominant_surface_covers = data.predominant_surface_covers;
-                this.surface_roughnesses = data.surface_roughnesses;
-                this.topography_bathymetries = data.topography_bathymetries;
-                this.populations = data.populations;
-                this.platform_event_logbooks = data.platform_event_logbooks;
-                //this.photo_gallery = data.photo_gallery;
+            this.station_aliases = data.station_aliases;
+            this.station_usage = data.station_usage;
+            this.coordinates = data.coordinates;
+            this.country_territories = data.country_territories;
+            this.timezones = data.timezones;
+            this.supervising_organizations = data.supervising_organizations;
+            this.site_descriptions = data.site_descriptions;
+            this.climate_zones = data.climate_zones;
+            this.predominant_surface_covers = data.predominant_surface_covers;
+            this.surface_roughnesses = data.surface_roughnesses;
+            this.topography_bathymetries = data.topography_bathymetries;
+            this.populations = data.populations;
+            this.platform_event_logbooks = data.platform_event_logbooks;
 
-                this.photo_gallery = [];
-                if (data.photo_gallery.length > 0) {
-                    const medias = data.photo_gallery as any[];
-                    medias.forEach(element => {
-                        const photo = {
-                            id: element.id,
-                            photo: this._replaceMediaUrl(element.original_url),
-                            caption: element.custom_properties.caption,
-                            date_taken: new Date(element.custom_properties.date_taken),
-                            direction_of_view: element.custom_properties.direction_of_view,
-                            direction_of_view_id: element.custom_properties.direction_of_view.id,
-                            direction_of_view_name: element.custom_properties.direction_of_view.name,
-                            angle_of_view: element.custom_properties.angle_of_view,
-                            angle_of_view_id: element.custom_properties.angle_of_view.id,
-                            angle_of_view_name: element.custom_properties.angle_of_view.value,
-                            owner: element.custom_properties.owner
-                        };
-                        this.photo_gallery.push(photo);
-                    });
-                }
-
-                this.program_network_affiliations = data.program_network_affiliations;
-
-                //manipulate program_network_affiliations table..
-                const programNetworkAffiliationsNew: any[] = [];
-                if (this.program_network_affiliations && this.program_network_affiliations.length > 0) {
-                    this.program_network_affiliations.forEach(prog => {
-                        let first = true;
-                        if (prog && prog.declared_statuses && prog.declared_statuses.length > 0) {
-                            prog.declared_statuses.forEach((declared_status: any) => {
-                                let prog1 = {};
-                                if (first) {
-                                    prog1 = {
-                                        program_type_text: prog.program_type?.text,
-                                        program_specific_identifier: prog.affiliationStatus,
-                                        affiliation_status: prog.affiliation_status,
-                                        declared_statuses_name: declared_status.declared_status_name,
-                                        declared_statuses_from: declared_status.from,
-                                        declared_statuses_to: declared_status.to
-                                    };
-                                } else {
-                                    prog1 = {
-                                        program_type_text: '',
-                                        program_specific_identifier: '',
-                                        affiliation_status: '',
-                                        declared_statuses_name: declared_status.declared_status_name,
-                                        declared_statuses_from: declared_status.from,
-                                        declared_statuses_to: declared_status.to
-                                    };
-                                }
-                                first = false;
-                                programNetworkAffiliationsNew.push(prog1);
-                            });
-                        }
-                    });
-                }
-                this.program_network_affiliations = programNetworkAffiliationsNew;
-
-                // const datax = data.program_network_affiliations.declared_statuses;
-                // console.log(JSON.stringify(this.program_network_affiliations));
-
-                /*this.contacts = this.contacts.concat(data.contacts);
-                this.documents = this.documents.concat(data.documents);
-
-                this.bibtext = this.bibtext.concat(data.bibliographic_references);
-                */
-                this.contacts = data.contacts;
-                this.documents = data.documents;
-
-                const bibtext = data.bibliographic_references;
-                this.bibliographic_references = [];
-                bibtext.forEach((data_bib: any) => {
-                    const bibJSON = BibtexParser.parseToJSON(data_bib.bibtex);
-                    const text = this.convertToAPA(bibJSON[0]);
-                    this.bibliographic_references.push({ text });
+            this.photo_gallery = [];
+            if (data.photo_gallery && data.photo_gallery.length > 0) {
+                const medias = data.photo_gallery as any[];
+                medias.forEach(element => {
+                    // PERBAIKAN: Tambahkan optional chaining untuk custom_properties
+                    const photo = {
+                        id: element.id,
+                        photo: this._replaceMediaUrl(element.original_url),
+                        caption: element.custom_properties?.caption,
+                        date_taken: element.custom_properties?.date_taken ? 
+                                  new Date(element.custom_properties.date_taken) : null,
+                        direction_of_view: element.custom_properties?.direction_of_view,
+                        direction_of_view_id: element.custom_properties?.direction_of_view?.id,
+                        direction_of_view_name: element.custom_properties?.direction_of_view?.name,
+                        angle_of_view: element.custom_properties?.angle_of_view,
+                        angle_of_view_id: element.custom_properties?.angle_of_view?.id,
+                        angle_of_view_name: element.custom_properties?.angle_of_view?.value,
+                        owner: element.custom_properties?.owner
+                    };
+                    this.photo_gallery.push(photo);
                 });
-
-                this.observationList = [];
-                if (data.observation && data.observation.length > 0) this.controllObservation(data.observation);
-
-                const latitude = data.coordinates[0]?.latitude;
-                const longitude = data.coordinates[0]?.longitude;
-
-                if (latitude && longitude) {
-                    const marker = L.circle([latitude, longitude], {
-                        color: 'blue',
-                        weight: 15,
-                        opacity: 0.9
-                    })
-                        .addTo(this.map)
-                        .bindPopup(`${this.station_name}`)
-                        .on('mouseover', function (e) {
-                            marker.openPopup();
-                        });
-                    this.markersLayer.addLayer(marker);
-                    //this.map.panTo(new L.LatLng(lat, long));
-                    this.map.setView({ lat: latitude, lng: longitude }, 7);
-                }
-
-                this.markersLayer.addTo(this.map);
-                this.spinnerService.hide();
-                this.state$.next(true);
-            },
-            error: err => {
-                this._errorHandler(err);
             }
-        });
-    }
+
+            this.program_network_affiliations = data.program_network_affiliations;
+
+            // PERBAIKAN: Tambahkan null check untuk program_network_affiliations
+            const programNetworkAffiliationsNew: any[] = [];
+            if (this.program_network_affiliations && this.program_network_affiliations.length > 0) {
+                this.program_network_affiliations.forEach(prog => {
+                    let first = true;
+                    if (prog && prog.declared_statuses && prog.declared_statuses.length > 0) {
+                        prog.declared_statuses.forEach((declared_status: any) => {
+                            let prog1 = {};
+                            if (first) {
+                                prog1 = {
+                                    program_type_text: prog.program_type?.text,
+                                    program_specific_identifier: prog.affiliationStatus,
+                                    affiliation_status: prog.affiliation_status,
+                                    declared_statuses_name: declared_status.declared_status_name,
+                                    declared_statuses_from: declared_status.from,
+                                    declared_statuses_to: declared_status.to
+                                };
+                            } else {
+                                prog1 = {
+                                    program_type_text: '',
+                                    program_specific_identifier: '',
+                                    affiliation_status: '',
+                                    declared_statuses_name: declared_status.declared_status_name,
+                                    declared_statuses_from: declared_status.from,
+                                    declared_statuses_to: declared_status.to
+                                };
+                            }
+                            first = false;
+                            programNetworkAffiliationsNew.push(prog1);
+                        });
+                    }
+                });
+            }
+            this.program_network_affiliations = programNetworkAffiliationsNew;
+
+            this.contacts = data.contacts || [];
+            this.documents = data.documents || [];
+
+            const bibtext = data.bibliographic_references || [];
+            this.bibliographic_references = [];
+            bibtext.forEach((data_bib: any) => {
+                if (data_bib.bibtex) {
+                    try {
+                        const bibJSON = BibtexParser.parseToJSON(data_bib.bibtex);
+                        const text = this.convertToAPA(bibJSON[0]);
+                        this.bibliographic_references.push({ text });
+                    } catch (error) {
+                        console.error('Error parsing bibtex:', error);
+                    }
+                }
+            });
+
+            this.observationList = [];
+            if (data.observation && data.observation.length > 0) {
+                this.controllObservation(data.observation);
+            }
+
+            // PERBAIKAN: Tambahkan null check untuk coordinates
+            const latitude = data.coordinates && data.coordinates[0]?.latitude;
+            const longitude = data.coordinates && data.coordinates[0]?.longitude;
+
+            if (latitude && longitude) {
+                const marker = L.circle([latitude, longitude], {
+                    color: 'blue',
+                    weight: 15,
+                    opacity: 0.9
+                })
+                    .addTo(this.map)
+                    .bindPopup(`${this.station_name}`)
+                    .on('mouseover', function (e) {
+                        marker.openPopup();
+                    });
+                this.markersLayer.addLayer(marker);
+                this.map.setView({ lat: latitude, lng: longitude }, 7);
+            }
+
+            this.markersLayer.addTo(this.map);
+            this.spinnerService.hide();
+            this.state$.next(true);
+        },
+        error: err => {
+            this._errorHandler(err);
+            this.spinnerService.hide(); // Pastikan spinner dihide bahkan saat error
+        }
+    });
+}
 
     editPhoto() {
         console.log('masukkkk sini ga siiii');

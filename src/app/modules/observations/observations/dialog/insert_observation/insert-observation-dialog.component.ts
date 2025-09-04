@@ -77,14 +77,13 @@ export class InsertObservationDialogComponent extends MoreComponent implements O
     });
 
     ref.onClose.subscribe((respons) =>{
-      // console.log(JSON.stringify(result));
-      if(respons.programs!=undefined){
+      if (respons?.programs) {
         this.config.data.programs = [];
-        this.config.data.programs_text="";
-        for(let result of respons.programs){
+        this.config.data.programs_text = "";
+        for (let result of respons.programs) {
           this.controllDataAffliation(result.value);
         }
-      } 
+      }
     });
   }
 

@@ -82,9 +82,15 @@
                                 </div>
                       
                                 <div class="row mb-6 fs-7">
-                                  <label class="col-lg-4 ">{{label?.observation?.PROGRAM_OBSERVATION || 'Program/network affiliation'}} :</label>
+                                  <label class="col-lg-4 ">
+                                    {{ label?.observation?.PROGRAM_OBSERVATION || 'Program/network affiliation' }} :
+                                  </label>
                                   <div class="col-lg-4 fv-row">
-                                    <p-listbox [options]="programNetworksMap.get(item.content.id)" optionLabel="desc" [style]="{'border': 'none'}">
+                                    <p-listbox 
+                                      [options]="programOption" 
+                                      optionLabel="label" 
+                                      optionValue="value"
+                                      [style]="{'border': 'none'}">
                                     </p-listbox>
                                   </div>
                                 </div>

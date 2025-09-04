@@ -11,6 +11,15 @@ import { MoreComponent } from './_more.component';
 
 import { BibtexParser } from 'bibtex-js-parser';
 import { Station } from '../domain/station';
+
+class Document {
+    id?: string;
+    text?: string;
+    bibtex?: string;
+    author?: string;
+    year?: string;
+}
+
 @Component({
     templateUrl: './bibliography.component.html',
     styleUrls: ['../scss/tabledemo.scss'],
@@ -30,11 +39,12 @@ import { Station } from '../domain/station';
     ]
 })
 export class BibliographyComponent extends MoreComponent implements OnInit {
-    datas: any[];
+    datas: any[] = [];
     data: any;
     selectedDatas: any[] = [];
     indexHelper = 0;
     display = false;
+    isLoading = true;
 
     station: any;
     stations: any[];
@@ -61,6 +71,7 @@ export class BibliographyComponent extends MoreComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.isLoading = true;
         this.station_id = localStorage.getItem('station_id');
         this.station_name = localStorage.getItem('station_name');
         this.station_identifier = localStorage.getItem('station_identifier');
@@ -69,7 +80,7 @@ export class BibliographyComponent extends MoreComponent implements OnInit {
         if (this.station_id) {
             this.spinnerService.show();
             this.http.get(`${environment.app.apiUrl}/api/stations/${this.station_id}/bibliographies`).subscribe({
-                next: response => {
+                next: (response) => {
                     this.datas = response as any[];
                     this.datas.forEach(data => {
                         const bibJSON = BibtexParser.parseToJSON(data.bibtex);
@@ -78,13 +89,16 @@ export class BibliographyComponent extends MoreComponent implements OnInit {
                     if (!this.datas) this.datas = [];
                     console.log('this.datas: ' + JSON.stringify(this.datas));
                     this.spinnerService.hide();
+                    this.isLoading = false;
                     this.state$.next(true);
                 },
-                error: err => {
+                error: (err) => {
+                    this.isLoading = false;
                     this._errorHandler(err);
                 }
             });
         } else {
+            this.isLoading = false;
             setTimeout(() => {
                 this.router.navigate(['/my-stations']);
             }, 3000);
@@ -98,7 +112,7 @@ export class BibliographyComponent extends MoreComponent implements OnInit {
     }
 
     createDataForm(data: any) {
-        if (data == null) data = new Object();
+        if (data == null) data = new Document();
         this.dataForm = this.fb.group({
             id: new FormControl(data.id),
             text: new FormControl(data.text),
@@ -133,7 +147,11 @@ export class BibliographyComponent extends MoreComponent implements OnInit {
             this.dataForm.patchValue({ text: this.convertToAPA(bibJSON[0]) });
             if (bibJSON[0]?.author) this.dataForm.patchValue({ author: bibJSON[0]?.author });
             if (bibJSON[0]?.year) this.dataForm.patchValue({ year: bibJSON[0]?.year });
-            this.setDatas(this._updateTableDisplay(this.datas, this.dataForm.value));
+            
+            // Pastikan this.datas tidak null/undefined
+            const currentDatas = this.datas || [];
+            this.setDatas(this._updateTableDisplay(currentDatas, this.dataForm.value));
+            
             this.dialogForm = false;
             this.display = false;
             this.disabled = false;
@@ -144,14 +162,20 @@ export class BibliographyComponent extends MoreComponent implements OnInit {
     }
 
     convertToAPA(text: any): string {
+        if (!text) return '';
+        
         const author = text.author ? text.author + ', ' : '';
         const year = text.year ? '(' + text.year + '), ' : '';
         const title = text.title ? text.title + ', ' : '';
         const pages = text.pages ? text.pages + ', ' : '';
         const url = text.url ? text.url + ', ' : '';
-        console.log('author' + text.author);
-        console.log('year' + year);
-        return author + year + title + pages + url;
+        
+        let result = author + year + title + pages + url;
+        // Hapus koma di akhir jika ada
+        if (result.endsWith(', ')) {
+            result = result.slice(0, -2);
+        }
+        return result;
     }
 
     onFileChange(event: any) {
@@ -162,6 +186,7 @@ export class BibliographyComponent extends MoreComponent implements OnInit {
             });
         }
     }
+
     deleteWithConfirm(data: any) {
         this.submitted = false;
         this.setSelectedDatas([]);
@@ -179,7 +204,9 @@ export class BibliographyComponent extends MoreComponent implements OnInit {
         });
     }
 
-    deleteMoreWithConfirm() {}
+    deleteMoreWithConfirm() {
+        // Implementasi jika diperlukan
+    }
 
     getSelectedDatas() {
         return this.selectedDatas;
@@ -201,6 +228,21 @@ export class BibliographyComponent extends MoreComponent implements OnInit {
         return this._updateTableDisplay(datas, resp);
     }
 
+    // Override atau tambahkan method _updateTableDisplay jika diperlukan
+    _updateTableDisplay(datas: any[], newData: any): any[] {
+        if (!datas) datas = [];
+        
+        const index = datas.findIndex(item => item.id === newData.id);
+        if (index >= 0) {
+            // Update existing item
+            datas[index] = newData;
+        } else {
+            // Add new item
+            datas.push(newData);
+        }
+        return datas;
+    }
+
     showExample() {
         this.display = !this.display;
     }
@@ -209,7 +251,7 @@ export class BibliographyComponent extends MoreComponent implements OnInit {
         console.log('event: ' + JSON.stringify(event));
         this.spinnerService.show();
         this.http.get(`${environment.app.apiUrl}/api/stations/${event.id}/bibliographies`).subscribe({
-            next: response => {
+            next: (response) => {
                 this.datas = response as any[];
                 this.datas.forEach(data => {
                     const bibJSON = BibtexParser.parseToJSON(data.bibtex);
@@ -220,7 +262,7 @@ export class BibliographyComponent extends MoreComponent implements OnInit {
                 this.spinnerService.hide();
                 this.state$.next(true);
             },
-            error: err => {
+            error: (err) => {
                 this._errorHandler(err);
             }
         });
@@ -237,7 +279,7 @@ export class BibliographyComponent extends MoreComponent implements OnInit {
                 bibliographies: this.getDatas()
             })
             .subscribe({
-                next: response => {
+                next: (response) => {
                     this.datas = response as any[];
                     if (!this.datas) this.datas = [];
                     this.datas.forEach(data => {
@@ -249,7 +291,7 @@ export class BibliographyComponent extends MoreComponent implements OnInit {
                     this.spinnerService.hide();
                     this.state$.next(true);
                 },
-                error: err => {
+                error: (err) => {
                     this._errorHandler(err);
                 }
             });
@@ -262,13 +304,13 @@ export class BibliographyComponent extends MoreComponent implements OnInit {
                 params: new HttpParams().append('filter[station_code]', event.query)
             })
             .subscribe({
-                next: response => {
+                next: (response) => {
                     console.log('stations: ' + JSON.stringify(response));
                     this.filteredStations = response as any[];
                     this.spinnerService.hide();
                     this.state$.next(true);
                 },
-                error: err => {
+                error: (err) => {
                     this._errorHandler(err);
                 }
             });
@@ -281,15 +323,22 @@ export class BibliographyComponent extends MoreComponent implements OnInit {
                 params: new HttpParams().append('filter[name]', event.query)
             })
             .subscribe({
-                next: response => {
+                next: (response) => {
                     console.log('stations: ' + JSON.stringify(response));
                     this.filteredStations = response as any[];
                     this.spinnerService.hide();
                     this.state$.next(true);
                 },
-                error: err => {
+                error: (err) => {
                     this._errorHandler(err);
                 }
             });
+    }
+
+    // Helper method untuk mengubah nilai dalam JSON
+    changeValueInJson(key: string, value: any, json: any) {
+        if (json.hasOwnProperty(key)) {
+            json[key] = value;
+        }
     }
 }

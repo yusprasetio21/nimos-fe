@@ -46,11 +46,11 @@ export class DataObservationDialogComponent extends MoreComponent implements OnI
   jsonRequest:Observation[]=[];
   programOption:SelectItem[]=[];
   idDummy:number;
-  http: any;
+  state$ = new BehaviorSubject<boolean>(false); // Tambahkan ini
 
   constructor(
     public datepipe: DatePipe,
-    http: HttpClient,
+    private httpClient: HttpClient, // Ubah nama untuk hindari conflict
     confirmationService: ConfirmationService,
     router: Router,
     messageService: MessageService,
@@ -59,21 +59,12 @@ export class DataObservationDialogComponent extends MoreComponent implements OnI
     public dialogService: DialogService,
     public ref: DynamicDialogRef,
     public config: DynamicDialogConfig) {
-      super(confirmationService, http, router, messageService, spinnerService);
-      // ref.beforeClosed().subscribe(() => {
-      //   this.onOke();
-      // });
+      super(confirmationService, httpClient, router, messageService, spinnerService);
   }
 
   dummy:any={"observed_variable_id":39,"variable":"Atmospheric density","geometry_id":6,"programs_text":"Centennial Observing Stations","programs":[{"value":1},{"value":2}],"observed_since":"2022-11-11","methodNode":{"id":61,"expandable":false,"text":"(inapplicable)","level":0}};
 
   openDialog(node:any,action:string): void {
-    // let dialogRef = this.dialog.open(InsertObservationDialogComponent, {
-    //   width: '75%',
-    //   data: {dataSource:this.jsonRequest,node:node,action:action,geomteryOptions:this.config.data.geomteryOptions,
-    //     treeMethod:this.config.data.treeMethod,programOption:this.programOption}
-    // });
-  
     let dialog = this.dialogService.open(InsertObservationDialogComponent, {
       header: 'Management Observation',
       width: '70%',
@@ -94,7 +85,10 @@ export class DataObservationDialogComponent extends MoreComponent implements OnI
     this.dataSourceTree.data = this.config.data.dataSourceTree;
     this.jsonRequest = this.config.data.dataSource;
     this.idDummy = this.config.data.idDummy;
-    // console.log(JSON.stringify(this.jsonRequest));
+    
+    // Inisialisasi dataSource dengan jsonRequest
+    this.dataSource.data = [...this.jsonRequest];
+    
     this.loadReference();
   }
 
@@ -102,9 +96,26 @@ export class DataObservationDialogComponent extends MoreComponent implements OnI
     this.SaveJsonRequest(this.dummy);
   }
  
-  loadReference(){
-    this.programOption = JSON.parse(JSON.stringify(this.config.data.programOption));
-    console.log(JSON.stringify(this.programOption))
+  loadReference() {
+    this.programOption = JSON.parse(JSON.stringify(this.config.data.programOption ?? []));
+
+    // kalau kosong (hanya default 1), tambahkan fallback
+    if (this.programOption.length <= 1) {
+      this.programOption = [
+        { label: '- Program / Network Affiliation -', value: null },
+        { value: 551, label: 'AARI' },
+        { value: 396, label: 'ABOS' },
+        { value: 414, label: 'ACTRIS' },
+        { value: 1, label: 'AMDAR' },
+        { value: 2, label: 'APCAD' },
+        { value: 3, label: 'ARGO' },
+        { value: 4, label: 'BATHY' },
+        { value: 5, label: 'BUCOS' }
+        // ... tambahkan lebih banyak sesuai kebutuhan
+      ];
+    }
+
+    console.log('programOption:', this.programOption);
   }
 
   hasChild = (_: number, node: ExampleFlatNode) => node.expandable;
@@ -112,26 +123,21 @@ export class DataObservationDialogComponent extends MoreComponent implements OnI
   filterRecursive(filterText: string, array: any[], property: string) {
     let filteredData;
 
-    //make a copy of the data so we don't mutate the original
     function copy(o: any) {
       return Object.assign({}, o);
     }
 
-    // has string
     if (filterText) {
-      // need the string to match the property value
       filterText = filterText.toLowerCase();
-      // copy obj so we don't mutate it and filter
       filteredData = array.map(copy).filter(function x(y) {
         if (y[property].toLowerCase().includes(filterText)) {
           return true;
         }
-        // if children match
         if (y.children) {
           return (y.children = y.children.map(copy).filter(x)).length;
         }
+        return false;
       });
-      // no string, return whole array
     } else {
       filteredData = array;
     }
@@ -140,15 +146,12 @@ export class DataObservationDialogComponent extends MoreComponent implements OnI
   }
 
   filterTree(filterText: string) {
-    // use filter input text, return filtered TREE_DATA, use the 'name' object value
-    // this.dataSourceTree.data = this.filterRecursive(filterText, TREE_DATA, 'name');
     this.dataSourceTree.data = this.filterRecursive(filterText, this.config.data.dataSourceTree, 'text');
   }
 
   search:string;
   applyFilter(filterText: any) {
     this.filterTree(this.search);
-    // show / hide based on state of filter string
     if (filterText) {
       this.treeControl.expandAll();
     } else {
@@ -173,7 +176,6 @@ export class DataObservationDialogComponent extends MoreComponent implements OnI
   }
   
   SaveJsonRequest(datas:any){
-    // console.log(JSON.stringify(datas));
     let geometry = this.config.data.geomteryOptions.find((o: { value: any; }) => o.value === datas.geometry_id);
     var programs:Program[]=[];
     for(let program of datas.programs){
@@ -182,10 +184,9 @@ export class DataObservationDialogComponent extends MoreComponent implements OnI
     var request:Observation={
         id:datas.id == null || datas.id == undefined?"_"+this.idDummy++:datas.id,
         observed_variable_id:datas.observed_variable_id,
-        programs:programs,//mandatory
+        programs:programs,//mandatory untuk tampilan UI
         variable:datas.variable,
-        geometryName: geometry.label,
-        // observed_since: datas.observed_since instanceof Date ? datas.observed_since : new Date(this._formatDMYtoYMD(this.config.data.observed_since)),
+        geometryName: geometry?.label || '',
         observed_since:datas.observed_since,
         geometry_id: datas.geometry_id,
         observing_method_id: datas.methodNode==undefined?'':datas.methodNode.id,
@@ -194,14 +195,16 @@ export class DataObservationDialogComponent extends MoreComponent implements OnI
     };
     console.log(JSON.stringify(request));
     if(datas.id == null || datas.id == undefined){
-      //insert
       this.jsonRequest.push(request);
       this.dataSource.data.push(request);
     }else{
-      //update
-      this.jsonRequest[this.jsonRequest.findIndex(item=>item.id === datas.id)]=request;
-      this.dataSource.data[this.dataSource.data.findIndex(item=>item.id === datas.id)]=request;
+      const jsonIndex = this.jsonRequest.findIndex(item=>item.id === datas.id);
+      const dataSourceIndex = this.dataSource.data.findIndex(item=>item.id === datas.id);
+      
+      if (jsonIndex !== -1) this.jsonRequest[jsonIndex] = request;
+      if (dataSourceIndex !== -1) this.dataSource.data[dataSourceIndex] = request;
     }
+    
     this.refreshDataSource(this.dataSource.data).subscribe((data: Observation[]) => {
       this.dataSource.data = data;
       this.state$.next(true);
@@ -209,34 +212,55 @@ export class DataObservationDialogComponent extends MoreComponent implements OnI
   }
 
   refreshDataSource(datas:Observation[]): Observable<Observation[]> {
-    let randomlyFilledList = datas;
-    return of(randomlyFilledList);
+    return of([...datas]);
   }
 
-  onOke(): void {
-    // this.config.data.jsonRequest = this.dataSource.data;
-    var observations:Observation[]=[]
-    for(let value of this.dataSource.data){
-      var obs:Observation={
-          id:value.id,
-          observed_variable_id:value.observed_variable_id,
-          programs:value.programs,//mandatory
-          observed_since:value.observed_since,
-          geometry_id: value.geometry_id,
-          observing_method_id: value.observing_method_id,
-      };    
-      observations.push(obs);
+ onOke(): void {
+  var observationsForApi: any[] = [];
+  
+  const dataToProcess = Array.isArray(this.dataSource?.data) ? this.dataSource.data : [];
+  
+  for (let value of dataToProcess) {
+    if (!value) continue;
+    
+    if (value.programs && Array.isArray(value.programs) && value.programs.length > 0) {
+      for (let program of value.programs) {
+        if (program && program.id !== undefined) {
+          observationsForApi.push({
+            observed_variable_id: value.observed_variable_id,
+            geometry_id: value.geometry_id,
+            program_id: program.id,
+            observed_since: value.observed_since,
+            observing_method_id: value.observing_method_id || null
+          });
+        }
+      }
+    } else {
+      observationsForApi.push({
+        observed_variable_id: value.observed_variable_id || null,
+        geometry_id: value.geometry_id || null,
+        program_id: null,
+        observed_since: value.observed_since || null,
+        observing_method_id: value.observing_method_id || null
+      });
     }
-    delete this.config.data.geomteryOptions;
-    delete this.config.data.treeMethod;
-    delete this.config.data.dataSource;
-    delete this.config.data.dataSourceTree;
-    this.config.data.idDummy = this.idDummy;
-    this.config.data.jsonRequest = observations;
-
-    console.log(JSON.stringify(this.config.data));
-    this.ref.close(this.config.data);
   }
+
+  // PERBAIKAN: Kirim array langsung, bukan object dengan properti observations
+  const resultData = {
+    ...this.config.data,
+    idDummy: this.idDummy,
+    jsonRequest: observationsForApi // Langsung array, bukan object
+  };
+
+  delete resultData.geomteryOptions;
+  delete resultData.treeMethod;
+  delete resultData.dataSource;
+  delete resultData.dataSourceTree;
+
+  console.log('Data yang dikirim ke API:', JSON.stringify(resultData, null, 2));
+  this.ref.close(resultData);
+}
 
   findNodeById(list: TreeModel[], id: number): TreeModel | undefined {
     for (const n of list) {
@@ -245,37 +269,38 @@ export class DataObservationDialogComponent extends MoreComponent implements OnI
       } 
     }
     for (const n of list) {
-      const res = this.findNodeById(n.children!=undefined?n.children:[], id);
-      if (res) {
-        if(res.id === id)
-        return res;
+      if (n.children) {
+        const res = this.findNodeById(n.children, id);
+        if (res) {
+          return res;
+        }
       }
     }
+    return undefined;
   }
 
   protected getSelectedDatas(): any[] {
-    throw new Error('Method not implemented.');
+    return [];
   }
   protected setSelectedDatas(datas: any) {
-    throw new Error('Method not implemented.');
+    // Implementation if needed
   }
   protected generateStr(event: any) {
-    throw new Error('Method not implemented.');
+    return '';
   }
   protected getDatas(): any[] {
-    throw new Error('Method not implemented.');
+    return [];
   }
   protected setDatas(datas: any[]): void {
-    throw new Error('Method not implemented.');
+    // Implementation if needed
   }
   protected createDataForm(data: any) {
-    throw new Error('Method not implemented.');
+    // Implementation if needed
   }
   protected updateTableDisplay(datas: any[], req: any, resp: any) {
-    throw new Error('Method not implemented.');
+    // Implementation if needed
   }
 }
-
 
 interface FoodNode {
   name: string;

@@ -7,14 +7,15 @@ import { SelectItem, ConfirmationService, MessageService } from 'primeng/api';
 import { Component, ViewChild, OnInit, AfterViewInit } from '@angular/core';
 import { MoreComponent } from './_more.component';
 import * as L from 'leaflet';
+
 @Component({
     selector: 'app-dashboard-user',
     templateUrl: './dashboard-user.component.html'
 })
 export class DashboardUserComponent extends MoreComponent implements OnInit, AfterViewInit {
-    map: any;
-    markersLayer: any;
-    legend: any;
+    map: L.Map;
+    markersLayer: L.LayerGroup;
+    legend: L.Control;
 
     station_id: string;
     station_name: string;
@@ -38,6 +39,8 @@ export class DashboardUserComponent extends MoreComponent implements OnInit, Aft
 
     mapType: string;
     mapTypeOptions: SelectItem[] = [];
+
+    private allMarkers: L.Circle[] = []; // Menyimpan semua markers
 
     constructor(
         private fb: FormBuilder,
@@ -83,9 +86,6 @@ export class DashboardUserComponent extends MoreComponent implements OnInit, Aft
             }
         });
 
-        // this.model = this.layout.getConfig();
-        // this.router.navigate(['/login']);
-
         this.mapTypeOptions.push({ label: '- Type Information? -', value: null });
         this.mapTypeOptions.push({ label: 'Performa Pencapaian Pengisian', value: 'progress' });
         this.mapTypeOptions.push({ label: 'Level Exposure', value: 'expos' });
@@ -120,7 +120,6 @@ export class DashboardUserComponent extends MoreComponent implements OnInit, Aft
 
         try {
             this.map = L.map('map', {
-                //center: latLng(-0.789275, 113.921327)
                 center: [-0.789275, 113.921327],
                 zoom: 5
             });
@@ -131,48 +130,74 @@ export class DashboardUserComponent extends MoreComponent implements OnInit, Aft
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             });
 
-            //tiles.addTo(this.map);
             this.map.addLayer(tiles);
-
-            this.markersLayer = new L.LayerGroup();
+            this.markersLayer = L.layerGroup().addTo(this.map);
 
             this.http.get(`${environment.app.apiUrl}/api/lists/stations/statistics`).subscribe({
                 next: response => {
                     console.log('stations:' + JSON.stringify(response));
                     this.stations = response as any[];
                     this.changeMarker();
+                    
+                    // Zoom ke semua markers setelah data loaded
+                    this.zoomToMarkers();
                 },
                 error: err => {
                     this._errorHandler(err);
                 }
             });
         } catch (error) {
+            console.error('Map initialization error:', error);
             document.location.reload();
         }
     }
 
-    onSelectUsage(event: any) {
+    // Fungsi untuk zoom ke semua markers
+    private zoomToMarkers(): void {
+        if (this.allMarkers.length > 0) {
+            const group = L.featureGroup(this.allMarkers);
+            this.map.fitBounds(group.getBounds().pad(0.1), {
+                maxZoom: 15,
+                animate: true
+            });
+        }
+    }
+
+    // Fungsi untuk reset zoom
+    resetMapView(): void {
+        if (this.allMarkers.length > 0) {
+            const group = L.featureGroup(this.allMarkers);
+            this.map.fitBounds(group.getBounds().pad(0.1), {
+                maxZoom: 15,
+                animate: true
+            });
+        } else {
+            this.map.setView([-0.789275, 113.921327], 5);
+        }
+    }
+
+    onSelectUsage(event: any): void {
         this.usageType = event.value;
         this.changeMarker();
     }
 
-    onSelectMap(event: any) {
+    onSelectMap(event: any): void {
         this.mapType = event.value;
         this.changeMarker();
     }
 
-    changeMarker() {
+    changeMarker(): void {
         console.log('usageType:' + this.usageType);
         console.log('mapType:' + this.mapType);
 
+        // Clear existing markers
         this.markersLayer.clearLayers();
+        this.allMarkers = [];
 
         this.stations.forEach(station => {
             let include = true;
 
-            if (station.lat && station.long) {
-                //nop
-            } else {
+            if (!station.lat || !station.long) {
                 include = false;
             }
 
@@ -180,194 +205,117 @@ export class DashboardUserComponent extends MoreComponent implements OnInit, Aft
                 include = false;
             }
 
-            let popup: string;
-            let colorMarker = 'red';
-            if (!this.mapType || this.mapType === 'progress') {
-                popup = `<div style="text-align: left">
-                <a href="station-edits/${station.id}"><b>${station.name}</b></a><br>
-                Progress: ${station.progress ? (station.progress * 100).toFixed(2) : 0} % [Detail]<br>
-                </div>
-                `;
+            if (include) {
+                let popup: string;
+                let colorMarker = 'red';
+                
+                if (!this.mapType || this.mapType === 'progress') {
+                    popup = `<div style="text-align: left">
+                    <a href="station-edits/${station.id}"><b>${station.name}</b></a><br>
+                    Progress: ${station.progress ? (station.progress * 100).toFixed(2) : 0} %<br>
+                    </div>`;
 
-                if (station.progress <= 0.5) {
-                    colorMarker = 'red';
-                } else if (station.progress > 0.5 && station.progress <= 0.8) {
-                    colorMarker = 'yellow';
-                } else if (station.progress > 0.8) {
-                    colorMarker = 'green';
-                }
-            } else {
-                popup = `<div style="text-align: left">
-                <a href="station-edits/${station.id}"><b>${station.name}</b></a><br>
-                `;
-
-                switch (station.max_level_of_exposure) {
-                    case 1: {
-                        colorMarker = 'blue';
-                        break;
-                    }
-                    case 2: {
-                        colorMarker = 'green';
-                        break;
-                    }
-                    case 3: {
-                        colorMarker = 'yello';
-                        break;
-                    }
-                    case 4: {
+                    if (station.progress <= 0.5) {
+                        colorMarker = 'red';
+                    } else if (station.progress > 0.5 && station.progress <= 0.8) {
                         colorMarker = 'orange';
-                        break;
+                    } else if (station.progress > 0.8) {
+                        colorMarker = 'green';
                     }
-                    case 5: {
-                        colorMarker = 'red';
-                        break;
-                    }
-                    default: {
-                        colorMarker = 'red';
-                        break;
+                } else {
+                    popup = `<div style="text-align: left">
+                    <a href="station-edits/${station.id}"><b>${station.name}</b></a><br>
+                    Level Exposure: ${station.max_level_of_exposure || 'N/A'}<br>
+                    </div>`;
+
+                    switch (station.max_level_of_exposure) {
+                        case 1: colorMarker = 'blue'; break;
+                        case 2: colorMarker = 'green'; break;
+                        case 3: colorMarker = 'yellow'; break;
+                        case 4: colorMarker = 'orange'; break;
+                        case 5: colorMarker = 'red'; break;
+                        default: colorMarker = 'gray'; break;
                     }
                 }
-            }
 
-            if (include) {
                 const marker = L.circle([station.lat, station.long], {
-                    color: colorMarker
-                })
-                    .addTo(this.map)
-                    .bindPopup(popup)
-                    .on('mouseover', function (e) {
-                        marker.openPopup();
-                    });
+                    color: colorMarker,
+                    fillColor: colorMarker,
+                    fillOpacity: 0.7,
+                    radius: 50, // Radius dalam meter
+                    weight: 2
+                }).bindPopup(popup);
+
+                marker.on('mouseover', function (e) {
+                    marker.openPopup();
+                });
+
                 this.markersLayer.addLayer(marker);
+                this.allMarkers.push(marker);
             }
         });
 
-        this.markersLayer.addTo(this.map);
+        // Zoom ke markers yang ditampilkan
+        if (this.allMarkers.length > 0) {
+            const group = L.featureGroup(this.allMarkers);
+            this.map.fitBounds(group.getBounds().pad(0.1), {
+                maxZoom: 15,
+                animate: true
+            });
+        }
+
+        this.updateLegend();
+
         this.spinnerService.hide();
         this.state$.next(true);
-
-        if (this.legend) this.map.removeControl(this.legend);
-
-        if (!this.mapType || this.mapType === 'progress') {
-            console.log('masuuuuk progress');
-            this.legend = L.control.attribution({ position: 'bottomleft' });
-
-            this.legend.onAdd = function () {
-                const div = L.DomUtil.create('div', 'legend');
-                div.innerHTML += '<h4>Progress</h4>';
-                div.innerHTML += '<i style="background: red"></i><span>kurang dari 50%</span><br>';
-                div.innerHTML += '<i style="background: yellow"></i><span>50% sampai dengan 80%</span><br>';
-                div.innerHTML += '<i style="background: green"></i><span>lebih dari 80%</span><br>';
-
-                return div;
-            };
-
-            this.legend.addTo(this.map);
-        } else {
-            console.log('masuuuuk expos');
-            this.legend = L.control.attribution({ position: 'bottomleft' });
-
-            this.legend.onAdd = function () {
-                const div = L.DomUtil.create('div', 'legend');
-                div.innerHTML += '<h4>Level Exposure</h4>';
-                div.innerHTML += '<i style="background: blue"></i><span>Class 1</span><br>';
-                div.innerHTML += '<i style="background: green"></i><span>Class 2</span><br>';
-                div.innerHTML += '<i style="background: yellow"></i><span>Class 3</span><br>';
-                div.innerHTML += '<i style="background: orange"></i><span>Class 4</span><br>';
-                div.innerHTML += '<i style="background: red"></i><span>Class 5</span><br>';
-
-                return div;
-            };
-
-            this.legend.addTo(this.map);
-        }
     }
 
-    /*onSelectUsage(event: any) {
-        console.log('event:' + event.value);
-        this.markersLayer.clearLayers();
+    private updateLegend(): void {
+    if (this.legend) {
+        this.map.removeControl(this.legend);
+    }
 
-        this.stations.forEach(station => {
-            let include = true;
+    const LegendControl = L.Control.extend({
+        options: { position: 'bottomleft' },
 
-            if (station.lat && station.long) {
-                //nop
+        onAdd: (map: L.Map) => {
+            const div = L.DomUtil.create('div', 'legend');
+
+            if (!this.mapType || this.mapType === 'progress') {
+                div.innerHTML = `
+                    <h4>Progress</h4>
+                    <div><span style="background: red"></span> Kurang dari 50%</div>
+                    <div><span style="background: orange"></span> 50% - 80%</div>
+                    <div><span style="background: green"></span> Lebih dari 80%</div>
+                `;
             } else {
-                include = false;
+                div.innerHTML = `
+                    <h4>Level Exposure</h4>
+                    <div><span style="background: blue"></span> Class 1</div>
+                    <div><span style="background: green"></span> Class 2</div>
+                    <div><span style="background: yellow"></span> Class 3</div>
+                    <div><span style="background: orange"></span> Class 4</div>
+                    <div><span style="background: red"></span> Class 5</div>
+                `;
             }
 
-            if (event && event.value !== station.usage_type_id) {
-                include = false;
-            }
-
-            if (include) {
-                const marker = L.marker([station.lat, station.long])
-                    .addTo(this.map)
-                    .bindPopup(
-                        `<div style="text-align: left">
-                        <a href="station-edits/${station.id}"><b>${station.name}</b></a><br>
-                        Progress: ${station.progress ? station.progress * 100 : 0} % <br>
-                        Exposure: ${station.max_level_of_exposure ? station.max_level_of_exposure : ''}<br>
-                        Instrument: ${station.total_instrument ? station.total_instrument : ''}
-                        </div>
-                        `
-                    )
-                    .openPopup();
-                this.markersLayer.addLayer(marker);
-            }
-        });
-
-        this.markersLayer.addTo(this.map);
-        this.spinnerService.hide();
-        this.state$.next(true);
-    }
-
-    onSelectMap(event: any) {
-        console.log('event:' + event.value);
-        if (this.legend) this.map.removeControl(this.legend);
-
-        if (event.value === 'progress') {
-            console.log('masuuuuk progress');
-            this.legend = L.control.attribution({ position: 'bottomleft' });
-
-            this.legend.onAdd = function () {
-                const div = L.DomUtil.create('div', 'legend');
-                div.innerHTML += '<h4>Progress</h4>';
-                div.innerHTML += '<i style="background: red"></i><span>x <= 50%</span><br>';
-                div.innerHTML += '<i style="background: yellow"></i><span>50% < x <= 80% </span><br>';
-                div.innerHTML += '<i style="background: green"></i><span>80% < x</span><br>';
-
-                return div;
-            };
-
-            this.legend.addTo(this.map);
-        } else if (event.value === 'expos') {
-            console.log('masuuuuk expos');
-            this.legend = L.control.attribution({ position: 'bottomleft' });
-
-            this.legend.onAdd = function () {
-                const div = L.DomUtil.create('div', 'legend');
-                div.innerHTML += '<h4>Level Exposure</h4>';
-                div.innerHTML += '<i style="background: blue"></i><span>Class 1</span><br>';
-                div.innerHTML += '<i style="background: green"></i><span>Class 2</span><br>';
-                div.innerHTML += '<i style="background: yellow"></i><span>Class 3</span><br>';
-                div.innerHTML += '<i style="background: orange"></i><span>Class 4</span><br>';
-                div.innerHTML += '<i style="background: red"></i><span>Class 5</span><br>';
-
-                return div;
-            };
-
-            this.legend.addTo(this.map);
+            return div;
         }
-    }*/
+    });
 
+    this.legend = new LegendControl();
+    this.legend.addTo(this.map);
+}
+
+
+    // Implementasi abstract methods
     protected getSelectedDatas(): any[] {
         throw new Error('Method not implemented.');
     }
-    protected setSelectedDatas(datas: any) {
+    protected setSelectedDatas(datas: any): void {
         throw new Error('Method not implemented.');
     }
-    protected generateStr(event: any) {
+    protected generateStr(event: any): string {
         throw new Error('Method not implemented.');
     }
     protected getDatas(): any[] {
@@ -376,10 +324,10 @@ export class DashboardUserComponent extends MoreComponent implements OnInit, Aft
     protected setDatas(datas: any[]): void {
         throw new Error('Method not implemented.');
     }
-    protected createDataForm(data: any) {
+    protected createDataForm(data: any): void {
         throw new Error('Method not implemented.');
     }
-    protected updateTableDisplay(datas: any[], req: any, resp: any) {
+    protected updateTableDisplay(datas: any[], req: any, resp: any): void {
         throw new Error('Method not implemented.');
     }
 }

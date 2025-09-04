@@ -162,6 +162,11 @@ export class ObservationComponent extends MoreComponent implements OnInit{
       if(result!=undefined){
         // console.log(JSON.stringify(result));
         this.idDummyObservation = result.idDummy;
+
+        // Debug: lihat struktur jsonRequest
+        console.log('jsonRequest type:', typeof result.jsonRequest);
+        console.log('jsonRequest value:', result.jsonRequest);
+
         for(var request of result.jsonRequest){
           console.log(JSON.stringify(request))
           this.controllDataObservation(request);
@@ -793,7 +798,13 @@ export class ObservationComponent extends MoreComponent implements OnInit{
     });
   }
 
-  controllDataObservation(result:any){
+controllDataObservation(result:any){
+    // Tambahkan null check untuk result
+    if (!result) {
+        console.error('Result is undefined in controllDataObservation');
+        return;
+    }
+
     // this.changeDateFormatInJson("from",result);
     // this.changeDateFormatInJson("to",result);
     // this.changeDateFormatInJson("created_at",result);
@@ -805,7 +816,7 @@ export class ObservationComponent extends MoreComponent implements OnInit{
     var content:Observation={
       id:result.id,//mandatory
       observed_variable_id:result.observed_variable_id,//mandatory
-      programs:result.programs,//mandatory
+      programs:result.programs || [], // BERIKAN DEFAULT VALUE array kosong
       geometry_id:result.geometry_id,//mandatory
       observing_method_id:result.observing_method_id,
       // observed_since:this.datepipe.transform(Date.parse(result.observed_since), 'yyyy-MM-dd'),
@@ -815,8 +826,10 @@ export class ObservationComponent extends MoreComponent implements OnInit{
       variable:pathVariable?.text,
       geometryName: geometry?.label,
     };
+    
     //Set data Program Netwok Affiliation
-    if(result.programs.length>0){
+    // PERBAIKAN: Gunakan optional chaining dan null check
+    if(result.programs && Array.isArray(result.programs) && result.programs.length>0){
       let programNetworks :Program[]=[];
       for(let program of result.programs){
         // this.instrumentMap.set(content.instrument?.id,dataSourceCoordinates);
@@ -832,28 +845,25 @@ export class ObservationComponent extends MoreComponent implements OnInit{
     }else{
       this.lastUpdateMap.set(result.id,"");
     }
-    // console.log(JSON.stringify(content));
+    
     var tittle = pathVariable?.text+" - [Geometry: "+geometry?.label+"]";
     var observation = this.observationList.find((o: { content: any; }) => o.content.id === result.id);
     if(observation == undefined){
       //insert
       this.observationList[this.observationList.length]={tittle:tittle , content: content, panelOpenState: true};
       this.jsonRequest.push(content); 
-      // console.log(JSON.stringify(this.jsonRequest));
     }else{
       //update
-      // console.log(JSON.stringify(content));
       this.observationList[this.observationList.findIndex(item=>item.content.id === result.id)]={tittle:tittle , content: content, panelOpenState: true};
       content.deployments = this.jsonRequest[this.jsonRequest.findIndex(item=>item.id === result.id)].deployments;
       this.jsonRequest[this.jsonRequest.findIndex(item=>item.id === result.id)]=content;
-      // console.log(JSON.stringify(this.jsonRequest));
     }
+    
     this.refreshDataSource(this.observationList).subscribe({next: data => {
       this.observationList = data;
       this.state$.next(true);
     }});
-    // console.log(JSON.stringify(this.jsonRequest))
-  }
+}
 
   updateObservation(content:any){
 

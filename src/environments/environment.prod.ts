@@ -21,8 +21,8 @@ export const environment = {
         version: 'v8.1.0',
         //apiUrl: 'https://nimos-api.digimu.co.id',
         apiUrl: 'http://192.168.15.227:8090',
-        clientId: 5,
-        clientSecret: 'sKsNHS4ipLZw8ZFBFKrEmObQMwZ2EZwBeKss2Mje'
+        clientId: 1,
+        clientSecret:'Eone3X0xeKSUfxR24NWPiTBMvuURVoVOQTAXz6Fy'
     },
     appDemos: {
         demo1: {
